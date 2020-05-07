@@ -23,7 +23,8 @@ func NewRandomGol(rows int, cols int, randomSeed int64) *Gol {
 }
 
 // NextGeneration : compute the next generation
-func (g *Gol) NextGeneration() {
+func (g *Gol) NextGeneration() *Gol {
+	nextG := g.Clone()
 	grid := g.grid
 	for i := 0; i < grid.rows; i++ {
 		for j := 0; j < grid.cols; j++ {
@@ -33,24 +34,31 @@ func (g *Gol) NextGeneration() {
 			// Any dead cell with three live neighbors becomes a live cell.
 			// All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 			if grid.get(i, j) == ALIVE {
-				if aliveNeighborsCount > 1 {
-					grid.set(i, j, ALIVE)
+				if aliveNeighborsCount > 2 {
+					nextG.grid.set(i, j, ALIVE)
 				} else {
-					grid.set(i, j, DEAD)
+					nextG.grid.set(i, j, DEAD)
 				}
 			} else {
-				if aliveNeighborsCount > 3 {
-					grid.set(i, j, ALIVE)
+				if aliveNeighborsCount > 2 {
+					nextG.grid.set(i, j, ALIVE)
 				}
 			}
 		}
 	}
-	g.generation++
+	nextG.generation++
+	return nextG
 }
 
 // Equals : inform if two game of life instances have the same data
 func (g *Gol) Equals(other *Gol) bool {
 	return g.grid.equals(other.grid) && g.generation == other.generation
+}
+
+// GridEquals : inform if two game of life instances have the same data,
+//	ignoring the difference in generations value
+func (g *Gol) GridEquals(other *Gol) bool {
+	return g.grid.equals(other.grid)
 }
 
 // Clone : clone a game of life instance

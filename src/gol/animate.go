@@ -36,7 +36,7 @@ func MakeGifAnimation(g *Gol, outputFilepath string, generations int) error {
 		gifAnimation.Delay = append(gifAnimation.Delay, delay)
 		gifAnimation.Image = append(gifAnimation.Image, frameImage)
 
-		g.NextGeneration()
+		g = g.NextGeneration()
 	}
 	gif.EncodeAll(outputFile, &gifAnimation)
 	return nil

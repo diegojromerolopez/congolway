@@ -47,24 +47,26 @@ func TestClone(t *testing.T) {
 }
 
 func TestNextGeneration(t *testing.T) {
-	gGen0, gGen0ReadError := readGolFromTextFile("oscilator_5x5_gen_0.txt")
-	if gGen0ReadError != nil {
-		t.Error(gGen0ReadError)
-	}
-	cloneGol := gGen0.Clone()
-	cloneGol.NextGeneration()
-
-	gGen1, gGen1ReadError := readGolFromTextFile("oscilator_5x5_gen_1.txt")
-	if gGen1ReadError != nil {
-		t.Error(gGen1ReadError)
-	}
-	if gGen1.Equals(cloneGol) {
-		t.Errorf("Odd oscilator game-of-life generation is wrong")
+	g0, g0ReadError := readGolFromTextFile("oscilator_5x5_gen_0.txt")
+	if g0ReadError != nil {
+		t.Error(g0ReadError)
 	}
 
-	cloneGol.NextGeneration()
-	if gGen0.Equals(cloneGol) {
-		t.Errorf("Even oscilator game-of-life generations must be equal")
+	g1, g1ReadError := readGolFromTextFile("oscilator_5x5_gen_1.txt")
+	if g1ReadError != nil {
+		t.Error(g1ReadError)
+	}
+
+	if g0.GridEquals(g1) {
+		t.Errorf("Odd oscilator game-of-life generation is wrong. They should be different")
+	}
+
+	if !g0.NextGeneration().GridEquals(g1) {
+		t.Errorf("Odd oscilator game-of-life generation is wrong. They should be equal (odd generation)")
+	}
+
+	if !g1.NextGeneration().GridEquals(g0) {
+		t.Errorf("Odd oscilator game-of-life generation is wrong. They should be equal (even generation)")
 	}
 }
 
@@ -82,8 +84,7 @@ func TestNextGeneration2(t *testing.T) {
 		t.Errorf("Even oscilator game-of-life generations must not be equal on different parity generations")
 	}
 
-	g0.NextGeneration()
-
+	g0 = g0.NextGeneration()
 	if !g0.Equals(g1) {
 		t.Errorf("Even oscilator game-of-life generations must be equal on same parity generations")
 	}
