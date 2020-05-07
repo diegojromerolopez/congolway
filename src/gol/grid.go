@@ -10,6 +10,7 @@ const (
 	DEAD  = 0
 	A     = 1 // ALIVE alias
 	D     = 0 // DEAD alias
+	VOID  = -1
 )
 
 // Grid : a grid where the cells develop
@@ -38,12 +39,6 @@ func NewRandomGrid(rows int, cols int, ramdomSeed int64) *Grid {
 	return grid
 }
 
-func (g *Grid) setAlive(aliveCells []int) {
-	for _, pos := range aliveCells {
-		g.cells[pos] = ALIVE
-	}
-}
-
 func (g *Grid) randomize(randomSeed int64) {
 	statuses := []int{ALIVE, DEAD}
 	statusesLen := len(statuses)
@@ -57,16 +52,11 @@ func (g *Grid) getPos(i int, j int) int {
 }
 
 func (g *Grid) get(i int, j int) int {
+	if i < 0 || i >= g.rows || j < 0 || j >= g.cols {
+		return VOID
+	}
 	pos := g.getPos(i, j)
 	return g.cells[pos]
-}
-
-func (g *Grid) ptr(i int, j int) *int {
-	pos := g.getPos(i, j)
-	if pos >= 0 && pos < len(g.cells) {
-		return &g.cells[pos]
-	}
-	return nil
 }
 
 func (g *Grid) set(i int, j int, value int) {
@@ -74,15 +64,18 @@ func (g *Grid) set(i int, j int, value int) {
 	g.cells[pos] = value
 }
 
-func (g *Grid) countAliveNeighbors(i int, j int) int {
-	neighborStatuses := []*int{
-		g.ptr(i-1, j-1), g.ptr(i-1, j), g.ptr(i-1, j+1),
-		g.ptr(i, j-1), g.ptr(i, j), g.ptr(i, j+1),
-		g.ptr(i+1, j-1), g.ptr(i+1, j), g.ptr(i+1, j+1),
+func (g *Grid) neighbors(i int, j int) []int {
+	return []int{
+		g.get(i-1, j-1), g.get(i-1, j), g.get(i-1, j+1),
+		g.get(i, j-1), g.get(i, j+1),
+		g.get(i+1, j-1), g.get(i+1, j), g.get(i+1, j+1),
 	}
+}
+
+func (g *Grid) aliveNeighborsCount(i int, j int) int {
 	aliveCount := 0
-	for _, neighborStatusPtr := range neighborStatuses {
-		if neighborStatusPtr != nil && *neighborStatusPtr == ALIVE {
+	for _, neighborhood := range g.neighbors(i, j) {
+		if neighborhood == ALIVE {
 			aliveCount++
 		}
 	}

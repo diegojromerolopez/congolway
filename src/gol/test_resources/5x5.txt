@@ -1,0 +1,10 @@
+CONGOAY
+version: 1
+generation: 543
+size: 5x5
+grid:
+     
+XXXXX
+XX XX
+XXXXX
+     

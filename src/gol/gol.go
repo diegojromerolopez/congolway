@@ -28,21 +28,26 @@ func (g *Gol) NextGeneration() *Gol {
 	grid := g.grid
 	for i := 0; i < grid.rows; i++ {
 		for j := 0; j < grid.cols; j++ {
-			aliveNeighborsCount := grid.countAliveNeighbors(i, j)
+			aliveNeighborsCount := grid.aliveNeighborsCount(i, j)
 			// Text from Wikipedia: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 			// Any live cell with two or three live neighbors survives.
 			// Any dead cell with three live neighbors becomes a live cell.
 			// All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-			if grid.get(i, j) == ALIVE {
-				if aliveNeighborsCount > 2 {
+			switch grid.get(i, j) {
+			case ALIVE:
+				if aliveNeighborsCount == 2 || aliveNeighborsCount == 3 {
 					nextG.grid.set(i, j, ALIVE)
 				} else {
 					nextG.grid.set(i, j, DEAD)
 				}
-			} else {
-				if aliveNeighborsCount > 2 {
+			case DEAD:
+				if aliveNeighborsCount == 3 {
 					nextG.grid.set(i, j, ALIVE)
+				} else {
+					nextG.grid.set(i, j, DEAD)
 				}
+			default:
+				panic("Invalid cell status")
 			}
 		}
 	}

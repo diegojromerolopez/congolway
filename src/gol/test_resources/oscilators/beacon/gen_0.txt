@@ -1,0 +1,11 @@
+CONGOAY
+version: 1
+generation: 0
+size: 6x6
+grid:
+      
+ XX   
+ XX   
+   XX 
+   XX 
+      

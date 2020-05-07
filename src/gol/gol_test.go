@@ -7,12 +7,24 @@ import (
 	"testing"
 )
 
+func TestNewGol(t *testing.T) {
+	g := NewGol(5, 5)
+	grid := g.grid
+	for i := 0; i < grid.rows; i++ {
+		for j := 0; j < grid.cols; j++ {
+			if grid.get(i, j) != DEAD {
+				t.Errorf("%d, %d cell should be dead", i, j)
+			}
+		}
+	}
+}
+
 func TestEquals(t *testing.T) {
-	g1, g1ReadError := readGolFromTextFile("oscilator_5x5_gen_0.txt")
+	g1, g1ReadError := readGolFromTextFile("10x10.txt")
 	if g1ReadError != nil {
 		t.Error(g1ReadError)
 	}
-	g2, g2ReadError := readGolFromTextFile("oscilator_5x5_gen_0.txt")
+	g2, g2ReadError := readGolFromTextFile("10x10.txt")
 	if g2ReadError != nil {
 		t.Error(g2ReadError)
 	}
@@ -22,11 +34,11 @@ func TestEquals(t *testing.T) {
 }
 
 func TestNotEquals(t *testing.T) {
-	g1, g1ReadError := readGolFromTextFile("oscilator_5x5_gen_0.txt")
+	g1, g1ReadError := readGolFromTextFile("10x10.txt")
 	if g1ReadError != nil {
 		t.Error(g1ReadError)
 	}
-	g2, g2ReadError := readGolFromTextFile("oscilator_5x5_gen_1.txt")
+	g2, g2ReadError := readGolFromTextFile("5x10.txt")
 	if g2ReadError != nil {
 		t.Error(g2ReadError)
 	}
@@ -36,7 +48,7 @@ func TestNotEquals(t *testing.T) {
 }
 
 func TestClone(t *testing.T) {
-	originalGol, originalGolReadError := readGolFromTextFile("oscilator_5x5_gen_0.txt")
+	originalGol, originalGolReadError := readGolFromTextFile("10x10.txt")
 	if originalGolReadError != nil {
 		t.Error(originalGolReadError)
 	}
@@ -47,12 +59,37 @@ func TestClone(t *testing.T) {
 }
 
 func TestNextGeneration(t *testing.T) {
-	g0, g0ReadError := readGolFromTextFile("oscilator_5x5_gen_0.txt")
+	// Test still-life
+	testStillNextGeneration(t, "block.txt")
+	testStillNextGeneration(t, "bee-hive.txt")
+	testStillNextGeneration(t, "loaf.txt")
+	testStillNextGeneration(t, "boat.txt")
+	testStillNextGeneration(t, "tub.txt")
+	// Test oscilators
+	testOscilatorNextGeneration(t, "blinker/gen_0.txt", "blinker/gen_1.txt")
+	testOscilatorNextGeneration(t, "beacon/gen_0.txt", "beacon/gen_1.txt")
+}
+
+func testStillNextGeneration(t *testing.T, stillFilePath string) {
+	g0, g0ReadError := readGolFromTextFile("still/" + stillFilePath)
+	if g0ReadError != nil {
+		t.Error(g0ReadError)
+	}
+	g1 := g0.NextGeneration()
+	if !g1.GridEquals(g0) {
+		g0.Stdout()
+		g1.Stdout()
+		t.Errorf("Still-life does not change after a generation")
+	}
+}
+
+func testOscilatorNextGeneration(t *testing.T, gen0FilePath string, gen1FilePath string) {
+	g0, g0ReadError := readGolFromTextFile("oscilators/" + gen0FilePath)
 	if g0ReadError != nil {
 		t.Error(g0ReadError)
 	}
 
-	g1, g1ReadError := readGolFromTextFile("oscilator_5x5_gen_1.txt")
+	g1, g1ReadError := readGolFromTextFile("oscilators/" + gen1FilePath)
 	if g1ReadError != nil {
 		t.Error(g1ReadError)
 	}
@@ -67,26 +104,6 @@ func TestNextGeneration(t *testing.T) {
 
 	if !g1.NextGeneration().GridEquals(g0) {
 		t.Errorf("Odd oscilator game-of-life generation is wrong. They should be equal (even generation)")
-	}
-}
-
-func TestNextGeneration2(t *testing.T) {
-	g0, g0ReadError := readGolFromTextFile("oscilator_5x5_gen_0.txt")
-	if g0ReadError != nil {
-		t.Error(g0ReadError)
-	}
-	g1, g1ReadError := readGolFromTextFile("oscilator_5x5_gen_1.txt")
-	if g1ReadError != nil {
-		t.Error(g1ReadError)
-	}
-
-	if g0.Equals(g1) {
-		t.Errorf("Even oscilator game-of-life generations must not be equal on different parity generations")
-	}
-
-	g0 = g0.NextGeneration()
-	if !g0.Equals(g1) {
-		t.Errorf("Even oscilator game-of-life generations must be equal on same parity generations")
 	}
 }
 
