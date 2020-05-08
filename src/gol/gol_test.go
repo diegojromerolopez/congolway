@@ -68,6 +68,7 @@ func TestNextGeneration(t *testing.T) {
 	// Test oscilators
 	testOscilatorNextGeneration(t, "blinker/gen_0.txt", "blinker/gen_1.txt")
 	testOscilatorNextGeneration(t, "beacon/gen_0.txt", "beacon/gen_1.txt")
+	testOscilatorNextGeneration(t, "toad/gen_0.txt", "toad/gen_1.txt")
 }
 
 func testStillNextGeneration(t *testing.T, stillFilePath string) {
