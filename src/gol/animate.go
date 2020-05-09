@@ -8,7 +8,7 @@ import (
 )
 
 // MakeGifAnimation : make a gif animation for some generations
-func MakeGifAnimation(g *Gol, outputFilepath string, generations int) error {
+func MakeGifAnimation(g *Gol, outputFilepath string, generations int, delay int) error {
 	outputFile, outputFileError := os.Create(outputFilepath)
 	if outputFileError != nil {
 		return outputFileError
@@ -17,9 +17,8 @@ func MakeGifAnimation(g *Gol, outputFilepath string, generations int) error {
 	palette := []color.Color{color.White, color.Black}
 	rows := g.grid.rows
 	cols := g.grid.cols
-	delay := 10 // TODO: check what is this value
 	nframes := generations
-	gifAnimation := gif.GIF{LoopCount: nframes}
+	gifAnimation := gif.GIF{LoopCount: 0}
 	for i := 0; i < nframes; i++ {
 		grid := g.grid
 
