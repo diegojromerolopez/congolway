@@ -28,6 +28,7 @@ Usage of ./bin/golgif:
 ```
 
 ### Random grid generator
+Creates a txt file with an (uniformly) random grid.
 ```sh
 Usage of ./bin/randomgol:
   -columns int
