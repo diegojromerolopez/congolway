@@ -27,7 +27,7 @@ Usage of ./bin/golgif:
         File path where the output gif will be saved (default "out.gif")
 ```
 
-### Random grid generator
+### Random grid generator
 Creates a txt file with an (uniformly) random grid.
 ```sh
 Usage of ./bin/randomgol:
