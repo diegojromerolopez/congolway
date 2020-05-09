@@ -20,13 +20,13 @@ func ReadGolFromTextFile(filename string) (*Gol, error) {
 
 	reader := bufio.NewReader(file)
 
-	// Read CONGOAY header line
-	congayHeaderLine, congayHeaderLineError := readCongayFileLine(reader)
-	if congayHeaderLineError != nil {
-		return nil, congayHeaderLineError
+	// Read CONGOLWAY header line
+	congolwayHeaderLine, congolwayHeaderLineError := readCongayFileLine(reader)
+	if congolwayHeaderLineError != nil {
+		return nil, congolwayHeaderLineError
 	}
-	if "CONGOAY" != congayHeaderLine {
-		return nil, fmt.Errorf("CONGOAY expected, found %s", congayHeaderLine)
+	if "CONGOLWAY" != congolwayHeaderLine {
+		return nil, fmt.Errorf("CONGOLWAY expected, found %s", congolwayHeaderLine)
 	}
 
 	// Read version in header line

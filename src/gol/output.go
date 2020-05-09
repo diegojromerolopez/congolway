@@ -33,7 +33,7 @@ func (g *Gol) SaveToFile(filename string) error {
 	writer := bufio.NewWriter(file)
 	grid := g.grid
 
-	writer.WriteString("CONGOAY\n")
+	writer.WriteString("CONGOLWAY\n")
 	writer.WriteString("version: 1\n")
 	writer.WriteString(fmt.Sprintf("generation: %d\n", g.generation))
 	writer.WriteString(fmt.Sprintf("size: %dx%d\n", grid.rows, grid.cols))

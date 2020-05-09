@@ -1,4 +1,4 @@
-CONGOAY
+CONGOLWAY
 version: 1
 generation: 543
 size: 5x10

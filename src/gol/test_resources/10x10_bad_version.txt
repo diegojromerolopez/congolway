@@ -1,4 +1,4 @@
-CONGOAY
+CONGOLWAY
 version: 999999
 generation: 0
 size: 10x10
