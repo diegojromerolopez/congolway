@@ -1,10 +1,13 @@
-# congoay
+# congolway
 Conway's Game of Life gif generator in Go.
+
+I wanted to make some kind of portmanteau between Conway and Game of Life.
+Hence **congolway**. 
 
 ## Usage
 ```sh
 Usage of ./main:
-  -congoayFilePath string
+  -congolwayFilePath string
         Congay file
   -delay int
         Delay between frames, in 100ths of a second (default 5)
@@ -18,7 +21,7 @@ Usage of ./main:
 
 ### Some ASCII art
 ```sh
-./main -congoayFilePath="./samples/goya.txt" -outputFilePath="./samples/goya.gif"
+./main -congolwayFilePath="./samples/goya.txt" -outputFilePath="./samples/goya.gif"
 ```
 
 ![Goya ASCII art](samples/goya.gif)
