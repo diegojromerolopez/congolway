@@ -1,0 +1,11 @@
+CONGOLWAY
+version: 1
+generation: 1
+size: 6x6
+grid:
+      
+   X  
+ X  X 
+ X  X 
+  X   
+      
