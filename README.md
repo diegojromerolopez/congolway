@@ -2,7 +2,7 @@
 Conway's Game of Life gif generator in Go.
 
 I wanted to make some kind of portmanteau between Conway and Game of Life.
-Hence **congolway**. 
+Hence **congolway**.
 
 ## Usage
 ```sh
