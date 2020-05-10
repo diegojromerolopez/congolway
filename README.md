@@ -50,10 +50,13 @@ Usage of ./bin/randomgol:
 
 ![grid100x100 gif](samples/grid100x100.gif)
 
+See the file [samples/grid100x100.txt](samples/grid100x100.txt) and see for yourself the Congolway file format.
+
 ## TODO
 * ~~Different neighborhood types.~~
 * ~~Infinite grids by horizontal or vertical directions.~~
-* Read zipped files. 
+* Continous integration.
+* Read zipped files.
 * Encode APNG.
 * Allow extracting size from grid.
 * Parallelize.
