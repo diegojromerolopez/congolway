@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/diegojromerolopez/congolway/pkg/animator"
 	"github.com/diegojromerolopez/congolway/pkg/gol"
+	"github.com/diegojromerolopez/congolway/pkg/input"
 )
 
 func main() {
@@ -20,12 +22,13 @@ func main() {
 		fmt.Fprintf(os.Stderr, "argument required: -inputFilePath\n")
 		os.Exit(2)
 	}
-
-	g, gError := gol.ReadGolFromTextFile(*inputFilePath)
+	gr := input.NewGolReader(new(gol.Gol))
+	gi, gError := gr.ReadGolFromTextFile(*inputFilePath)
 	if gError != nil {
 		fmt.Println(gError.Error())
 		return
 	}
+	g := gi.(*gol.Gol)
 
-	gol.MakeGifAnimation(g, *outputFilePath, *generations, *delay)
+	animator.MakeGif(g, *outputFilePath, *generations, *delay)
 }

@@ -51,8 +51,9 @@ Usage of ./bin/randomgol:
 ![grid100x100 gif](samples/grid100x100.gif)
 
 ## TODO
-* Allow different neighborhood types.
-* Allow infinite grids by horizontal or vertical directions.
+* Different neighborhood types.
+* Infinite grids by horizontal or vertical directions.
+* Read zipped files. 
 * Encode APNG.
 * Allow extracting size from grid.
 * Parallelize.

@@ -15,21 +15,30 @@ type GolOutputer struct {
 	gol *gol.Gol
 }
 
-func (g *GolOutputer) get(i int, j int) int {
-	return g.gol.Get(i, j)
+// NewGolOutputer : returns a new pointer to GolOutputer
+func NewGolOutputer(g *gol.Gol) *GolOutputer {
+	return &GolOutputer{g}
 }
 
-func (g *GolOutputer) generation() int {
-	return g.gol.Generation()
+func (gout *GolOutputer) get(i int, j int) int {
+	return gout.gol.Get(i, j)
+}
+
+func (gout *GolOutputer) generation() int {
+	return gout.gol.Generation()
+}
+
+func (gout *GolOutputer) neighborhoodTypeString() string {
+	return gout.gol.NeighborhoodTypeString()
 }
 
 // Stdout : prints on stdout the current state of the grid
-func (g *GolOutputer) Stdout() {
-	rows := g.gol.Rows()
-	cols := g.gol.Cols()
+func (gout *GolOutputer) Stdout() {
+	rows := gout.gol.Rows()
+	cols := gout.gol.Cols()
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
-			if g.get(i, j) == statuses.ALIVE {
+			if gout.get(i, j) == statuses.ALIVE {
 				fmt.Print("X")
 			} else {
 				fmt.Print(" ")
@@ -40,7 +49,7 @@ func (g *GolOutputer) Stdout() {
 }
 
 // SaveToFile : prints on stdout the current state of the grid
-func (g *GolOutputer) SaveToFile(filename string) error {
+func (gout *GolOutputer) SaveToFile(filename string) error {
 	file, err := os.Create(filename)
 	defer file.Close()
 
@@ -50,18 +59,19 @@ func (g *GolOutputer) SaveToFile(filename string) error {
 
 	writer := bufio.NewWriter(file)
 
-	rows := g.gol.Rows()
-	cols := g.gol.Cols()
+	rows := gout.gol.Rows()
+	cols := gout.gol.Cols()
 
 	writer.WriteString("CONGOLWAY\n")
 	writer.WriteString("version: 1\n")
-	writer.WriteString(fmt.Sprintf("generation: %d\n", g.generation()))
+	writer.WriteString(fmt.Sprintf("generation: %d\n", gout.generation()))
+	writer.WriteString(fmt.Sprintf("neighborhood_type: %s\n", gout.neighborhoodTypeString()))
 	writer.WriteString(fmt.Sprintf("size: %dx%d\n", rows, cols))
 	writer.WriteString("grid:\n")
 
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
-			if g.get(i, j) == statuses.ALIVE {
+			if gout.get(i, j) == statuses.ALIVE {
 				writer.WriteString("X")
 			} else {
 				writer.WriteString(" ")

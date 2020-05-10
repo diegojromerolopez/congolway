@@ -114,9 +114,9 @@ func readGolFromTextFile(filename string) (base.GolInterface, error) {
 	if currentDirError != nil {
 		return nil, currentDirError
 	}
-	dataFilePath := path.Join(currentDir, "test_resources", filename)
+	dataFilePath := path.Join(currentDir, "..", "..", "testdata", filename)
 
-	gr := &input.GolReader{new(Gol)}
+	gr := input.NewGolReader(new(Gol))
 	g, golReadError := gr.ReadGolFromTextFile(dataFilePath)
 	if golReadError != nil {
 		return nil, fmt.Errorf("Couldn't load the file %s: %s", dataFilePath, golReadError)

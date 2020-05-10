@@ -27,10 +27,10 @@ func testSaveToTextFile(t *testing.T, rows int, cols int, randomSeed int64) {
 
 	g := gol.NewRandomGol(rows, cols, randomSeed)
 
-	golo := &GolOutputer{g}
+	golo := NewGolOutputer(g)
 	golo.SaveToFile(outputFilePath)
 
-	gr := &input.GolReader{new(gol.Gol)}
+	gr := input.NewGolReader(new(gol.Gol))
 	readG, readError := gr.ReadGolFromTextFile(outputFilePath)
 	if readError != nil {
 		fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError)

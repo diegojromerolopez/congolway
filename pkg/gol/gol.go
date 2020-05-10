@@ -1,6 +1,8 @@
 package gol
 
 import (
+	"fmt"
+
 	"github.com/diegojromerolopez/congolway/pkg/base"
 	"github.com/diegojromerolopez/congolway/pkg/grid"
 	"github.com/diegojromerolopez/congolway/pkg/neighborhood"
@@ -9,34 +11,50 @@ import (
 
 // Gol : game of life
 type Gol struct {
-	grid       *grid.Grid
-	generation int
+	grid             *grid.Grid
+	generation       int
+	neighborhoodType int
+	neighborhoodFunc neighborhood.Func
 }
 
 // NewGol : creates a game of life
 func NewGol(rows int, cols int, generation int) *Gol {
 	g := new(Gol)
-	g.grid = grid.NewGrid(rows, cols)
-	g.generation = generation
+	g.Init(rows, cols, generation, neighborhood.MOORE, grid.NewGrid(rows, cols))
 	return g
 }
 
 // NewRandomGol : creates a new random game of life
 func NewRandomGol(rows int, cols int, randomSeed int64) *Gol {
 	g := new(Gol)
-	g.grid = grid.NewRandomGrid(rows, cols, randomSeed)
-	g.generation = 0
+	g.Init(rows, cols, 0, neighborhood.MOORE, grid.NewRandomGrid(rows, cols, randomSeed))
 	return g
 }
 
-func (g *Gol) Init(rows int, cols int, generation int) {
-	g.grid = grid.NewGrid(rows, cols)
+// Init : initialize a Game of Life instance
+func (g *Gol) Init(rows int, cols int, generation int, neighborhoodType int, gr *grid.Grid) {
+	if gr == nil {
+		gr = grid.NewGrid(rows, cols)
+	}
+	g.grid = gr
 	g.generation = generation
+	g.neighborhoodType = neighborhoodType
+	g.neighborhoodFunc = neighborhood.GetFunc(g.neighborhoodType)
 }
 
 // Generation : return the number of generations passed
 func (g *Gol) Generation() int {
 	return g.generation
+}
+
+// NeighborhoodType : return the neighborhood type
+func (g *Gol) NeighborhoodType() int {
+	return g.neighborhoodType
+}
+
+// NeighborhoodTypeString : return the neighborhood type (as string)
+func (g *Gol) NeighborhoodTypeString() string {
+	return neighborhood.GetName(g.neighborhoodType)
 }
 
 // Rows : return the number of rows of the grid
@@ -64,12 +82,12 @@ func (g *Gol) Set(i int, j int, value int) {
 func (g *Gol) NextGeneration() base.GolInterface {
 	const ALIVE = statuses.ALIVE
 	const DEAD = statuses.DEAD
-	nextG := g.Clone().(*Gol)
 	rows := g.Rows()
 	cols := g.Cols()
+	nextG := g.Clone().(*Gol)
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
-			aliveNeighborsCount := neighborhood.NeighborsWithStatusCount(g, i, j, ALIVE)
+			aliveNeighborsCount := neighborhood.NeighborsCount(g, i, j, ALIVE, g.neighborhoodFunc)
 			// Text from Wikipedia: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 			// Any live cell with two or three live neighbors survives.
 			// Any dead cell with three live neighbors becomes a live cell.
@@ -88,7 +106,7 @@ func (g *Gol) NextGeneration() base.GolInterface {
 					nextG.Set(i, j, DEAD)
 				}
 			default:
-				panic("Invalid cell status")
+				panic(fmt.Sprintf("Invalid cell %d,%d status", i, j))
 			}
 		}
 	}
@@ -112,7 +130,6 @@ func (g *Gol) GridEquals(o base.GolInterface) bool {
 // Clone : clone a game of life instance
 func (g *Gol) Clone() base.GolInterface {
 	clone := new(Gol)
-	clone.generation = g.generation
-	clone.grid = g.grid.Clone()
+	clone.Init(g.Rows(), g.Cols(), g.generation, g.neighborhoodType, g.grid.Clone())
 	return clone
 }

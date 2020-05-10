@@ -2,7 +2,6 @@ package input
 
 import (
 	"fmt"
-	"os"
 	"path"
 	"path/filepath"
 
@@ -60,8 +59,6 @@ func TestNewGolFromTextFile10x10(t *testing.T) {
 }
 
 func TestNewGolFromTextFile10x10BadVersion(t *testing.T) {
-	fmt.Println(os.Args[0])
-
 	currentDir, currentDirError := filepath.Abs(".")
 	if currentDirError != nil {
 		t.Error(currentDirError)
@@ -69,7 +66,7 @@ func TestNewGolFromTextFile10x10BadVersion(t *testing.T) {
 	}
 	dataFilePath := path.Join(currentDir, "..", "..", "testdata", "10x10_bad_version.txt")
 
-	gr := &GolReader{new(gol.Gol)}
+	gr := NewGolReader(new(gol.Gol))
 	g, error := gr.ReadGolFromTextFile(dataFilePath)
 
 	expectedError := "Unknonwn version found 999999"
@@ -97,6 +94,10 @@ func testNewGolFromTextFile(t *testing.T, filename string,
 		t.Errorf("Loaded generation is wrong, got: %d, must be: %d.", g.Generation(), generation)
 	}
 
+	if g.NeighborhoodTypeString() != "Moore" {
+		t.Errorf("Loaded neighborhood is wrong, got: %s, must be: Moore.", g.NeighborhoodTypeString())
+	}
+
 	if g.Rows() != rows {
 		t.Errorf("Loaded number of rows is wrong, got: %d, must be: %d.", g.Rows(), rows)
 		return
@@ -118,13 +119,12 @@ func testNewGolFromTextFile(t *testing.T, filename string,
 }
 
 func readGolFromTextFile(filename string) (base.GolInterface, error) {
-	currentDir, currentDirError := filepath.Abs(".")
-	if currentDirError != nil {
-		return nil, currentDirError
+	dataFilePath, dataFilePathError := base.GetTestdataFilePath(filename)
+	if dataFilePathError != nil {
+		return nil, dataFilePathError
 	}
-	dataFilePath := path.Join(currentDir, "..", "..", "testdata", filename)
 
-	gr := &GolReader{new(gol.Gol)}
+	gr := NewGolReader(new(gol.Gol))
 	gol, golReadError := gr.ReadGolFromTextFile(dataFilePath)
 	if golReadError != nil {
 		return nil, fmt.Errorf("Couldn't load the file %s: %s", dataFilePath, golReadError)

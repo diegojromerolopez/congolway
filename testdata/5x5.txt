@@ -1,6 +1,7 @@
 CONGOLWAY
 version: 1
 generation: 543
+neighborhood_type: Moore
 size: 5x5
 grid:
      

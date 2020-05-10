@@ -9,12 +9,18 @@ import (
 	"strings"
 
 	"github.com/diegojromerolopez/congolway/pkg/base"
+	"github.com/diegojromerolopez/congolway/pkg/neighborhood"
 	"github.com/diegojromerolopez/congolway/pkg/statuses"
 )
 
 // GolReader : tasked with reading a Game of Life from files
 type GolReader struct {
-	ReadGol base.GolInterface
+	readGol base.GolInterface
+}
+
+// NewGolReader : returns a new pointer to GolReader
+func NewGolReader(g base.GolInterface) *GolReader {
+	return &GolReader{g}
 }
 
 // ReadGolFromTextFile : create a new Game of life from a text file
@@ -101,6 +107,20 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 		return nil, fmt.Errorf("generation: D where D is a positive integer, found %s", generationString)
 	}
 
+	// Read neighborhood type:
+	neighborhoodType := neighborhood.NONE
+	neighLine, neighLineError := gr.readCongolwayFileLine(reader)
+	if neighLineError != nil {
+		return nil, neighLineError
+	}
+	if neighLine == "neighborhood_type: Moore" {
+		neighborhoodType = neighborhood.MOORE
+	} else if neighLine == "neighborhood type: Von Neumann" {
+		neighborhoodType = neighborhood.VONNEUMANN
+	} else {
+		return nil, fmt.Errorf("\"neighborhood_type: Moore\" or \"neighborhood_type: Von Neumman\", found %s", neighLine)
+	}
+
 	// Read size in header line
 	sizeLine, sizeLineError := gr.readCongolwayFileLine(reader)
 	if sizeLineError != nil {
@@ -136,25 +156,8 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 		return nil, fmt.Errorf("grid: expected, found %s", gridLine)
 	}
 
-	gr.ReadGol.Init(rows, cols, generation)
-	g := gr.ReadGol
-	/*
-		g := gol.NewGol(rows, cols, generation)
-
-		for rowI := 0; rowI < rows; rowI++ {
-			rowString, err := readCongolwayFileLine(reader)
-			if err != nil {
-				return nil, err
-			}
-			for colI := 0; colI < cols; colI++ {
-				colIStatus := statuses.ALIVE
-				if rowString[colI:colI+1] == " " {
-					colIStatus = statuses.DEAD
-				}
-				g.Set(rowI, colI, colIStatus)
-			}
-		}*/
-
+	gr.readGol.Init(rows, cols, generation, neighborhoodType, nil)
+	g := gr.readGol
 	for rowI := 0; rowI < rows; rowI++ {
 		rowString, err := gr.readCongolwayFileLine(reader)
 		if err != nil {
