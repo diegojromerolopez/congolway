@@ -1,6 +1,7 @@
 package input
 
 import (
+	"archive/zip"
 	"bufio"
 	"fmt"
 	"os"
@@ -24,14 +25,22 @@ func NewGolReader(g base.GolInterface) *GolReader {
 }
 
 // ReadGolFromTextFile : create a new Game of life from a text file
-func (gr *GolReader) ReadGolFromTextFile(filename string) (base.GolInterface, error) {
-	file, err := os.Open(filename)
+func (gr *GolReader) ReadGolFromTextFile(filepath string) (base.GolInterface, error) {
+	// TODO: check also if binary is indeed a zip file
+	if strings.HasSuffix(filepath, ".zip") {
+		var zipError error
+		filepath, zipError = unzippedGolFilePath(filepath)
+		if zipError != nil {
+			return nil, zipError
+		}
+	}
+
+	file, err := os.Open(filepath)
 	defer file.Close()
 
 	if err != nil {
 		return nil, err
 	}
-
 	reader := bufio.NewReader(file)
 
 	// Read CONGOLWAY header line
@@ -197,4 +206,16 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 		}
 	}
 	return g, nil
+}
+
+func unzippedGolFilePath(filepath string) (string, error) {
+	zippedGolFile, zippedGolFileError := zip.OpenReader(filepath)
+	if zippedGolFileError != nil {
+		return "", zippedGolFileError
+	}
+	defer zippedGolFile.Close()
+	zipFile := zippedGolFile.File[0]
+	golFile, _ := zipFile.Open()
+	fmt.Print(golFile.Name())
+	return golFile.Name(), nil
 }

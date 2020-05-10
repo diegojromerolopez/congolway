@@ -58,6 +58,22 @@ func TestNewGolFromTextFile10x10(t *testing.T) {
 	testNewGolFromTextFile(t, "10x10.txt", 10, 10, true, true, 0, expectedCells)
 }
 
+func TestNewGolFromZipFile10x10(t *testing.T) {
+	var expectedCells [][]int = [][]int{
+		{A, A, D, A, A, D, A, A, A, D},
+		{A, A, D, A, A, A, D, A, A, A},
+		{A, A, D, A, A, A, A, A, D, A},
+		{A, A, A, D, A, A, A, A, A, A},
+		{A, A, D, A, A, D, A, A, A, A},
+		{A, A, A, D, A, A, A, D, A, A},
+		{A, D, A, D, A, A, D, A, A, A},
+		{A, A, D, A, A, A, D, A, D, A},
+		{A, A, D, A, A, A, D, A, A, A},
+		{D, A, D, A, A, A, D, A, A, D},
+	}
+	testNewGolFromTextFile(t, "10x10.txt.zip", 10, 10, true, true, 0, expectedCells)
+}
+
 func TestNewGolFromTextFile10x10WithLimitedRows(t *testing.T) {
 	var expectedCells [][]int = [][]int{
 		{A, A, D, A, A, D, A, A, A, D},
