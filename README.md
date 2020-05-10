@@ -51,7 +51,7 @@ Usage of ./bin/randomgol:
 ![grid100x100 gif](samples/grid100x100.gif)
 
 ## TODO
-* Different neighborhood types.
+* ~~Different neighborhood types.~~
 * Infinite grids by horizontal or vertical directions.
 * Read zipped files. 
 * Encode APNG.
