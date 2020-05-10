@@ -1,9 +1,13 @@
-package gol
+package output
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/diegojromerolopez/congolway/pkg/gol"
+	"github.com/diegojromerolopez/congolway/pkg/input"
 )
 
 func TestSaveToTextFile(t *testing.T) {
@@ -21,13 +25,15 @@ func testSaveToTextFile(t *testing.T, rows int, cols int, randomSeed int64) {
 	outputFilePath := file.Name()
 	defer os.Remove(outputFilePath)
 
-	g := NewRandomGol(rows, cols, randomSeed)
-	g.SaveToFile(outputFilePath)
+	g := gol.NewRandomGol(rows, cols, randomSeed)
 
-	readG, readError := ReadGolFromTextFile(outputFilePath)
+	golo := &GolOutputer{g}
+	golo.SaveToFile(outputFilePath)
+
+	gr := &input.GolReader{new(gol.Gol)}
+	readG, readError := gr.ReadGolFromTextFile(outputFilePath)
 	if readError != nil {
-		t.Error(readError)
-		return
+		fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError)
 	}
 
 	if !readG.Equals(g) {

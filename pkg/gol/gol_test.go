@@ -5,14 +5,17 @@ import (
 	"path"
 	"path/filepath"
 	"testing"
+
+	"github.com/diegojromerolopez/congolway/pkg/base"
+	"github.com/diegojromerolopez/congolway/pkg/input"
+	"github.com/diegojromerolopez/congolway/pkg/statuses"
 )
 
 func TestNewGol(t *testing.T) {
-	g := NewGol(5, 5)
-	grid := g.grid
-	for i := 0; i < grid.rows; i++ {
-		for j := 0; j < grid.cols; j++ {
-			if grid.get(i, j) != DEAD {
+	g := NewGol(5, 5, 0)
+	for i := 0; i < g.Rows(); i++ {
+		for j := 0; j < g.Cols(); j++ {
+			if g.Get(i, j) != statuses.DEAD {
 				t.Errorf("%d, %d cell should be dead", i, j)
 			}
 		}
@@ -78,8 +81,6 @@ func testStillNextGeneration(t *testing.T, stillFilePath string) {
 	}
 	g1 := g0.NextGeneration()
 	if !g1.GridEquals(g0) {
-		g0.Stdout()
-		g1.Stdout()
 		t.Errorf("Still-life does not change after a generation")
 	}
 }
@@ -108,16 +109,17 @@ func testOscilatorNextGeneration(t *testing.T, gen0FilePath string, gen1FilePath
 	}
 }
 
-func readGolFromTextFile(filename string) (*Gol, error) {
+func readGolFromTextFile(filename string) (base.GolInterface, error) {
 	currentDir, currentDirError := filepath.Abs(".")
 	if currentDirError != nil {
 		return nil, currentDirError
 	}
 	dataFilePath := path.Join(currentDir, "test_resources", filename)
 
-	gol, golReadError := ReadGolFromTextFile(dataFilePath)
+	gr := &input.GolReader{new(Gol)}
+	g, golReadError := gr.ReadGolFromTextFile(dataFilePath)
 	if golReadError != nil {
 		return nil, fmt.Errorf("Couldn't load the file %s: %s", dataFilePath, golReadError)
 	}
-	return gol, nil
+	return g, nil
 }

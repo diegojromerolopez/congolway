@@ -1,4 +1,4 @@
-package gol
+package input
 
 import (
 	"fmt"
@@ -7,7 +7,14 @@ import (
 	"path/filepath"
 
 	"testing"
+
+	"github.com/diegojromerolopez/congolway/pkg/base"
+	"github.com/diegojromerolopez/congolway/pkg/gol"
+	"github.com/diegojromerolopez/congolway/pkg/statuses"
 )
+
+const A = statuses.ALIVE
+const D = statuses.DEAD
 
 func TestNewGolFromTextFile5x10(t *testing.T) {
 	var expectedCells [][]int = [][]int{
@@ -60,9 +67,10 @@ func TestNewGolFromTextFile10x10BadVersion(t *testing.T) {
 		t.Error(currentDirError)
 		return
 	}
-	dataFilePath := path.Join(currentDir, "test_resources", "10x10_bad_version.txt")
+	dataFilePath := path.Join(currentDir, "..", "..", "testdata", "10x10_bad_version.txt")
 
-	g, error := ReadGolFromTextFile(dataFilePath)
+	gr := &GolReader{new(gol.Gol)}
+	g, error := gr.ReadGolFromTextFile(dataFilePath)
 
 	expectedError := "Unknonwn version found 999999"
 
@@ -85,24 +93,41 @@ func testNewGolFromTextFile(t *testing.T, filename string,
 		t.Error(error)
 	}
 
-	if g.generation != generation {
-		t.Errorf("Loaded generation is wrong, got: %d, must be: %d.", g.generation, generation)
+	if g.Generation() != generation {
+		t.Errorf("Loaded generation is wrong, got: %d, must be: %d.", g.Generation(), generation)
 	}
 
-	grid := g.grid
-	if grid.rows != rows {
-		t.Errorf("Loaded number of rows is wrong, got: %d, must be: %d.", grid.rows, rows)
+	if g.Rows() != rows {
+		t.Errorf("Loaded number of rows is wrong, got: %d, must be: %d.", g.Rows(), rows)
+		return
 	}
-	if grid.cols != cols {
-		t.Errorf("Loaded number of cols is wrong, got: %d, must be: %d.", grid.cols, cols)
+	if g.Cols() != cols {
+		t.Errorf("Loaded number of cols is wrong, got: %d, must be: %d.", g.Cols(), cols)
+		return
 	}
 
-	for i := 0; i < g.grid.rows; i++ {
-		for j := 0; j < g.grid.cols; j++ {
-			if grid.get(i, j) != expectedCells[i][j] {
-				t.Errorf("Invalid cell at %d, %d, got: %d, must be: %d.",
-					i, j, grid.get(i, j), expectedCells[i][j])
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			gIJ := g.Get(i, j)
+			expectedIJ := expectedCells[i][j]
+			if gIJ != expectedIJ {
+				t.Errorf("Invalid cell at %d, %d, got: %d, must be: %d.", i, j, gIJ, expectedIJ)
 			}
 		}
 	}
+}
+
+func readGolFromTextFile(filename string) (base.GolInterface, error) {
+	currentDir, currentDirError := filepath.Abs(".")
+	if currentDirError != nil {
+		return nil, currentDirError
+	}
+	dataFilePath := path.Join(currentDir, "..", "..", "testdata", filename)
+
+	gr := &GolReader{new(gol.Gol)}
+	gol, golReadError := gr.ReadGolFromTextFile(dataFilePath)
+	if golReadError != nil {
+		return nil, fmt.Errorf("Couldn't load the file %s: %s", dataFilePath, golReadError)
+	}
+	return gol, nil
 }

@@ -1,4 +1,4 @@
-package gol
+package input
 
 import (
 	"bufio"
@@ -7,10 +7,18 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/diegojromerolopez/congolway/pkg/base"
+	"github.com/diegojromerolopez/congolway/pkg/statuses"
 )
 
+// GolReader : tasked with reading a Game of Life from files
+type GolReader struct {
+	ReadGol base.GolInterface
+}
+
 // ReadGolFromTextFile : create a new Game of life from a text file
-func ReadGolFromTextFile(filename string) (*Gol, error) {
+func (gr *GolReader) ReadGolFromTextFile(filename string) (base.GolInterface, error) {
 	file, err := os.Open(filename)
 	defer file.Close()
 
@@ -21,7 +29,7 @@ func ReadGolFromTextFile(filename string) (*Gol, error) {
 	reader := bufio.NewReader(file)
 
 	// Read CONGOLWAY header line
-	congolwayHeaderLine, congolwayHeaderLineError := readCongayFileLine(reader)
+	congolwayHeaderLine, congolwayHeaderLineError := gr.readCongolwayFileLine(reader)
 	if congolwayHeaderLineError != nil {
 		return nil, congolwayHeaderLineError
 	}
@@ -30,7 +38,7 @@ func ReadGolFromTextFile(filename string) (*Gol, error) {
 	}
 
 	// Read version in header line
-	versionLine, versionLineError := readCongayFileLine(reader)
+	versionLine, versionLineError := gr.readCongolwayFileLine(reader)
 	if versionLineError != nil {
 		return nil, versionLineError
 	}
@@ -52,13 +60,13 @@ func ReadGolFromTextFile(filename string) (*Gol, error) {
 	}
 
 	if version == 1 {
-		return readTextFileV1(reader)
+		return gr.readTextFileV1(reader)
 	}
 
 	return nil, fmt.Errorf("Unknonwn version found %d", version)
 }
 
-func readCongayFileLine(reader *bufio.Reader) (string, error) {
+func (gr *GolReader) readCongolwayFileLine(reader *bufio.Reader) (string, error) {
 	line, err := reader.ReadString('\n')
 	if err != nil {
 		return "", err
@@ -67,9 +75,9 @@ func readCongayFileLine(reader *bufio.Reader) (string, error) {
 	return trimmedLine, nil
 }
 
-func readTextFileV1(reader *bufio.Reader) (*Gol, error) {
+func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, error) {
 	// Read generation in header line
-	generationLine, generationLineError := readCongayFileLine(reader)
+	generationLine, generationLineError := gr.readCongolwayFileLine(reader)
 	if generationLineError != nil {
 		return nil, generationLineError
 	}
@@ -94,7 +102,7 @@ func readTextFileV1(reader *bufio.Reader) (*Gol, error) {
 	}
 
 	// Read size in header line
-	sizeLine, sizeLineError := readCongayFileLine(reader)
+	sizeLine, sizeLineError := gr.readCongolwayFileLine(reader)
 	if sizeLineError != nil {
 		return nil, sizeLineError
 	}
@@ -120,7 +128,7 @@ func readTextFileV1(reader *bufio.Reader) (*Gol, error) {
 	}
 
 	// Read grid: header line
-	gridLine, gridLineError := readCongayFileLine(reader)
+	gridLine, gridLineError := gr.readCongolwayFileLine(reader)
 	if gridLineError != nil {
 		return nil, gridLineError
 	}
@@ -128,23 +136,37 @@ func readTextFileV1(reader *bufio.Reader) (*Gol, error) {
 		return nil, fmt.Errorf("grid: expected, found %s", gridLine)
 	}
 
-	grid := NewGrid(rows, cols)
+	gr.ReadGol.Init(rows, cols, generation)
+	g := gr.ReadGol
+	/*
+		g := gol.NewGol(rows, cols, generation)
+
+		for rowI := 0; rowI < rows; rowI++ {
+			rowString, err := readCongolwayFileLine(reader)
+			if err != nil {
+				return nil, err
+			}
+			for colI := 0; colI < cols; colI++ {
+				colIStatus := statuses.ALIVE
+				if rowString[colI:colI+1] == " " {
+					colIStatus = statuses.DEAD
+				}
+				g.Set(rowI, colI, colIStatus)
+			}
+		}*/
+
 	for rowI := 0; rowI < rows; rowI++ {
-		rowString, err := readCongayFileLine(reader)
+		rowString, err := gr.readCongolwayFileLine(reader)
 		if err != nil {
 			return nil, err
 		}
 		for colI := 0; colI < cols; colI++ {
-			colIStatus := ALIVE
+			colIStatus := statuses.ALIVE
 			if rowString[colI:colI+1] == " " {
-				colIStatus = DEAD
+				colIStatus = statuses.DEAD
 			}
-			grid.set(rowI, colI, colIStatus)
+			g.Set(rowI, colI, colIStatus)
 		}
 	}
-	g := new(Gol)
-	g.grid = grid
-	g.generation = generation
-
 	return g, nil
 }
