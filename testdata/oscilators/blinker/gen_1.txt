@@ -1,0 +1,11 @@
+CONGOLWAY
+version: 1
+generation: 1
+neighborhood_type: Moore
+size: 5x5
+grid:
+     
+     
+ XXX 
+     
+     

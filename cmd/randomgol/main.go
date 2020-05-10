@@ -4,6 +4,7 @@ import (
 	"flag"
 
 	"github.com/diegojromerolopez/congolway/pkg/gol"
+	"github.com/diegojromerolopez/congolway/pkg/output"
 )
 
 func main() {
@@ -15,5 +16,6 @@ func main() {
 	flag.Parse()
 
 	g := gol.NewRandomGol(*rows, *cols, *randomSeed)
-	g.SaveToFile(*outputFilePath)
+	writer := output.NewGolOutputer(g)
+	writer.SaveToFile(*outputFilePath)
 }

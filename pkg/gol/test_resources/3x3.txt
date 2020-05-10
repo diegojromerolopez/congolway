@@ -1,8 +1,0 @@
-CONGOLWAY
-version: 1
-generation: 543
-size: 3x3
-grid:
-XX 
- XX
-   

@@ -1,6 +1,7 @@
 CONGOLWAY
 version: 1
 generation: 0
+neighborhood_type: Moore
 size: 100x100
 grid:
      X XXXX X XX   X XXX   XX  X   X   X XX   XX      X XX   X XXX X X XXX X  XX         XXXX X X  X
