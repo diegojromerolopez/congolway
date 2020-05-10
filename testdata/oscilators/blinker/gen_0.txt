@@ -3,6 +3,7 @@ version: 1
 generation: 0
 neighborhood_type: Moore
 size: 5x5
+limits: rows, cols
 grid:
      
   X  

@@ -52,7 +52,7 @@ Usage of ./bin/randomgol:
 
 ## TODO
 * ~~Different neighborhood types.~~
-* Infinite grids by horizontal or vertical directions.
+* ~~Infinite grids by horizontal or vertical directions.~~
 * Read zipped files. 
 * Encode APNG.
 * Allow extracting size from grid.

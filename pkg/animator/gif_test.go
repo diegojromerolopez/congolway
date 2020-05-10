@@ -12,13 +12,18 @@ import (
 )
 
 func TestMakeGif(t *testing.T) {
-	g, error := readGolFromTextFile("10x10.txt")
+	testMakeGif(t, "10x10.txt", "10x10.gif")
+	testMakeGif(t, "10x10_unlimited_dims.txt", "10x10_unlimited_dims.gif")
+}
+
+func testMakeGif(t *testing.T, filename string, expectedGifFilename string) {
+	g, error := readGolFromTextFile(filename)
 	if error != nil {
 		t.Error(error)
 		return
 	}
 
-	expectedGifFilePath, _ := base.GetTestdataFilePath("10x10.gif")
+	expectedGifFilePath, _ := base.GetTestdataFilePath(expectedGifFilename)
 	expectedGifContents, _ := ioutil.ReadFile(expectedGifFilePath)
 
 	gifOutputFile, err := ioutil.TempFile("", "temp_gol.txt")
@@ -28,6 +33,7 @@ func TestMakeGif(t *testing.T) {
 	}
 	defer gifOutputFile.Close()
 	gifOutputPath := gifOutputFile.Name()
+
 	generations := 10
 	delay := 5
 	MakeGif(g.(*gol.Gol), gifOutputPath, generations, delay)

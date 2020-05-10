@@ -20,22 +20,29 @@ type Gol struct {
 // NewGol : creates a game of life
 func NewGol(rows int, cols int, generation int) *Gol {
 	g := new(Gol)
-	g.Init(rows, cols, generation, neighborhood.MOORE, grid.NewGrid(rows, cols))
+	gr := grid.NewGrid(rows, cols, "limited", "limited")
+	g.InitWithGrid(generation, neighborhood.MOORE, gr)
 	return g
 }
 
 // NewRandomGol : creates a new random game of life
 func NewRandomGol(rows int, cols int, randomSeed int64) *Gol {
 	g := new(Gol)
-	g.Init(rows, cols, 0, neighborhood.MOORE, grid.NewRandomGrid(rows, cols, randomSeed))
+	gr := grid.NewRandomGrid(rows, cols, "limited", "limited", randomSeed)
+	g.InitWithGrid(0, neighborhood.MOORE, gr)
 	return g
 }
 
 // Init : initialize a Game of Life instance
-func (g *Gol) Init(rows int, cols int, generation int, neighborhoodType int, gr *grid.Grid) {
-	if gr == nil {
-		gr = grid.NewGrid(rows, cols)
-	}
+func (g *Gol) Init(rows int, cols int, rowsLimitation string, colsLimitation string, generation int, neighborhoodType int) {
+	g.grid = grid.NewGrid(rows, cols, rowsLimitation, colsLimitation)
+	g.generation = generation
+	g.neighborhoodType = neighborhoodType
+	g.neighborhoodFunc = neighborhood.GetFunc(g.neighborhoodType)
+}
+
+// InitWithGrid : initialize a Game of Life instance
+func (g *Gol) InitWithGrid(generation int, neighborhoodType int, gr *grid.Grid) {
 	g.grid = gr
 	g.generation = generation
 	g.neighborhoodType = neighborhoodType
@@ -65,6 +72,16 @@ func (g *Gol) Rows() int {
 // Cols : return the number of columns of the grid
 func (g *Gol) Cols() int {
 	return g.grid.Cols()
+}
+
+// LimitRows : inform if rows are limited or isn't
+func (g *Gol) LimitRows() bool {
+	return g.grid.LimitRows()
+}
+
+// LimitCols : return the number of columns of the grid
+func (g *Gol) LimitCols() bool {
+	return g.grid.LimitCols()
 }
 
 // Get : get the value of the cell (ALICE, DEAD)
@@ -130,6 +147,6 @@ func (g *Gol) GridEquals(o base.GolInterface) bool {
 // Clone : clone a game of life instance
 func (g *Gol) Clone() base.GolInterface {
 	clone := new(Gol)
-	clone.Init(g.Rows(), g.Cols(), g.generation, g.neighborhoodType, g.grid.Clone())
+	clone.InitWithGrid(g.generation, g.neighborhoodType, g.grid.Clone())
 	return clone
 }

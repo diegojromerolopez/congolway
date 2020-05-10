@@ -32,6 +32,20 @@ func (gout *GolOutputer) neighborhoodTypeString() string {
 	return gout.gol.NeighborhoodTypeString()
 }
 
+func (gout *GolOutputer) limitsString() string {
+	limitsStr := ""
+	if gout.gol.LimitRows() && gout.gol.LimitCols() {
+		limitsStr += "rows, cols"
+	} else if gout.gol.LimitRows() {
+		limitsStr += "rows"
+	} else if gout.gol.LimitCols() {
+		limitsStr += "cols"
+	} else {
+		panic("Impossible condition")
+	}
+	return limitsStr
+}
+
 // Stdout : prints on stdout the current state of the grid
 func (gout *GolOutputer) Stdout() {
 	rows := gout.gol.Rows()
@@ -67,6 +81,7 @@ func (gout *GolOutputer) SaveToFile(filename string) error {
 	writer.WriteString(fmt.Sprintf("generation: %d\n", gout.generation()))
 	writer.WriteString(fmt.Sprintf("neighborhood_type: %s\n", gout.neighborhoodTypeString()))
 	writer.WriteString(fmt.Sprintf("size: %dx%d\n", rows, cols))
+	writer.WriteString(fmt.Sprintf("limits: %s\n", gout.limitsString()))
 	writer.WriteString("grid:\n")
 
 	for i := 0; i < rows; i++ {

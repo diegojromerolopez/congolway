@@ -147,6 +147,31 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 		return nil, colsError
 	}
 
+	// Read limits in header line
+	limitsLine, limitsError := gr.readCongolwayFileLine(reader)
+	if limitsError != nil {
+		return nil, limitsError
+	}
+	limitsLineMatch, limitsLineMatchError := regexp.MatchString(`limits:\s*(rows)?,?\s*(cols)?`, limitsLine)
+	if limitsLineMatchError != nil {
+		return nil, limitsLineMatchError
+	}
+	if !limitsLineMatch {
+		return nil, fmt.Errorf("limits:rows,cols if your grid must respect limits, limits: no if it doesn't, found %s", limitsLine)
+	}
+	rowsLimitationRegex := regexp.MustCompile(`rows`)
+	rowLimitationMatches := rowsLimitationRegex.FindAllString(limitsLine, -1)
+	rowsLimitation := "no"
+	if len(rowLimitationMatches) > 0 {
+		rowsLimitation = "limited"
+	}
+	colsLimitationRegex := regexp.MustCompile(`cols`)
+	colsLimitationMatches := colsLimitationRegex.FindAllString(limitsLine, -1)
+	colsLimitation := "no"
+	if len(colsLimitationMatches) > 0 {
+		colsLimitation = "limited"
+	}
+
 	// Read grid: header line
 	gridLine, gridLineError := gr.readCongolwayFileLine(reader)
 	if gridLineError != nil {
@@ -156,7 +181,7 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 		return nil, fmt.Errorf("grid: expected, found %s", gridLine)
 	}
 
-	gr.readGol.Init(rows, cols, generation, neighborhoodType, nil)
+	gr.readGol.Init(rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
 	g := gr.readGol
 	for rowI := 0; rowI < rows; rowI++ {
 		rowString, err := gr.readCongolwayFileLine(reader)
