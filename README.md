@@ -25,6 +25,9 @@ Usage of ./bin/golgif:
         Number of generations of the cellular automaton (default 100)
   -outputFilePath string
         File path where the output gif will be saved (default "out.gif")
+  -procs int
+        Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs),
+        enter a positive integer to set a custom number of proceses (default -1)
 ```
 
 ### Random grid generator
