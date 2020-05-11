@@ -59,7 +59,7 @@ See the file [samples/grid100x100.txt](samples/grid100x100.txt) and see for your
 * Read zipped files.
 * Encode APNG.
 * Allow extracting size from grid.
-* Parallelize.
+* ~~Parallelize.~~
 * Read standard formats of game-of-lifes.
 * Serve in a http server.
 

@@ -1,12 +1,9 @@
 package gol
 
 import (
-	"fmt"
-
 	"github.com/diegojromerolopez/congolway/pkg/base"
 	"github.com/diegojromerolopez/congolway/pkg/grid"
 	"github.com/diegojromerolopez/congolway/pkg/neighborhood"
-	"github.com/diegojromerolopez/congolway/pkg/statuses"
 )
 
 // Gol : game of life
@@ -15,6 +12,7 @@ type Gol struct {
 	generation       int
 	neighborhoodType int
 	neighborhoodFunc neighborhood.Func
+	processes        int
 }
 
 // NewGol : creates a game of life
@@ -93,42 +91,6 @@ func (g *Gol) Get(i int, j int) int {
 // Set : set the value of the cell in the i, j coordinates
 func (g *Gol) Set(i int, j int, value int) {
 	g.grid.Set(i, j, value)
-}
-
-// NextGeneration : compute the next generation
-func (g *Gol) NextGeneration() base.GolInterface {
-	const ALIVE = statuses.ALIVE
-	const DEAD = statuses.DEAD
-	rows := g.Rows()
-	cols := g.Cols()
-	nextG := g.Clone().(*Gol)
-	for i := 0; i < rows; i++ {
-		for j := 0; j < cols; j++ {
-			aliveNeighborsCount := neighborhood.NeighborsCount(g, i, j, ALIVE, g.neighborhoodFunc)
-			// Text from Wikipedia: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
-			// Any live cell with two or three live neighbors survives.
-			// Any dead cell with three live neighbors becomes a live cell.
-			// All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-			switch g.Get(i, j) {
-			case ALIVE:
-				if aliveNeighborsCount == 2 || aliveNeighborsCount == 3 {
-					nextG.Set(i, j, ALIVE)
-				} else {
-					nextG.Set(i, j, DEAD)
-				}
-			case DEAD:
-				if aliveNeighborsCount == 3 {
-					nextG.Set(i, j, ALIVE)
-				} else {
-					nextG.Set(i, j, DEAD)
-				}
-			default:
-				panic(fmt.Sprintf("Invalid cell %d,%d status", i, j))
-			}
-		}
-	}
-	nextG.generation++
-	return nextG
 }
 
 // Equals : inform if two game of life instances have the same data

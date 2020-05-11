@@ -16,5 +16,7 @@ type GolInterface interface {
 	GridEquals(g GolInterface) bool
 	Equals(g GolInterface) bool
 	NeighborhoodTypeString() string
+	GetProcesses() int
+	SetProcesses(processes int)
 	NextGeneration() GolInterface
 }

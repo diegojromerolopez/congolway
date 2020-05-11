@@ -72,6 +72,30 @@ func TestNextGeneration(t *testing.T) {
 	testOscilatorNextGeneration(t, "blinker/gen_0.txt", "blinker/gen_1.txt")
 	testOscilatorNextGeneration(t, "beacon/gen_0.txt", "beacon/gen_1.txt")
 	testOscilatorNextGeneration(t, "toad/gen_0.txt", "toad/gen_1.txt")
+	// Test big grids
+	testStandardGridNextGeneration(t, "grid1024x1024.txt", "grid1024x1024_gen1.txt", SERIAL)
+	testStandardGridNextGeneration(t, "grid1024x1024.txt", "grid1024x1024_gen1.txt", CPUS)
+}
+
+func testStandardGridNextGeneration(t *testing.T, gen0FilePath string, gen1FilePath string, goProcesses int) {
+	g0, g0ReadError := readGolFromTextFile(gen0FilePath)
+	if g0ReadError != nil {
+		t.Error(g0ReadError)
+	}
+	g1, g1ReadError := readGolFromTextFile(gen1FilePath)
+	if g1ReadError != nil {
+		t.Error(g1ReadError)
+	}
+
+	g0.SetProcesses(goProcesses)
+	actualG1 := g0.NextGeneration().(*Gol)
+
+	if g0.Equals(actualG1) {
+		t.Errorf("Standard-life should change after a generation")
+	}
+	if !g1.Equals(actualG1) {
+		t.Errorf("Standard-life should be equal than the expected gol")
+	}
 }
 
 func testStillNextGeneration(t *testing.T, stillFilePath string) {

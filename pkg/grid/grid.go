@@ -140,3 +140,10 @@ func (g *Grid) Clone() *Grid {
 	gridClone.init(g.rows, g.cols, g.limitRows, g.limitRows, g.cells)
 	return gridClone
 }
+
+// CloneEmpty : create a new grid with the same size but empty
+func (g *Grid) CloneEmpty() *Grid {
+	gridEmptyClone := new(Grid)
+	gridEmptyClone.init(g.rows, g.cols, g.limitRows, g.limitRows, nil)
+	return gridEmptyClone
+}
