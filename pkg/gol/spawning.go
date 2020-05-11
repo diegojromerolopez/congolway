@@ -12,12 +12,12 @@ import (
 
 // SERIAL : if assigned to Gol.Processes, a serial algorithm (i.e. no concurrency)
 // will be used when computing the next generation.
-const SERIAL = -1
+const SERIAL = 1
 
 // CPUS : if assigned to Gol.Processes a number of GO processes equal
 // to the number of CPUs of the computer will be used when computing
 // the next generation.
-const CPUS = -2
+const CPUS = -1
 
 // GetProcesses : return the number of GO processes used in
 // the computing of the next generation.
