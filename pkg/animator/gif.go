@@ -15,13 +15,13 @@ func MakeGif(g *gol.Gol, outputFilepath string, generations int, delay int) erro
 	if outputFileError != nil {
 		return outputFileError
 	}
-
+	// TODO: fix palette to be a map and don't depend on ALIVE = 1, DEAD = 0
 	palette := []color.Color{color.White, color.Black}
 	rows := g.Rows()
 	cols := g.Cols()
-	nframes := generations
+	numberOfFrames := generations
 	gifAnimation := gif.GIF{LoopCount: 0}
-	for i := 0; i < nframes; i++ {
+	for frameIndex := 0; frameIndex < numberOfFrames; frameIndex++ {
 		rect := image.Rect(0, 0, cols, rows)
 		frameImage := image.NewPaletted(rect, palette)
 		for i := 0; i < rows; i++ {
