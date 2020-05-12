@@ -58,9 +58,13 @@ See the file [samples/grid100x100.txt](samples/grid100x100.txt) and see for your
 ## TODO
 * ~~Different neighborhood types.~~
 * ~~Infinite grids by horizontal or vertical directions.~~
+* Encode APNG.
+* Define a new format that is more compact (based on sparse matrix).
+* Allow definition of multiple rules of spawning.
+* Allow cells with more states.
+* Implement Grid as a sparse matrix.
 * Continous integration.
 * Read zipped files.
-* Encode APNG.
 * Allow extracting size from grid.
 * ~~Parallelize.~~
 * Read standard formats of game-of-lifes.
