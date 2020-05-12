@@ -9,7 +9,7 @@ import (
 	"github.com/diegojromerolopez/congolway/pkg/statuses"
 )
 
-// MakeSvg : make a gif animation for some generations
+// MakeSvg : make a svg animation for some generations
 func MakeSvg(g *gol.Gol, outputFilepath string, generations int, delay int) error {
 	rows := g.Rows()
 	cols := g.Cols()
