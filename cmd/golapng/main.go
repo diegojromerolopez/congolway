@@ -12,9 +12,8 @@ import (
 
 func main() {
 	inputFilePath := flag.String("inputFilePath", "", "Input Congolway file")
-	outputFilePath := flag.String("outputFilePath", "out.gif", "File path where the output gif will be saved")
+	outputFilePath := flag.String("outputFilePath", "out.apng", "File path where the output apng will be saved")
 	generations := flag.Int("generations", 100, "Number of generations of the cellular automaton")
-	delay := flag.Int("delay", 5, "Delay between frames, in 100ths of a second")
 	procsHelp := fmt.Sprintf(
 		"Number of GO processes used to compute generations. By default is %d (use as many as hardware CPUs), "+
 			"enter a positive integer to set a custom number of proceses", gol.CPUS,
@@ -41,9 +40,9 @@ func main() {
 	g := gi.(*gol.Gol)
 	g.SetProcesses(*procs)
 
-	gifError := animator.MakeGif(g, *outputFilePath, *generations, *delay)
-	if gifError != nil {
-		fmt.Fprintf(os.Stderr, gifError.Error())
+	apngError := animator.MakeApng(g, *outputFilePath, *generations)
+	if apngError != nil {
+		fmt.Fprintf(os.Stderr, apngError.Error())
 		os.Exit(1)
 	}
 }

@@ -20,8 +20,22 @@ make build
 
 ## Usage
 
+### APNG generator
+Creates a [APNG](https://en.wikipedia.org/wiki/APNG) animation of the Game of Life.
+```sh
+Usage of ./bin/golapng:
+  -generations int
+        Number of generations of the cellular automaton (default 100)
+  -inputFilePath string
+        Input Congolway file
+  -outputFilePath string
+        File path where the output apng will be saved (default "out.apng")
+  -procs int
+        Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs), enter a positive integer to set a custom number of proceses (default -1)
+```
+
 ### GIF generator
-Creates a GIF animation of the Game of Life.
+Creates a [GIF](https://en.wikipedia.org/wiki/GIF) animation of the Game of Life.
 ```sh
 Usage of ./bin/golgif:
   -inputFilePath string
@@ -35,6 +49,26 @@ Usage of ./bin/golgif:
   -procs int
         Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs),
         enter a positive integer to set a custom number of proceses (default -1)
+```
+
+### SVG generator
+Creates a [SVG](https://en.wikipedia.org/wiki/Scalable_Vector_Graphics) animation of the Game of Life.
+
+**NOTE: this tool is in a highly-unstable state and generates extremly heavyweight SVGs.
+I'm in process of optimizing it. Use it at your own risk.**
+
+```sh
+Usage of ./bin/golsvg:
+  -delay int
+        Delay between frames, in 100ths of a second (default 1)
+  -generations int
+        Number of generations of the cellular automaton (default 100)
+  -inputFilePath string
+        Input Congolway file
+  -outputFilePath string
+        File path where the output gif will be saved (default "out.gif")
+  -procs int
+        Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs), enter a positive integer to set a custom number of proceses (default -1)
 ```
 
 ### Random grid generator
@@ -53,21 +87,31 @@ Usage of ./bin/randomgol:
         File format "dense" or "sparse" (default "dense")
 ```
 
-
 ## Samples
 
+Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
+
+### 100x100 gif animation
 ```sh
 ./bin/golgif -inputFilePath="./samples/grid100x100.txt" -outputFilePath="./samples/grid100x100.gif"
 ```
 
 ![grid100x100 gif](samples/grid100x100.gif)
 
-See the file [samples/grid100x100.txt](samples/grid100x100.txt) and see for yourself the Congolway file format.
+### 100x100 apng animation
+```sh
+./bin/golgif -inputFilePath="./samples/grid100x100.txt" -outputFilePath="./samples/grid100x100.apng"
+```
+
+![grid100x100 apng](samples/grid100x100.apng)
+
+
+
 
 ## TODO
 * ~~Different neighborhood types.~~
 * ~~Infinite grids by horizontal or vertical directions.~~
-* Encode APNG.
+* ~~Encode APNG.~~
 * ~~Define a new format that is more compact (based on sparse matrix). Allow outputting in this format.~~
 * Allow definition of multiple rules of spawning.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
