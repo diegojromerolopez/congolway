@@ -6,6 +6,7 @@ This is the format that is used in this project.
 The first 7 rows are general information:
 
 ### Header
+
 Header with the name of this project.
 ```
 CONGOLWAY
@@ -27,12 +28,14 @@ generation: 543
 ### Neighborhood type
 There are two neighborhood types:
 
-#### Moore (8 surrounding cells to our cell):
+#### Moore
+8 surrounding cells to our cell:
 ```
 neighborhood_type: Moore
 ```
 
-#### Von Neumann (4 cells in star position  to our cell):
+#### Von Neumann
+4 cells in star position  to our cell:
 ```
 neighborhood_type: Von Neumann
 ```
@@ -73,6 +76,7 @@ limits: rows, cols
 ```
 
 ### Type of grid (dense or sparse)
+
 ```
 grid_type: dense|sparse
 ```
@@ -82,6 +86,7 @@ is an easy way to see the cells but is not efficient
 space-wise.
 
 ### Grid
+
 Cell grid, depending on the grid type, it will be shown
 as a matrix:
 
