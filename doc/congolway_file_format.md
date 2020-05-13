@@ -5,7 +5,7 @@ This is the format that is used in this project.
 ## Sections
 The first 7 rows are general information:
 
-### Header
+### Header
 
 Header with the name of this project.
 ```
