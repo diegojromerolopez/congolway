@@ -31,7 +31,7 @@ Usage of ./bin/golgif:
 ```
 
 ### Random grid generator
-Creates a txt file with an (uniformly) random grid.
+Creates a txt file ([see its format](/doc/congolway_file_format.md)) with an (uniformly) random grid.
 ```sh
 Usage of ./bin/randomgol:
   -columns int
