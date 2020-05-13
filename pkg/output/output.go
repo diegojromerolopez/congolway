@@ -82,6 +82,7 @@ func (gout *GolOutputer) SaveToFile(filename string) error {
 	writer.WriteString(fmt.Sprintf("neighborhood_type: %s\n", gout.neighborhoodTypeString()))
 	writer.WriteString(fmt.Sprintf("size: %dx%d\n", rows, cols))
 	writer.WriteString(fmt.Sprintf("limits: %s\n", gout.limitsString()))
+	writer.WriteString("grid_type: dense\n")
 	writer.WriteString("grid:\n")
 
 	for i := 0; i < rows; i++ {

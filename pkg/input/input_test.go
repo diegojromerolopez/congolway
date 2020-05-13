@@ -15,6 +15,15 @@ import (
 const A = statuses.ALIVE
 const D = statuses.DEAD
 
+func TestNewGolFromTextFile3x3Sparse(t *testing.T) {
+	var expectedCells [][]int = [][]int{
+		{A, D, D},
+		{D, A, D},
+		{D, D, A},
+	}
+	testNewGolFromTextFile(t, "3x3_sparse.txt", 3, 3, true, true, 543, expectedCells)
+}
+
 func TestNewGolFromTextFile5x10(t *testing.T) {
 	var expectedCells [][]int = [][]int{
 		{A, A, D, A, A, D, A, A, A, D},
@@ -122,11 +131,13 @@ func TestNewGolFromTextFile10x10BadVersion(t *testing.T) {
 	if error != nil {
 		if error.Error() != expectedError {
 			t.Errorf("Error actual = %v, and Expected = %v.", error, expectedError)
+			return
 		}
 	}
 
 	if g != nil {
 		t.Errorf("Bad input file, shouldn't return a pointer to Grid")
+		return
 	}
 }
 
@@ -137,14 +148,17 @@ func testNewGolFromTextFile(t *testing.T, filename string,
 	g, error := readGolFromTextFile(filename)
 	if error != nil {
 		t.Error(error)
+		return
 	}
 
 	if g.Generation() != generation {
 		t.Errorf("Loaded generation is wrong, got: %d, must be: %d.", g.Generation(), generation)
+		return
 	}
 
 	if g.NeighborhoodTypeString() != "Moore" {
 		t.Errorf("Loaded neighborhood is wrong, got: %s, must be: Moore.", g.NeighborhoodTypeString())
+		return
 	}
 
 	if g.Rows() != rows {

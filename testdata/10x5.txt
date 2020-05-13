@@ -4,6 +4,7 @@ generation: 345
 neighborhood_type: Moore
 size: 10x5
 limits: rows, cols
+grid_type: dense
 grid:
 XX XX
 XX XX

@@ -72,39 +72,19 @@ func (gr *GolReader) ReadGolFromTextFile(filename string) (base.GolInterface, er
 	return nil, fmt.Errorf("Unknonwn version found %d", version)
 }
 
-func (gr *GolReader) readCongolwayFileLine(reader *bufio.Reader) (string, error) {
-	line, err := reader.ReadString('\n')
-	if err != nil {
-		return "", err
-	}
-	trimmedLine := strings.TrimSuffix(line, "\n")
-	return trimmedLine, nil
-}
-
 func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, error) {
-	// Read generation in header line
-	generationLine, generationLineError := gr.readCongolwayFileLine(reader)
-	if generationLineError != nil {
-		return nil, generationLineError
+	generationOccurences, generationError := gr.readTextFileLine(
+		reader, regexp.MustCompile(`generation:\s*\d+`), regexp.MustCompile(`\d+`), 1,
+	)
+	if generationError != nil {
+		return nil, generationError
 	}
-	generationLineMatch, generationLineMatchError := regexp.MatchString(`generation:\s*\d+`, generationLine)
-	if generationLineMatchError != nil {
-		return nil, generationLineMatchError
-	}
-	if !generationLineMatch {
-		return nil, fmt.Errorf("generation: D where D is a positive integer, found %s", generationLine)
-	}
-	generationDigitRegex := regexp.MustCompile(`\d+`)
-	generationString := generationDigitRegex.FindString(generationLine)
-	if generationString == "" {
-		return nil, fmt.Errorf("generation: D where D is a positive integer, found %s", generationString)
-	}
-	generation, generationError := strconv.Atoi(generationString)
+	generation, generationError := strconv.Atoi(generationOccurences[0])
 	if generationError != nil {
 		return nil, generationError
 	}
 	if generation < 0 {
-		return nil, fmt.Errorf("generation: D where D is a positive integer, found %s", generationString)
+		return nil, fmt.Errorf("generation: D where D is a positive integer, found %d", generation)
 	}
 
 	// Read neighborhood type:
@@ -121,22 +101,12 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 		return nil, fmt.Errorf("\"neighborhood_type: Moore\" or \"neighborhood_type: Von Neumman\", found %s", neighLine)
 	}
 
-	// Read size in header line
-	sizeLine, sizeLineError := gr.readCongolwayFileLine(reader)
-	if sizeLineError != nil {
-		return nil, sizeLineError
-	}
-	sizeLineMatch, sizeLineMatchError := regexp.MatchString(`size:\s*\d+[^\d]+\d+`, sizeLine)
-	if sizeLineMatchError != nil {
-		return nil, sizeLineMatchError
-	}
-	if !sizeLineMatch {
-		return nil, fmt.Errorf("size: DxD where D are positive integers, found %s", sizeLine)
-	}
-	sizeDigitRegex := regexp.MustCompile(`\d+`)
-	dimensions := sizeDigitRegex.FindAllString(sizeLine, -1)
-	if len(dimensions) != 2 {
-		return nil, fmt.Errorf("size: DxD where D are positive integers, found %s", dimensions)
+	// Read dimensions of the grid
+	dimensions, dimensionsError := gr.readTextFileLine(
+		reader, regexp.MustCompile(`size:\s*\d+[^\d]+\d+`), regexp.MustCompile(`\d+`), 2,
+	)
+	if dimensionsError != nil {
+		return nil, dimensionsError
 	}
 	rows, rowsError := strconv.Atoi(dimensions[0])
 	if rowsError != nil {
@@ -147,29 +117,37 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 		return nil, colsError
 	}
 
-	// Read limits in header line
-	limitsLine, limitsError := gr.readCongolwayFileLine(reader)
+	limits, limitsError := gr.readTextFileLine(
+		reader, regexp.MustCompile(`limits:\s*(rows)?,?\s*(cols)?`), nil, -1,
+	)
 	if limitsError != nil {
 		return nil, limitsError
 	}
-	limitsLineMatch, limitsLineMatchError := regexp.MatchString(`limits:\s*(rows)?,?\s*(cols)?`, limitsLine)
-	if limitsLineMatchError != nil {
-		return nil, limitsLineMatchError
-	}
-	if !limitsLineMatch {
-		return nil, fmt.Errorf("limits:rows,cols if your grid must respect limits, limits: no if it doesn't, found %s", limitsLine)
-	}
 	rowsLimitationRegex := regexp.MustCompile(`rows`)
-	rowLimitationMatches := rowsLimitationRegex.FindAllString(limitsLine, -1)
+	rowLimitationMatches := rowsLimitationRegex.FindAllString(limits[0], -1)
 	rowsLimitation := "no"
 	if len(rowLimitationMatches) > 0 {
 		rowsLimitation = "limited"
 	}
 	colsLimitationRegex := regexp.MustCompile(`cols`)
-	colsLimitationMatches := colsLimitationRegex.FindAllString(limitsLine, -1)
+	colsLimitationMatches := colsLimitationRegex.FindAllString(limits[0], -1)
 	colsLimitation := "no"
 	if len(colsLimitationMatches) > 0 {
 		colsLimitation = "limited"
+	}
+
+	// Read grid type
+	gridTypeLine, gridTypeLineError := gr.readCongolwayFileLine(reader)
+	if gridTypeLineError != nil {
+		return nil, gridTypeLineError
+	}
+	gritTypeLineParts := strings.Split(gridTypeLine, " ")
+	if len(gritTypeLineParts) != 2 {
+		fmt.Errorf("\"grid_type: dense\" or \"grid_type: exparse\" expected, found %s", gridTypeLine)
+	}
+	gridType := gritTypeLineParts[1]
+	if gridType != "dense" && gridType != "sparse" {
+		return nil, fmt.Errorf("Invalid grid_type. Only dense and sparse values are accepted, found %s", gridType)
 	}
 
 	// Read grid: header line
@@ -181,6 +159,66 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 		return nil, fmt.Errorf("grid: expected, found %s", gridLine)
 	}
 
+	if gridType == "dense" {
+		// TODO: read X as 1 and space as 0
+		return gr.readGridInDenseFormat(reader, rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
+	}
+	if gridType == "sparse" {
+		// TODO: read number of status
+		return gr.readGridInSparseFormat(reader, rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType, 2)
+	}
+	return nil, fmt.Errorf("Invalid grid_type. Only dense and sparse values are accepted, found %s", gridType)
+}
+
+func (gr *GolReader) readTextFileLine(
+	reader *bufio.Reader, lineMatcher *regexp.Regexp,
+	findRegex *regexp.Regexp, mandatoryFoundCount int,
+) ([]string, error) {
+	// Line read from file
+	line, lineError := gr.readCongolwayFileLine(reader)
+	if lineError != nil {
+		return nil, lineError
+	}
+
+	// No match required, return the line
+	if lineMatcher == nil {
+		return []string{line}, nil
+	}
+
+	// Check if matches desired regex
+	lineMatch := lineMatcher.MatchString(line)
+	if !lineMatch {
+		return nil, fmt.Errorf("%s does not match the desired regex %s", line, lineMatcher.String())
+	}
+
+	// No find regex present, return the line
+	if findRegex == nil {
+		return []string{line}, nil
+	}
+
+	// Find all strings occurences, making sure the number of occurrences
+	// (len(foundOccurrences)) is what it must to be (mandatoryFoundCount)
+	foundOccurrences := findRegex.FindAllString(line, -1)
+	if mandatoryFoundCount < 0 {
+		return foundOccurrences, nil
+	}
+	if len(foundOccurrences) != mandatoryFoundCount {
+		return nil, fmt.Errorf("%s does not contain %d match for the regex %s", line, mandatoryFoundCount, findRegex.String())
+	}
+	return foundOccurrences, nil
+}
+
+func (gr *GolReader) readCongolwayFileLine(reader *bufio.Reader) (string, error) {
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+	trimmedLine := strings.TrimSuffix(line, "\n")
+	return trimmedLine, nil
+}
+
+func (gr *GolReader) readGridInDenseFormat(reader *bufio.Reader, rows int, cols int,
+	rowsLimitation string, colsLimitation string, generation int, neighborhoodType int) (base.GolInterface, error) {
 	gr.readGol.Init(rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
 	g := gr.readGol
 	for rowI := 0; rowI < rows; rowI++ {
@@ -197,4 +235,62 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 		}
 	}
 	return g, nil
+}
+
+func (gr *GolReader) readGridInSparseFormat(reader *bufio.Reader, rows int, cols int,
+	rowsLimitation string, colsLimitation string, generation int, neighborhoodType int, numberOfStatus int) (base.GolInterface, error) {
+	gr.readGol.Init(rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
+	g := gr.readGol
+
+	for statusI := 0; statusI < numberOfStatus; statusI++ {
+		rowStringI, rowStringIError := gr.readCongolwayFileLine(reader)
+		if rowStringIError != nil {
+			return nil, rowStringIError
+		}
+		// TODO: check status is valid
+		status, coords, lineError := sparseLineToCoordinates(rowStringI)
+		if lineError != nil {
+			return nil, lineError
+		}
+		// coords nil implies the status is the default status
+		// i.e all cells must have this value
+		if coords == nil {
+			for rowI := 0; rowI < rows; rowI++ {
+				for colI := 0; colI < cols; colI++ {
+					g.Set(rowI, colI, status)
+				}
+			}
+		} else {
+			for _, coord := range coords {
+				g.Set(coord.i, coord.j, status)
+			}
+		}
+	}
+	return g, nil
+}
+
+type gridCell struct {
+	i int
+	j int
+}
+
+func sparseLineToCoordinates(sparseLine string) (int, []gridCell, error) {
+	sparseLineParts := strings.Split(sparseLine, ":")
+	// TODO: check this error
+	status, _ := strconv.Atoi(sparseLineParts[0])
+	coordinatesString := sparseLineParts[1]
+	if coordinatesString == "default" {
+		return status, nil, nil
+	}
+
+	pointsRegexp := regexp.MustCompile(`\(\d+,\s*\d+\)`)
+	coordinates := make([]gridCell, 0, 100)
+	for _, coordinateString := range pointsRegexp.FindAllString(coordinatesString, -1) {
+		ij := strings.Split(coordinateString[1:len(coordinateString)-1], ",")
+		// TODO: check these errors
+		i, _ := strconv.Atoi(ij[0])
+		j, _ := strconv.Atoi(ij[1])
+		coordinates = append(coordinates, gridCell{i, j})
+	}
+	return int(status), coordinates, nil
 }
