@@ -1,8 +1,15 @@
 # congolway
-Conway's Game of Life gif generator in Go.
+[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) gif generator in Go.
 
 I wanted to make some kind of portmanteau between Conway and Game of Life.
 Hence **congolway**.
+
+## Features
+* Parallel next generation implementation.
+* Storing instances of Game of Life in text files.
+* Generation of GIF animations for your game of life instances.
+* Tested and developed following the advice of Go community.
+
 
 ## Construction
 Use makefile to create executables in bin directory:
