@@ -36,11 +36,15 @@ func testMakeGif(t *testing.T, filename string, expectedGifFilename string) {
 
 	generations := 10
 	delay := 5
-	MakeGif(g.(*gol.Gol), gifOutputPath, generations, delay)
+	gifError := MakeGif(g.(*gol.Gol), gifOutputPath, generations, delay)
+	if gifError != nil {
+		t.Error(gifError)
+		return
+	}
 
 	gifContents, _ := ioutil.ReadFile(gifOutputPath)
 	if bytes.Compare(expectedGifContents, gifContents) != 0 {
-		t.Errorf("Should be equal")
+		t.Errorf("The gif file %s has unexpected content", filename)
 	}
 }
 
