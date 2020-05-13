@@ -42,6 +42,8 @@ Usage of ./bin/randomgol:
         Rnadom 
   -rows int
         Number of rows of the grid (default 100)
+  -outputFormat string
+        File format "dense" or "sparse" (default "dense")
 ```
 
 
@@ -59,7 +61,7 @@ See the file [samples/grid100x100.txt](samples/grid100x100.txt) and see for your
 * ~~Different neighborhood types.~~
 * ~~Infinite grids by horizontal or vertical directions.~~
 * Encode APNG.
-* ~~Define a new format that is more compact (based on sparse matrix).~~ Allow outputting in this format.
+* ~~Define a new format that is more compact (based on sparse matrix). Allow outputting in this format.~~
 * Allow definition of multiple rules of spawning.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
 * Implement Grid as a sparse matrix.

@@ -12,6 +12,8 @@ type GolInterface interface {
 	Clone() GolInterface
 	Get(i int, j int) int
 	Set(i int, j int, value int)
+	SetAll(value int)
+	DbgStdout()
 	Generation() int
 	GridEquals(g GolInterface) bool
 	Equals(g GolInterface) bool

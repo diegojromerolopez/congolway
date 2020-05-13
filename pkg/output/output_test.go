@@ -10,13 +10,19 @@ import (
 	"github.com/diegojromerolopez/congolway/pkg/input"
 )
 
-func TestSaveToTextFile(t *testing.T) {
-	testSaveToTextFile(t, 5, 10, int64(1))
-	testSaveToTextFile(t, 10, 5, int64(1))
-	testSaveToTextFile(t, 10, 10, int64(1))
+func TestSparseSparseToTextFile(t *testing.T) {
+	testSaveToTextFile(t, 5, 10, int64(1), "sparse")
+	testSaveToTextFile(t, 10, 5, int64(1), "sparse")
+	testSaveToTextFile(t, 10, 10, int64(1), "sparse")
 }
 
-func testSaveToTextFile(t *testing.T, rows int, cols int, randomSeed int64) {
+func TestDenseSaveToTextFile(t *testing.T) {
+	testSaveToTextFile(t, 5, 10, int64(1), "dense")
+	testSaveToTextFile(t, 10, 5, int64(1), "dense")
+	testSaveToTextFile(t, 10, 10, int64(1), "dense")
+}
+
+func testSaveToTextFile(t *testing.T, rows int, cols int, randomSeed int64, fileType string) {
 	file, err := ioutil.TempFile("", "temp_gol.txt")
 	if err != nil {
 		t.Error(err)
@@ -28,12 +34,13 @@ func testSaveToTextFile(t *testing.T, rows int, cols int, randomSeed int64) {
 	g := gol.NewRandomGol(rows, cols, randomSeed)
 
 	golo := NewGolOutputer(g)
-	golo.SaveToFile(outputFilePath)
+	golo.SaveToFile(outputFilePath, fileType)
 
 	gr := input.NewGolReader(new(gol.Gol))
 	readG, readError := gr.ReadGolFromTextFile(outputFilePath)
 	if readError != nil {
 		fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError)
+		return
 	}
 
 	if !readG.Equals(g) {

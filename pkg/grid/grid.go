@@ -120,6 +120,13 @@ func (g *Grid) Set(i int, j int, value int) {
 	g.cells[pos] = value
 }
 
+// SetAll : set a value to all ceels
+func (g *Grid) SetAll(value int) {
+	for i := 0; i < g.rows*g.cols; i++ {
+		g.cells[i] = value
+	}
+}
+
 // Equals : inform if two grids have the same cell value
 // for each position.s
 func (g *Grid) Equals(other *Grid) bool {

@@ -15,13 +15,22 @@ import (
 const A = statuses.ALIVE
 const D = statuses.DEAD
 
-func TestNewGolFromTextFile3x3Sparse(t *testing.T) {
+func TestNewGolFromTextFile3x3SparseDefaultDead(t *testing.T) {
 	var expectedCells [][]int = [][]int{
 		{A, D, D},
 		{D, A, D},
 		{D, D, A},
 	}
-	testNewGolFromTextFile(t, "3x3_sparse.txt", 3, 3, true, true, 543, expectedCells)
+	testNewGolFromTextFile(t, "3x3_sparse_default_dead.txt", 3, 3, true, true, 543, expectedCells)
+}
+
+func TestNewGolFromTextFile3x3SparseDefaultAlive(t *testing.T) {
+	var expectedCells [][]int = [][]int{
+		{D, A, A},
+		{A, D, A},
+		{A, A, D},
+	}
+	testNewGolFromTextFile(t, "3x3_sparse_default_alive.txt", 3, 3, true, true, 543, expectedCells)
 }
 
 func TestNewGolFromTextFile5x10(t *testing.T) {
@@ -192,7 +201,7 @@ func testNewGolFromTextFile(t *testing.T, filename string,
 			gIJ := g.Get(i, j)
 			expectedIJ := expectedCells[i][j]
 			if gIJ != expectedIJ {
-				t.Errorf("Invalid cell at %d, %d, got: %d, must be: %d.", i, j, gIJ, expectedIJ)
+				t.Errorf("Invalid cell at %d,%d. It got: %d, must be: %d.", i, j, gIJ, expectedIJ)
 			}
 		}
 	}

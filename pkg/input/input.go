@@ -228,7 +228,8 @@ func (gr *GolReader) readGridInDenseFormat(reader *bufio.Reader, rows int, cols 
 		}
 		for colI := 0; colI < cols; colI++ {
 			colIStatus := statuses.ALIVE
-			if rowString[colI:colI+1] == " " {
+			cellValue := rowString[colI : colI+1]
+			if cellValue == " " || cellValue == "0" {
 				colIStatus = statuses.DEAD
 			}
 			g.Set(rowI, colI, colIStatus)
@@ -242,6 +243,24 @@ func (gr *GolReader) readGridInSparseFormat(reader *bufio.Reader, rows int, cols
 	gr.readGol.Init(rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
 	g := gr.readGol
 
+	defaultLine, defaultLineError := gr.readCongolwayFileLine(reader)
+	if defaultLineError != nil {
+		return nil, defaultLineError
+	}
+	defaultParts := strings.Split(defaultLine, ":")
+	if len(defaultParts) != 2 {
+
+	}
+	defaultTitle := defaultParts[0]
+	if defaultTitle != "default" {
+		return nil, fmt.Errorf("Expected default status value, found %s", defaultTitle)
+	}
+	defaultStatusValue, defaultStatusValueError := strconv.Atoi(strings.TrimSpace(defaultParts[1]))
+	if defaultStatusValueError != nil {
+		return nil, fmt.Errorf("Invalid default value, found %d", defaultStatusValue)
+	}
+	g.SetAll(defaultStatusValue)
+
 	for statusI := 0; statusI < numberOfStatus; statusI++ {
 		rowStringI, rowStringIError := gr.readCongolwayFileLine(reader)
 		if rowStringIError != nil {
@@ -252,18 +271,8 @@ func (gr *GolReader) readGridInSparseFormat(reader *bufio.Reader, rows int, cols
 		if lineError != nil {
 			return nil, lineError
 		}
-		// coords nil implies the status is the default status
-		// i.e all cells must have this value
-		if coords == nil {
-			for rowI := 0; rowI < rows; rowI++ {
-				for colI := 0; colI < cols; colI++ {
-					g.Set(rowI, colI, status)
-				}
-			}
-		} else {
-			for _, coord := range coords {
-				g.Set(coord.i, coord.j, status)
-			}
+		for _, coord := range coords {
+			g.Set(coord.i, coord.j, status)
 		}
 	}
 	return g, nil
@@ -279,7 +288,7 @@ func sparseLineToCoordinates(sparseLine string) (int, []gridCell, error) {
 	// TODO: check this error
 	status, _ := strconv.Atoi(sparseLineParts[0])
 	coordinatesString := sparseLineParts[1]
-	if coordinatesString == "default" {
+	if coordinatesString == "" {
 		return status, nil, nil
 	}
 

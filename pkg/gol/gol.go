@@ -1,6 +1,8 @@
 package gol
 
 import (
+	"fmt"
+
 	"github.com/diegojromerolopez/congolway/pkg/base"
 	"github.com/diegojromerolopez/congolway/pkg/grid"
 	"github.com/diegojromerolopez/congolway/pkg/neighborhood"
@@ -93,6 +95,11 @@ func (g *Gol) Set(i int, j int, value int) {
 	g.grid.Set(i, j, value)
 }
 
+// SetAll : set the value to all cells
+func (g *Gol) SetAll(value int) {
+	g.grid.SetAll(value)
+}
+
 // Equals : inform if two game of life instances have the same data
 func (g *Gol) Equals(o base.GolInterface) bool {
 	other := o.(*Gol)
@@ -111,4 +118,16 @@ func (g *Gol) Clone() base.GolInterface {
 	clone := new(Gol)
 	clone.InitWithGrid(g.generation, g.neighborhoodType, g.grid.Clone())
 	return clone
+}
+
+// DbgStdout : show a matrix to ease debugging
+func (g *Gol) DbgStdout() {
+	rows := g.Rows()
+	cols := g.Cols()
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			fmt.Print(g.Get(i, j))
+		}
+		fmt.Print("\n")
+	}
 }
