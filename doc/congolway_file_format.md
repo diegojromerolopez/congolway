@@ -28,13 +28,13 @@ generation: 543
 ### Neighborhood type
 There are two neighborhood types:
 
-#### Moore
+#### Moore
 8 surrounding cells to our cell:
 ```
 neighborhood_type: Moore
 ```
 
-#### Von Neumann
+#### Von Neumann
 4 cells in star position  to our cell:
 ```
 neighborhood_type: Von Neumann
@@ -75,7 +75,7 @@ A cell passing through the last row or col will appear in the first one.
 limits: rows, cols
 ```
 
-### Type of grid (dense or sparse)
+### Type of grid (dense or sparse)
 
 ```
 grid_type: dense|sparse
@@ -85,7 +85,7 @@ A dense grid shows all cells as a matrix and, hence,
 is an easy way to see the cells but is not efficient
 space-wise.
 
-### Grid
+### Grid
 
 Cell grid, depending on the grid type, it will be shown
 as a matrix:
