@@ -7,7 +7,7 @@ Hence **congolway**.
 ## Features
 * Parallel next generation implementation.
 * Storing instances of Game of Life in text files.
-* Generation of GIF animations for your game of life instances.
+* Generation of GIF and APNG animations for your game of life instances.
 * Tested and developed following the advice of Go community.
 
 
@@ -113,6 +113,10 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 * ~~Infinite grids by horizontal or vertical directions.~~
 * ~~Encode APNG.~~
 * ~~Define a new format that is more compact (based on sparse matrix). Allow outputting in this format.~~
+* Read the following formats:
+  * [Plaintext](https://www.conwaylife.com/wiki/Plaintext)
+  * [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05), i.e. .lif or .life files.
+  * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
 * Allow definition of multiple rules of spawning.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
 * Implement Grid as a sparse matrix.
@@ -120,7 +124,6 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 * Read zipped files.
 * Allow extracting size from grid.
 * ~~Parallelize.~~
-* Read standard formats of game-of-lifes.
 * Serve in a http server.
 
 ## License
