@@ -6,6 +6,6 @@ size: 3x3
 limits: rows, cols
 grid_type: dense
 grid:
-XX 
- XX
+11 
+ 11
    

@@ -2,12 +2,10 @@ CONGOLWAY
 version: 1
 generation: 543
 neighborhood_type: Moore
-size: 5x5
+size: 3x3
 limits: rows, cols
-grid_type: dense
+grid_type: sparse
 grid:
-     
-11111
-11 11
-11111
-     
+default: 0
+0:
+1: (0,0)(1,1)(2,2)
