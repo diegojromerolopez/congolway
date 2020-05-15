@@ -1,5 +1,5 @@
 # congolway
-[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) gif generator in Go.
+[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) gif and apng generator in Go.
 
 I wanted to make some kind of portmanteau between Conway and Game of Life.
 Hence **congolway**.
