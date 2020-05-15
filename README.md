@@ -1,4 +1,8 @@
 # congolway
+[![Build Status](https://travis-ci.org/diegojromerolopez/congolway.svg?branch=master)](https://travis-ci.org/diegojromerolopez/congolway)
+[![Go Report Card](https://goreportcard.com/badge/github.com/diegojromerolopez/congolway)](https://goreportcard.com/report/github.com/diegojromerolopez/congolway)
+
+
 [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) gif and apng generator in Go.
 
 I wanted to make some kind of portmanteau between Conway and Game of Life.
