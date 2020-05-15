@@ -12,7 +12,7 @@ import (
 )
 
 func TestNewGol(t *testing.T) {
-	g := NewGol(5, 5, 0)
+	g := NewGol("TestGol", "", 5, 5, 0)
 	for i := 0; i < g.Rows(); i++ {
 		for j := 0; j < g.Cols(); j++ {
 			if g.Get(i, j) != statuses.DEAD {
@@ -23,11 +23,11 @@ func TestNewGol(t *testing.T) {
 }
 
 func TestEquals(t *testing.T) {
-	g1, g1ReadError := readGolFromTextFile("10x10.txt")
+	g1, g1ReadError := readCongolwayFile("10x10.txt")
 	if g1ReadError != nil {
 		t.Error(g1ReadError)
 	}
-	g2, g2ReadError := readGolFromTextFile("10x10.txt")
+	g2, g2ReadError := readCongolwayFile("10x10.txt")
 	if g2ReadError != nil {
 		t.Error(g2ReadError)
 	}
@@ -37,11 +37,11 @@ func TestEquals(t *testing.T) {
 }
 
 func TestNotEquals(t *testing.T) {
-	g1, g1ReadError := readGolFromTextFile("10x10.txt")
+	g1, g1ReadError := readCongolwayFile("10x10.txt")
 	if g1ReadError != nil {
 		t.Error(g1ReadError)
 	}
-	g2, g2ReadError := readGolFromTextFile("5x10.txt")
+	g2, g2ReadError := readCongolwayFile("5x10.txt")
 	if g2ReadError != nil {
 		t.Error(g2ReadError)
 	}
@@ -51,7 +51,7 @@ func TestNotEquals(t *testing.T) {
 }
 
 func TestClone(t *testing.T) {
-	originalGol, originalGolReadError := readGolFromTextFile("10x10.txt")
+	originalGol, originalGolReadError := readCongolwayFile("10x10.txt")
 	if originalGolReadError != nil {
 		t.Error(originalGolReadError)
 	}
@@ -78,11 +78,11 @@ func TestNextGeneration(t *testing.T) {
 }
 
 func testStandardGridNextGeneration(t *testing.T, gen0FilePath string, gen1FilePath string, goProcesses int) {
-	g0, g0ReadError := readGolFromTextFile(gen0FilePath)
+	g0, g0ReadError := readCongolwayFile(gen0FilePath)
 	if g0ReadError != nil {
 		t.Error(g0ReadError)
 	}
-	g1, g1ReadError := readGolFromTextFile(gen1FilePath)
+	g1, g1ReadError := readCongolwayFile(gen1FilePath)
 	if g1ReadError != nil {
 		t.Error(g1ReadError)
 	}
@@ -99,7 +99,7 @@ func testStandardGridNextGeneration(t *testing.T, gen0FilePath string, gen1FileP
 }
 
 func testStillNextGeneration(t *testing.T, stillFilePath string) {
-	g0, g0ReadError := readGolFromTextFile("still/" + stillFilePath)
+	g0, g0ReadError := readCongolwayFile("still/" + stillFilePath)
 	if g0ReadError != nil {
 		t.Error(g0ReadError)
 	}
@@ -110,12 +110,12 @@ func testStillNextGeneration(t *testing.T, stillFilePath string) {
 }
 
 func testOscilatorNextGeneration(t *testing.T, gen0FilePath string, gen1FilePath string) {
-	g0, g0ReadError := readGolFromTextFile("oscilators/" + gen0FilePath)
+	g0, g0ReadError := readCongolwayFile("oscilators/" + gen0FilePath)
 	if g0ReadError != nil {
 		t.Error(g0ReadError)
 	}
 
-	g1, g1ReadError := readGolFromTextFile("oscilators/" + gen1FilePath)
+	g1, g1ReadError := readCongolwayFile("oscilators/" + gen1FilePath)
 	if g1ReadError != nil {
 		t.Error(g1ReadError)
 	}
@@ -133,7 +133,7 @@ func testOscilatorNextGeneration(t *testing.T, gen0FilePath string, gen1FilePath
 	}
 }
 
-func readGolFromTextFile(filename string) (base.GolInterface, error) {
+func readCongolwayFile(filename string) (base.GolInterface, error) {
 	currentDir, currentDirError := filepath.Abs(".")
 	if currentDirError != nil {
 		return nil, currentDirError
@@ -141,7 +141,7 @@ func readGolFromTextFile(filename string) (base.GolInterface, error) {
 	dataFilePath := path.Join(currentDir, "..", "..", "testdata", filename)
 
 	gr := input.NewGolReader(new(Gol))
-	g, golReadError := gr.ReadGolFromTextFile(dataFilePath)
+	g, golReadError := gr.ReadCongolwayFile(dataFilePath)
 	if golReadError != nil {
 		return nil, fmt.Errorf("Couldn't load the file %s: %s", dataFilePath, golReadError)
 	}

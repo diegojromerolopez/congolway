@@ -1,5 +1,7 @@
 CONGOLWAY
 version: 1
+name: Tub
+description: A Boat game of life pattern
 generation: 0
 neighborhood_type: Moore
 size: 5x5

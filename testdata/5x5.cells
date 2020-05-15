@@ -1,0 +1,9 @@
+!Name: A 5x5 game of life
+!A 5x5 game of life in .cells format.
+!It is not a known pattern, this is only 
+!used for tests.
+.....
+OOOOO
+OO.OO
+OOOOO
+.....

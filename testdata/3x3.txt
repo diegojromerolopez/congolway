@@ -1,5 +1,7 @@
 CONGOLWAY
 version: 1
+name: 3x3 dense gol
+description:
 generation: 543
 neighborhood_type: Moore
 size: 3x3

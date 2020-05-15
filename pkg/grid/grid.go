@@ -1,6 +1,7 @@
 package grid
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/diegojromerolopez/congolway/pkg/statuses"
@@ -97,6 +98,24 @@ func (g *Grid) LimitCols() bool {
 	return g.limitCols
 }
 
+// LimitRowsString : inform if rows are limited or isn't
+// by returning the string "limited" or "unlimited"
+func (g *Grid) LimitRowsString() string {
+	if g.limitRows {
+		return "limited"
+	}
+	return "unlimited"
+}
+
+// LimitColsString : inform if cols are limited or isn't
+// by returning the string "limited" or "unlimited"
+func (g *Grid) LimitColsString() string {
+	if g.limitCols {
+		return "limited"
+	}
+	return "unlimited"
+}
+
 // Pos : get the position in the 1-D array of the i, j coordinates
 func (g *Grid) Pos(i int, j int) int {
 	actualI := g.i(i)
@@ -133,12 +152,42 @@ func (g *Grid) Equals(other *Grid) bool {
 	if g.rows != other.rows || g.cols != g.cols {
 		return false
 	}
+	if g.limitRows != other.limitRows || g.limitCols != g.limitCols {
+		return false
+	}
 	for pos := 0; pos < g.rows*g.cols; pos++ {
 		if g.cells[pos] != other.cells[pos] {
 			return false
 		}
 	}
 	return true
+}
+
+// EqualsError : inform if two grids have the same dimensions and
+// the same cell values for each position.
+func (g *Grid) EqualsError(other *Grid) error {
+	if g.rows != other.rows {
+		return fmt.Errorf("Rows are different: %d vs %d", g.rows, other.rows)
+	}
+	if g.cols != g.cols {
+		return fmt.Errorf("Cols are different: %d vs %d", g.cols, other.cols)
+	}
+	if g.limitRows != other.limitRows {
+		return fmt.Errorf("Row limits are different: %s vs %s", g.LimitRowsString(), other.LimitRowsString())
+	}
+	if g.limitCols != g.limitCols {
+		return fmt.Errorf("Cols are different: %s vs %s", g.LimitColsString(), other.LimitColsString())
+	}
+	for i := 0; i < g.rows; i++ {
+		for j := 0; j < g.cols; j++ {
+			pos := g.Pos(i, j)
+			if g.cells[pos] != other.cells[pos] {
+				return fmt.Errorf("Cells at (%d,%d) are different: %d vs %d",
+					i, j, g.cells[pos], other.cells[pos])
+			}
+		}
+	}
+	return nil
 }
 
 // Clone : clone the grid in a new grid

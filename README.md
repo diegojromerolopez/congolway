@@ -9,6 +9,7 @@ Hence **congolway**.
 * Storing instances of Game of Life in text files.
 * Generation of GIF and APNG animations for your game of life instances.
 * Tested and developed following the advice of Go community.
+* Support for Plaintext files, i.e. [.cells files](https://www.conwaylife.com/wiki/Plaintext).
 
 
 ## Construction
@@ -27,7 +28,7 @@ Usage of ./bin/golapng:
   -generations int
         Number of generations of the cellular automaton (default 100)
   -inputFilePath string
-        Input Congolway file
+        File path of the Congolway (.txt) or cells (.cells) file
   -outputFilePath string
         File path where the output apng will be saved (default "out.apng")
   -procs int
@@ -38,17 +39,16 @@ Usage of ./bin/golapng:
 Creates a [GIF](https://en.wikipedia.org/wiki/GIF) animation of the Game of Life.
 ```sh
 Usage of ./bin/golgif:
-  -inputFilePath string
-        Congay file
   -delay int
         Delay between frames, in 100ths of a second (default 5)
   -generations int
         Number of generations of the cellular automaton (default 100)
+  -inputFilePath string
+        File path of the Congolway (.txt) or cells (.cells) file
   -outputFilePath string
         File path where the output gif will be saved (default "out.gif")
   -procs int
-        Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs),
-        enter a positive integer to set a custom number of proceses (default -1)
+        Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs), enter a positive integer to set a custom number of proceses (default -1)
 ```
 
 ### SVG generator
@@ -64,9 +64,9 @@ Usage of ./bin/golsvg:
   -generations int
         Number of generations of the cellular automaton (default 100)
   -inputFilePath string
-        Input Congolway file
+        File path of the Congolway (.txt) or cells (.cells) file
   -outputFilePath string
-        File path where the output gif will be saved (default "out.gif")
+        File path where the output gif will be saved (default "out.svg")
   -procs int
         Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs), enter a positive integer to set a custom number of proceses (default -1)
 ```
@@ -114,7 +114,7 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 * ~~Encode APNG.~~
 * ~~Define a new format that is more compact (based on sparse matrix). Allow outputting in this format.~~
 * Read the following formats:
-  * [Plaintext](https://www.conwaylife.com/wiki/Plaintext)
+  * ~~[Plaintext](https://www.conwaylife.com/wiki/Plaintext)~~
   * [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05), i.e. .lif or .life files.
   * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
 * Allow definition of multiple rules of spawning.

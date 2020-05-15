@@ -17,7 +17,7 @@ func TestMakeGif(t *testing.T) {
 }
 
 func testMakeGif(t *testing.T, filename string, expectedGifFilename string) {
-	g, error := readGolFromTextFile(filename)
+	g, error := readCongolwayFile(filename)
 	if error != nil {
 		t.Error(error)
 		return
@@ -48,14 +48,14 @@ func testMakeGif(t *testing.T, filename string, expectedGifFilename string) {
 	}
 }
 
-func readGolFromTextFile(filename string) (base.GolInterface, error) {
+func readCongolwayFile(filename string) (base.GolInterface, error) {
 	dataFilePath, dataFilePathError := base.GetTestdataFilePath(filename)
 	if dataFilePathError != nil {
 		return nil, dataFilePathError
 	}
 
 	gr := input.NewGolReader(new(gol.Gol))
-	gol, golReadError := gr.ReadGolFromTextFile(dataFilePath)
+	gol, golReadError := gr.ReadCongolwayFile(dataFilePath)
 	if golReadError != nil {
 		return nil, fmt.Errorf("Couldn't load the file %s: %s", dataFilePath, golReadError)
 	}

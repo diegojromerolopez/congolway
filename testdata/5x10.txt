@@ -1,5 +1,7 @@
 CONGOLWAY
 version: 1
+name: 5x10 dense gol
+description: A 5x10 dense game of life
 generation: 543
 neighborhood_type: Moore
 size: 5x10
