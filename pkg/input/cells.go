@@ -10,7 +10,7 @@ import (
 	"github.com/diegojromerolopez/congolway/pkg/statuses"
 )
 
-// ReadCellsFile : create a new Game of life from a cells file
+// ReadCellsFile : create a new Game of life from a .cells file
 func (gr *GolReader) ReadCellsFile(filename string, rowsLimitation string,
 	colsLimitation string, generation int, neighborhoodType int) (base.GolInterface, error) {
 	file, fileError := os.Open(filename)
@@ -23,7 +23,6 @@ func (gr *GolReader) ReadCellsFile(filename string, rowsLimitation string,
 	reader := bufio.NewReader(file)
 
 	// Name of the GOL pattern
-	// TODO: store name of GOL pattern
 	nameLine, nameError := readCellFileLine(reader)
 	if nameError != nil {
 		return nil, nameError
