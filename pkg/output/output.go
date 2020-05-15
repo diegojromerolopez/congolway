@@ -2,6 +2,7 @@ package output
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/diegojromerolopez/congolway/pkg/gol"
 	"github.com/diegojromerolopez/congolway/pkg/statuses"
@@ -16,6 +17,22 @@ type GolOutputer struct {
 // NewGolOutputer : returns a new pointer to GolOutputer
 func NewGolOutputer(g *gol.Gol) *GolOutputer {
 	return &GolOutputer{g}
+}
+
+// SaveToFile : prints on stdout the current state of the grid
+func (gout *GolOutputer) SaveToFile(filename string) error {
+	lastDotIndex := strings.LastIndex(filename, ".")
+	if lastDotIndex < 0 {
+		return fmt.Errorf("File \"%s\" has no extension. Only .txt and .cells files are allowed", filename)
+	}
+	fileExtension := filename[lastDotIndex:]
+
+	if fileExtension == ".txt" {
+		return gout.SaveToCongolwayFile(filename, "dense")
+	} else if fileExtension == ".cells" {
+		return gout.SaveToCellsFile(filename)
+	}
+	return fmt.Errorf("File extension \"%s\" not recognized. Only .txt and .cells are allowed", fileExtension)
 }
 
 func (gout *GolOutputer) name() string {

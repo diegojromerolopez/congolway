@@ -43,6 +43,12 @@ func testSaveToCongolwayFile(t *testing.T, rows int, cols int, randomSeed int64,
 		return
 	}
 
+	equalsError := readG.EqualsError(g)
+	if equalsError != nil {
+		t.Error(equalsError)
+		return
+	}
+
 	if !readG.Equals(g) {
 		t.Errorf("Both game of life instances should be equal and they don't")
 	}

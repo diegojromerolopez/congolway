@@ -76,7 +76,7 @@ func (gr *GolReader) readCongolwayFileV1(reader *bufio.Reader) (base.GolInterfac
 		return nil, fmt.Errorf("name: <name of the game of life instance>, found %s", nameLine)
 	}
 	namePrefixRegex := regexp.MustCompile(`name:\s*(.+)`)
-	name := namePrefixRegex.ReplaceAllString(nameLine, "${1}")
+	name := strings.Trim(namePrefixRegex.ReplaceAllString(nameLine, "${1}"), " ")
 
 	// Read description in header line
 	descriptionLine, descriptionLineError := gr.readCongolwayFileLine(reader)
@@ -91,7 +91,7 @@ func (gr *GolReader) readCongolwayFileV1(reader *bufio.Reader) (base.GolInterfac
 		return nil, fmt.Errorf("description: <description of the game of life instance>, found %s", descriptionLine)
 	}
 	descriptionPrefixRegex := regexp.MustCompile(`description:\s*(.+)`)
-	description := descriptionPrefixRegex.ReplaceAllString(descriptionLine, "${1}")
+	description := strings.Trim(descriptionPrefixRegex.ReplaceAllString(descriptionLine, "${1}"), " ")
 
 	generationOccurences, generationError := gr.readTextFileLine(
 		reader, regexp.MustCompile(`generation:\s*\d+`), regexp.MustCompile(`\d+`), 1,
@@ -155,7 +155,7 @@ func (gr *GolReader) readCongolwayFileV1(reader *bufio.Reader) (base.GolInterfac
 	if len(colsLimitationMatches) > 0 {
 		colsLimitation = "limited"
 	}
-	
+
 	gr.readGol.Init(name, description, rows, cols,
 		rowsLimitation, colsLimitation, generation, neighborhoodType)
 
