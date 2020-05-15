@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/diegojromerolopez/congolway/pkg/base"
 	"github.com/diegojromerolopez/congolway/pkg/statuses"
@@ -23,10 +24,13 @@ func (gr *GolReader) ReadCellsFile(filename string, rowsLimitation string,
 
 	// Name of the GOL pattern
 	// TODO: store name of GOL pattern
-	_, nameError := readCellFileLine(reader)
+	nameLine, nameError := readCellFileLine(reader)
 	if nameError != nil {
 		return nil, nameError
 	}
+	name := strings.TrimPrefix(nameLine, "!Name: ")
+
+	description := ""
 	gridLine := ""
 	// Description of the pattern
 	for true {
@@ -37,8 +41,11 @@ func (gr *GolReader) ReadCellsFile(filename string, rowsLimitation string,
 		if line[0:1] != "!" {
 			gridLine = line
 			break
+		} else {
+			description += strings.TrimSuffix(line[1:], " ") + " "
 		}
 	}
+	description = strings.TrimSuffix(description, " ")
 
 	cellValueCorrespondence := map[string]int{".": statuses.DEAD, "O": statuses.ALIVE}
 	rows := 0
@@ -64,7 +71,7 @@ func (gr *GolReader) ReadCellsFile(filename string, rowsLimitation string,
 		}
 	}
 	g := gr.readGol
-	g.Init(rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
+	g.Init(name, description, rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
 	for rowI := 0; rowI < rows; rowI++ {
 		for colI := 0; colI < cols; colI++ {
 			g.Set(rowI, colI, cells[rowI*cols+colI])

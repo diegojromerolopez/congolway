@@ -110,6 +110,6 @@ func (g *Gol) nextCell(i int, j int) int {
 
 func (g *Gol) createNextGenerationGol() base.GolInterface {
 	ngGol := new(Gol)
-	ngGol.InitWithGrid(g.generation, g.neighborhoodType, g.grid.CloneEmpty())
+	ngGol.InitWithGrid(g.name, g.description, g.generation, g.neighborhoodType, g.grid.CloneEmpty())
 	return ngGol
 }

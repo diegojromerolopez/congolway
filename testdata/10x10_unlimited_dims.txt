@@ -1,5 +1,7 @@
 CONGOLWAY
 version: 1
+name: 10x10 dense gol
+description: A 10x10 dense game of life with unlimited dimensions
 generation: 0
 neighborhood_type: Moore
 size: 10x10

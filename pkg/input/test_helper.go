@@ -6,9 +6,19 @@ import (
 	"github.com/diegojromerolopez/congolway/pkg/base"
 )
 
-func assertGolIsRight(t *testing.T, filename string,
+func assertGolIsRight(t *testing.T, filename string, name string, description string,
 	rows int, cols int, limitRows bool, limitCols bool,
 	generation int, expectedCells [][]int, g base.GolInterface) {
+
+	if g.Name() != name {
+		t.Errorf("Loaded name is wrong, got: %s, must be: %s.", g.Name(), name)
+		return
+	}
+
+	if g.Description() != description {
+		t.Errorf("Loaded description is wrong, got: %s, must be: %s.", g.Description(), description)
+		return
+	}
 
 	if g.Generation() != generation {
 		t.Errorf("Loaded generation is wrong, got: %d, must be: %d.", g.Generation(), generation)

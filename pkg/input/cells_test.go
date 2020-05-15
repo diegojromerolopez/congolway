@@ -17,23 +17,27 @@ func TestNewGolFromCellsFile5x5(t *testing.T) {
 		{A, A, A, A, A},
 		{D, D, D, D, D},
 	}
-	testNewGolFromCellsFile(t, "5x5.cells", 5, 5, true, true, 0, expectedCells)
+	filename := "5x5.cells"
+	name := "A 5x5 game of life"
+	description := "A 5x5 game of life in .cells format. It is not a known pattern, this is only used for tests."
+	testNewGolFromCellsFile(t, filename, name, description, 5, 5, true, true, 0, expectedCells)
 }
 
-func testNewGolFromCellsFile(t *testing.T, filename string, rows int, cols int, limitRows bool, limitCols bool,
-	generation int, expectedCells [][]int) {
+func testNewGolFromCellsFile(t *testing.T, filename string, name string, description string, rows int, cols int,
+	limitRows bool, limitCols bool, generation int, expectedCells [][]int) {
 
 	limitations := map[bool]string{true: "limited", false: "unlimited"}
 
-	g, error := readCellsFile(filename, rows, cols, limitations[limitRows], limitations[limitCols], generation)
+	g, error := readCellsFile(filename, name, description, rows, cols, limitations[limitRows], limitations[limitCols], generation)
 	if error != nil {
 		t.Error(error)
 		return
 	}
-	assertGolIsRight(t, filename, rows, cols, limitRows, limitCols, generation, expectedCells, g)
+	assertGolIsRight(t, filename, name, description, rows, cols, limitRows, limitCols, generation, expectedCells, g)
 }
 
-func readCellsFile(filename string, rows int, cols int, rowsLimitation string, colsLimitation string, generation int) (base.GolInterface, error) {
+func readCellsFile(filename string, name string, description string, rows int, cols int, rowsLimitation string,
+	colsLimitation string, generation int) (base.GolInterface, error) {
 	dataFilePath, dataFilePathError := base.GetTestdataFilePath(filename)
 	if dataFilePathError != nil {
 		return nil, dataFilePathError

@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	inputFilePath := flag.String("inputFilePath", "", "Input Congolway file")
-	outputFilePath := flag.String("outputFilePath", "out.gif", "File path where the output gif will be saved")
+	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt) or cells (.cells) file")
+	outputFilePath := flag.String("outputFilePath", "out.svg", "File path where the output gif will be saved")
 	generations := flag.Int("generations", 100, "Number of generations of the cellular automaton")
 	delay := flag.Int("delay", 1, "Delay between frames, in 100ths of a second")
 	procsHelp := fmt.Sprintf(
@@ -33,7 +33,7 @@ func main() {
 	}
 
 	gr := input.NewGolReader(new(gol.Gol))
-	gi, gError := gr.ReadCongolwayFile(*inputFilePath)
+	gi, gError := gr.ReadFile(*inputFilePath)
 	if gError != nil {
 		fmt.Println(gError.Error())
 		return

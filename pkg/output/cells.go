@@ -2,6 +2,7 @@ package output
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 
 	"github.com/diegojromerolopez/congolway/pkg/statuses"
@@ -22,8 +23,8 @@ func (gout *GolOutputer) SaveToCellsFile(filename string) error {
 	cols := gout.gol.Cols()
 
 	// TODO: write name when name attribute is added to Gol
-	writer.WriteString("! A Gol \n")
-	writer.WriteString("!\n")
+	writer.WriteString(fmt.Sprintf("!Name: %s\n", gout.name()))
+	writer.WriteString(fmt.Sprintf("!%s\n", gout.description()))
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
 			if gout.get(i, j) == statuses.ALIVE {

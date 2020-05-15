@@ -12,7 +12,7 @@ import (
 )
 
 func TestNewGol(t *testing.T) {
-	g := NewGol(5, 5, 0)
+	g := NewGol("TestGol", "", 5, 5, 0)
 	for i := 0; i < g.Rows(); i++ {
 		for j := 0; j < g.Cols(); j++ {
 			if g.Get(i, j) != statuses.DEAD {

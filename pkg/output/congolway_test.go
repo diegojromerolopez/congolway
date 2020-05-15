@@ -31,7 +31,7 @@ func testSaveToCongolwayFile(t *testing.T, rows int, cols int, randomSeed int64,
 	outputFilePath := file.Name()
 	defer os.Remove(outputFilePath)
 
-	g := gol.NewRandomGol(rows, cols, randomSeed)
+	g := gol.NewRandomGol("Random", "", rows, cols, randomSeed)
 
 	golo := NewGolOutputer(g)
 	golo.SaveToCongolwayFile(outputFilePath, fileType)

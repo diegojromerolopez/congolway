@@ -56,13 +56,43 @@ func (gr *GolReader) ReadCongolwayFile(filename string) (base.GolInterface, erro
 	}
 
 	if version == 1 {
-		return gr.readTextFileV1(reader)
+		return gr.readCongolwayFileV1(reader)
 	}
 
 	return nil, fmt.Errorf("Unknonwn version found %d", version)
 }
 
-func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, error) {
+func (gr *GolReader) readCongolwayFileV1(reader *bufio.Reader) (base.GolInterface, error) {
+	// Read name in header line
+	nameLine, nameLineError := gr.readCongolwayFileLine(reader)
+	if nameLineError != nil {
+		return nil, nameLineError
+	}
+	nameLineMatch, nameLineMatchError := regexp.MatchString(`name:\s*.+`, nameLine)
+	if nameLineMatchError != nil {
+		return nil, nameLineMatchError
+	}
+	if !nameLineMatch {
+		return nil, fmt.Errorf("name: <name of the game of life instance>, found %s", nameLine)
+	}
+	namePrefixRegex := regexp.MustCompile(`name:\s*(.+)`)
+	name := namePrefixRegex.ReplaceAllString(nameLine, "${1}")
+
+	// Read description in header line
+	descriptionLine, descriptionLineError := gr.readCongolwayFileLine(reader)
+	if descriptionLineError != nil {
+		return nil, descriptionLineError
+	}
+	descriptionLineMatch, descriptionLineMatchError := regexp.MatchString(`description:\s*.+`, descriptionLine)
+	if descriptionLineMatchError != nil {
+		return nil, descriptionLineMatchError
+	}
+	if !descriptionLineMatch {
+		return nil, fmt.Errorf("description: <description of the game of life instance>, found %s", descriptionLine)
+	}
+	descriptionPrefixRegex := regexp.MustCompile(`description:\s*(.+)`)
+	description := descriptionPrefixRegex.ReplaceAllString(descriptionLine, "${1}")
+
 	generationOccurences, generationError := gr.readTextFileLine(
 		reader, regexp.MustCompile(`generation:\s*\d+`), regexp.MustCompile(`\d+`), 1,
 	)
@@ -125,6 +155,9 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 	if len(colsLimitationMatches) > 0 {
 		colsLimitation = "limited"
 	}
+	
+	gr.readGol.Init(name, description, rows, cols,
+		rowsLimitation, colsLimitation, generation, neighborhoodType)
 
 	// Read grid type
 	gridTypeLine, gridTypeLineError := gr.readCongolwayFileLine(reader)
@@ -151,11 +184,12 @@ func (gr *GolReader) readTextFileV1(reader *bufio.Reader) (base.GolInterface, er
 
 	if gridType == "dense" {
 		// TODO: read X as 1 and space as 0
-		return gr.readGridInDenseFormat(reader, rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
+		return gr.readGridInDenseFormat(reader)
 	}
 	if gridType == "sparse" {
 		// TODO: read number of status
-		return gr.readGridInSparseFormat(reader, rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType, 2)
+		statusesCount := 2
+		return gr.readGridInSparseFormat(reader, statusesCount)
 	}
 	return nil, fmt.Errorf("Invalid grid_type. Only dense and sparse values are accepted, found %s", gridType)
 }
@@ -207,10 +241,10 @@ func (gr *GolReader) readCongolwayFileLine(reader *bufio.Reader) (string, error)
 	return trimmedLine, nil
 }
 
-func (gr *GolReader) readGridInDenseFormat(reader *bufio.Reader, rows int, cols int,
-	rowsLimitation string, colsLimitation string, generation int, neighborhoodType int) (base.GolInterface, error) {
-	gr.readGol.Init(rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
+func (gr *GolReader) readGridInDenseFormat(reader *bufio.Reader) (base.GolInterface, error) {
 	g := gr.readGol
+	rows := g.Rows()
+	cols := g.Cols()
 	for rowI := 0; rowI < rows; rowI++ {
 		rowString, err := gr.readCongolwayFileLine(reader)
 		if err != nil {
@@ -228,9 +262,7 @@ func (gr *GolReader) readGridInDenseFormat(reader *bufio.Reader, rows int, cols 
 	return g, nil
 }
 
-func (gr *GolReader) readGridInSparseFormat(reader *bufio.Reader, rows int, cols int,
-	rowsLimitation string, colsLimitation string, generation int, neighborhoodType int, numberOfStatus int) (base.GolInterface, error) {
-	gr.readGol.Init(rows, cols, rowsLimitation, colsLimitation, generation, neighborhoodType)
+func (gr *GolReader) readGridInSparseFormat(reader *bufio.Reader, numberOfStatus int) (base.GolInterface, error) {
 	g := gr.readGol
 
 	defaultLine, defaultLineError := gr.readCongolwayFileLine(reader)

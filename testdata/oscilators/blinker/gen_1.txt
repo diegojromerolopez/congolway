@@ -1,5 +1,7 @@
 CONGOLWAY
 version: 1
+name: Blinker
+description: A blinker game of life pattern
 generation: 1
 neighborhood_type: Moore
 size: 5x5

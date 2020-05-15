@@ -18,12 +18,20 @@ func NewGolOutputer(g *gol.Gol) *GolOutputer {
 	return &GolOutputer{g}
 }
 
-func (gout *GolOutputer) get(i int, j int) int {
-	return gout.gol.Get(i, j)
+func (gout *GolOutputer) name() string {
+	return gout.gol.Name()
+}
+
+func (gout *GolOutputer) description() string {
+	return gout.gol.Description()
 }
 
 func (gout *GolOutputer) generation() int {
 	return gout.gol.Generation()
+}
+
+func (gout *GolOutputer) get(i int, j int) int {
+	return gout.gol.Get(i, j)
 }
 
 func (gout *GolOutputer) neighborhoodTypeString() string {

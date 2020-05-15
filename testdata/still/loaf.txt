@@ -1,5 +1,7 @@
 CONGOLWAY
 version: 1
+name: Loaf
+description: A Loaf game of life pattern
 generation: 0
 neighborhood_type: Moore
 size: 6x6
