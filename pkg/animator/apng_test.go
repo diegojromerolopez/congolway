@@ -15,7 +15,7 @@ func TestMakeApng(t *testing.T) {
 }
 
 func testMakeApng(t *testing.T, filename string, expectedApngFilename string) {
-	g, error := readGolFromTextFile(filename)
+	g, error := readCongolwayFile(filename)
 	if error != nil {
 		t.Error(error)
 		return

@@ -10,19 +10,19 @@ import (
 	"github.com/diegojromerolopez/congolway/pkg/input"
 )
 
-func TestSparseSparseToTextFile(t *testing.T) {
-	testSaveToTextFile(t, 5, 10, int64(1), "sparse")
-	testSaveToTextFile(t, 10, 5, int64(1), "sparse")
-	testSaveToTextFile(t, 10, 10, int64(1), "sparse")
+func TestSparseSparseToCongolwayFile(t *testing.T) {
+	testSaveToCongolwayFile(t, 5, 10, int64(1), "sparse")
+	testSaveToCongolwayFile(t, 10, 5, int64(1), "sparse")
+	testSaveToCongolwayFile(t, 10, 10, int64(1), "sparse")
 }
 
-func TestDenseSaveToTextFile(t *testing.T) {
-	testSaveToTextFile(t, 5, 10, int64(1), "dense")
-	testSaveToTextFile(t, 10, 5, int64(1), "dense")
-	testSaveToTextFile(t, 10, 10, int64(1), "dense")
+func TestDenseSaveToCongolwayFile(t *testing.T) {
+	testSaveToCongolwayFile(t, 5, 10, int64(1), "dense")
+	testSaveToCongolwayFile(t, 10, 5, int64(1), "dense")
+	testSaveToCongolwayFile(t, 10, 10, int64(1), "dense")
 }
 
-func testSaveToTextFile(t *testing.T, rows int, cols int, randomSeed int64, fileType string) {
+func testSaveToCongolwayFile(t *testing.T, rows int, cols int, randomSeed int64, fileType string) {
 	file, err := ioutil.TempFile("", "temp_gol.txt")
 	if err != nil {
 		t.Error(err)
@@ -34,10 +34,10 @@ func testSaveToTextFile(t *testing.T, rows int, cols int, randomSeed int64, file
 	g := gol.NewRandomGol(rows, cols, randomSeed)
 
 	golo := NewGolOutputer(g)
-	golo.SaveToFile(outputFilePath, fileType)
+	golo.SaveToCongolwayFile(outputFilePath, fileType)
 
 	gr := input.NewGolReader(new(gol.Gol))
-	readG, readError := gr.ReadGolFromTextFile(outputFilePath)
+	readG, readError := gr.ReadCongolwayFile(outputFilePath)
 	if readError != nil {
 		fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError)
 		return

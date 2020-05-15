@@ -18,5 +18,5 @@ func main() {
 
 	g := gol.NewRandomGol(*rows, *cols, *randomSeed)
 	writer := output.NewGolOutputer(g)
-	writer.SaveToFile(*outputFilePath, *outputFormat)
+	writer.SaveToCongolwayFile(*outputFilePath, *outputFormat)
 }
