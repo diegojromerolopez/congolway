@@ -77,14 +77,18 @@ Creates a txt file ([see its format](/doc/congolway_file_format.md)) with an (un
 Usage of ./bin/randomgol:
   -columns int
         Number of columns of the grid (default 100)
+  -description string
+        Description of the game of life instance that will be created
+  -name string
+        Name of the game of life instance that will be created (default "Random Gol")
   -outputFilePath string
-        File path where the random grid will be saved (default "out.txt")
+        File path where the random grid will be saved (only .txt and .cells extensions are allowed) (default "out.txt")
+  -outputFormat string
+        Only used for congolway files (.txt files). File format "dense" or "sparse"
   -randomSeed int
-        Rnadom 
+        Random seed
   -rows int
         Number of rows of the grid (default 100)
-  -outputFormat string
-        File format "dense" or "sparse" (default "dense")
 ```
 
 ## Samples
