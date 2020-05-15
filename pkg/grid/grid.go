@@ -149,10 +149,10 @@ func (g *Grid) SetAll(value int) {
 // Equals : inform if two grids have the same cell value
 // for each position.s
 func (g *Grid) Equals(other *Grid) bool {
-	if g.rows != other.rows || g.cols != g.cols {
+	if g.rows != other.rows || g.cols != other.cols {
 		return false
 	}
-	if g.limitRows != other.limitRows || g.limitCols != g.limitCols {
+	if g.limitRows != other.limitRows || g.limitCols != other.limitCols {
 		return false
 	}
 	for pos := 0; pos < g.rows*g.cols; pos++ {
@@ -169,13 +169,13 @@ func (g *Grid) EqualsError(other *Grid) error {
 	if g.rows != other.rows {
 		return fmt.Errorf("Rows are different: %d vs %d", g.rows, other.rows)
 	}
-	if g.cols != g.cols {
+	if g.cols != other.cols {
 		return fmt.Errorf("Cols are different: %d vs %d", g.cols, other.cols)
 	}
 	if g.limitRows != other.limitRows {
 		return fmt.Errorf("Row limits are different: %s vs %s", g.LimitRowsString(), other.LimitRowsString())
 	}
-	if g.limitCols != g.limitCols {
+	if g.limitCols != other.limitCols {
 		return fmt.Errorf("Cols are different: %s vs %s", g.LimitColsString(), other.LimitColsString())
 	}
 	for i := 0; i < g.rows; i++ {
