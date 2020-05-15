@@ -2,8 +2,10 @@
 
 This is the format that is used in this project.
 
+Congolway game of life instance files have the extension .congol or .txt.
+
 ## Sections
-The first 7 rows are general information:
+Please, keep that all sections are mandatory and must be placed exactly in that position.
 
 ### Header
 
@@ -16,6 +18,18 @@ CONGOLWAY
 Version of the file (there is only 1 version at the momento):
 ```
 version: 1
+```
+
+### Name
+Name for this game of life pattern:
+```
+name: Toad with big eyes
+```
+
+### Description
+Description for this game of life pattern:
+```
+description: The toad with big eyes is a pattern that is based on toad.
 ```
 
 ### Generation
@@ -39,7 +53,6 @@ neighborhood_type: Moore
 ```
 neighborhood_type: Von Neumann
 ```
-
 
 ### Size
 The size of the cell grid in rowsxcolumns format.
