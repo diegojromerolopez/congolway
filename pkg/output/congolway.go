@@ -27,6 +27,7 @@ func (gout *GolOutputer) SaveToCongolwayFile(filename string, fileType string) e
 	writer.WriteString(fmt.Sprintf("name: %s\n", gout.name()))
 	writer.WriteString(fmt.Sprintf("description: %s\n", gout.description()))
 	writer.WriteString(fmt.Sprintf("generation: %d\n", gout.generation()))
+	writer.WriteString(fmt.Sprintf("rules: %s\n", gout.rules()))
 	writer.WriteString(fmt.Sprintf("neighborhood_type: %s\n", gout.neighborhoodTypeString()))
 	writer.WriteString(fmt.Sprintf("size: %dx%d\n", rows, cols))
 	writer.WriteString(fmt.Sprintf("limits: %s\n", gout.limitsString()))

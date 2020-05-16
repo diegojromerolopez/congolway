@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: Toad
 description: A toad game of life pattern
+rules: 23/3
 generation: 1
 neighborhood_type: Moore
 size: 6x6

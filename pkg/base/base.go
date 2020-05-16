@@ -2,9 +2,8 @@ package base
 
 // GolInterface : minimal Gol interface.
 type GolInterface interface {
-	Init(name string, description string, rows int, cols int,
-		rowsLimitation string, colsLimitation string,
-		generation int, neighborhoodType int)
+	Init(name string, description string, generation int, rows int, cols int,
+		rowsLimitation string, colsLimitation string, rules string, neighborhoodType int)
 	Name() string
 	Description() string
 	Rows() int
@@ -15,6 +14,7 @@ type GolInterface interface {
 	Get(i int, j int) int
 	Set(i int, j int, value int)
 	SetAll(value int)
+	Rules() string
 	DbgStdout()
 	Generation() int
 	GridEquals(g GolInterface) bool

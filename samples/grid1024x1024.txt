@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: A 1024x1024 grid
 description: A sample 1024x1024 game of life grid
+rules: 23/3
 generation: 0
 neighborhood_type: Moore
 size: 1024x1024

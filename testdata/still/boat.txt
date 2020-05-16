@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: Boat
 description: A Boat game of life pattern
+rules: 23/3
 generation: 0
 neighborhood_type: Moore
 size: 5x5

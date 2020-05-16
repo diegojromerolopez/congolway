@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: 1024x1024 dense gol
 description: A 1024x1024 dense game of life with limited dimensions
+rules: 23/3
 generation: 0
 neighborhood_type: Moore
 size: 1024x1024

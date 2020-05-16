@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: 3x3 dense gol
 description:
+rules: 23/3
 generation: 543
 neighborhood_type: Moore
 size: 3x3

@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: 10x10 dense gol
 description: A 10x10 dense game of life with limited rows
+rules: 23/3
 generation: 0
 neighborhood_type: Moore
 size: 10x10

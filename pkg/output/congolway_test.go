@@ -11,18 +11,18 @@ import (
 )
 
 func TestSparseSparseToCongolwayFile(t *testing.T) {
-	testSaveToCongolwayFile(t, 5, 10, int64(1), "sparse")
-	testSaveToCongolwayFile(t, 10, 5, int64(1), "sparse")
-	testSaveToCongolwayFile(t, 10, 10, int64(1), "sparse")
+	testSaveToCongolwayFile(t, 5, 10, "23/3", int64(1), "sparse")
+	testSaveToCongolwayFile(t, 10, 5, "23/3", int64(1), "sparse")
+	testSaveToCongolwayFile(t, 10, 10, "23/3", int64(1), "sparse")
 }
 
 func TestDenseSaveToCongolwayFile(t *testing.T) {
-	testSaveToCongolwayFile(t, 5, 10, int64(1), "dense")
-	testSaveToCongolwayFile(t, 10, 5, int64(1), "dense")
-	testSaveToCongolwayFile(t, 10, 10, int64(1), "dense")
+	testSaveToCongolwayFile(t, 5, 10, "23/3", int64(1), "dense")
+	testSaveToCongolwayFile(t, 10, 5, "23/3", int64(1), "dense")
+	testSaveToCongolwayFile(t, 10, 10, "23/3", int64(1), "dense")
 }
 
-func testSaveToCongolwayFile(t *testing.T, rows int, cols int, randomSeed int64, fileType string) {
+func testSaveToCongolwayFile(t *testing.T, rows int, cols int, rules string, randomSeed int64, fileType string) {
 	file, err := ioutil.TempFile("", "temp_gol.txt")
 	if err != nil {
 		t.Error(err)
@@ -31,7 +31,7 @@ func testSaveToCongolwayFile(t *testing.T, rows int, cols int, randomSeed int64,
 	outputFilePath := file.Name()
 	defer os.Remove(outputFilePath)
 
-	g := gol.NewRandomGol("Random", "", rows, cols, randomSeed)
+	g := gol.NewRandomGol("Random", "", rows, cols, rules, randomSeed)
 
 	golo := NewGolOutputer(g)
 	golo.SaveToCongolwayFile(outputFilePath, fileType)

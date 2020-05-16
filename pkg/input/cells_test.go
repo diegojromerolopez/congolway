@@ -20,15 +20,15 @@ func TestNewGolFromCellsFile5x5(t *testing.T) {
 	filename := "5x5.cells"
 	name := "A 5x5 game of life"
 	description := "A 5x5 game of life in .cells format. It is not a known pattern, this is only used for tests."
-	testNewGolFromCellsFile(t, filename, name, description, 5, 5, true, true, 0, expectedCells)
+	testNewGolFromCellsFile(t, filename, name, description, 0, 5, 5, true, true, "23/3", expectedCells)
 }
 
-func testNewGolFromCellsFile(t *testing.T, filename string, name string, description string, rows int, cols int,
-	limitRows bool, limitCols bool, generation int, expectedCells [][]int) {
+func testNewGolFromCellsFile(t *testing.T, filename string, name string, description string, generation int,
+	rows int, cols int, limitRows bool, limitCols bool, rules string, expectedCells [][]int) {
 
 	limitations := map[bool]string{true: "limited", false: "unlimited"}
 
-	g, error := readCellsFile(filename, name, description, rows, cols, limitations[limitRows], limitations[limitCols], generation)
+	g, error := readCellsFile(filename, name, description, generation, rows, cols, limitations[limitRows], limitations[limitCols], rules)
 	if error != nil {
 		t.Error(error)
 		return
@@ -36,15 +36,15 @@ func testNewGolFromCellsFile(t *testing.T, filename string, name string, descrip
 	assertGolIsRight(t, filename, name, description, rows, cols, limitRows, limitCols, generation, expectedCells, g)
 }
 
-func readCellsFile(filename string, name string, description string, rows int, cols int, rowsLimitation string,
-	colsLimitation string, generation int) (base.GolInterface, error) {
+func readCellsFile(filename string, name string, description string, generation int,
+	rows int, cols int, rowsLimitation string, colsLimitation string, rules string) (base.GolInterface, error) {
 	dataFilePath, dataFilePathError := base.GetTestdataFilePath(filename)
 	if dataFilePathError != nil {
 		return nil, dataFilePathError
 	}
 
 	gr := NewGolReader(new(gol.Gol))
-	gol, golReadError := gr.ReadCellsFile(dataFilePath, rowsLimitation, colsLimitation, generation, neighborhood.MOORE)
+	gol, golReadError := gr.ReadCellsFile(dataFilePath, generation, rowsLimitation, colsLimitation, rules, neighborhood.MOORE)
 	if golReadError != nil {
 		return nil, fmt.Errorf("Couldn't load the file %s: %s", dataFilePath, golReadError)
 	}

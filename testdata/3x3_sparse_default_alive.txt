@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: 3x3 sparse with default alive
 description: A 3x3 sparse game of life with cells that are alive by default
+rules: 23/3
 generation: 543
 neighborhood_type: Moore
 size: 3x3

@@ -26,13 +26,13 @@ func testSaveToCellsFile(t *testing.T, rows int, cols int, randomSeed int64) {
 	outputFilePath := file.Name()
 	defer os.Remove(outputFilePath)
 
-	g := gol.NewRandomGol("Random", "", rows, cols, randomSeed)
+	g := gol.NewRandomGol("Random", "", rows, cols, "23/3", randomSeed)
 
 	golo := NewGolOutputer(g)
 	golo.SaveToCellsFile(outputFilePath)
 
 	gr := input.NewGolReader(new(gol.Gol))
-	readG, readError := gr.ReadCellsFile(outputFilePath, "limited", "limited", 0, neighborhood.MOORE)
+	readG, readError := gr.ReadCellsFile(outputFilePath, 0, "limited", "limited", "23/3", neighborhood.MOORE)
 	if readError != nil {
 		fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError)
 		return

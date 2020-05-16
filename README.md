@@ -1,6 +1,7 @@
 # congolway
 [![Build Status](https://travis-ci.org/diegojromerolopez/congolway.svg?branch=master)](https://travis-ci.org/diegojromerolopez/congolway)
 [![Go Report Card](https://goreportcard.com/badge/github.com/diegojromerolopez/congolway)](https://goreportcard.com/report/github.com/diegojromerolopez/congolway)
+[![HitCount](http://hits.dwyl.com/diegojromerolopez/congolway.svg)](http://hits.dwyl.com/diegojromerolopez/congolway)
 
 
 [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) gif and apng generator in Go.
@@ -125,7 +126,7 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
   * ~~[Plaintext](https://www.conwaylife.com/wiki/Plaintext)~~
   * [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05), i.e. .lif or .life files.
   * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
-* Allow definition of multiple rules of spawning.
+* ~~Allow definition of multiple rules of spawning.~~ Done based on [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05) rules format.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
 * Implement Grid as a sparse matrix.
 * Continous integration.

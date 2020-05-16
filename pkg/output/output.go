@@ -47,6 +47,10 @@ func (gout *GolOutputer) generation() int {
 	return gout.gol.Generation()
 }
 
+func (gout *GolOutputer) rules() string {
+	return gout.gol.Rules()
+}
+
 func (gout *GolOutputer) get(i int, j int) int {
 	return gout.gol.Get(i, j)
 }
