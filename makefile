@@ -15,6 +15,9 @@ randomgol:
 golconv:
 	go build -o bin/golconv cmd/golconv/main.go
 
+tests:
+	go test -v ./...
+
 clean:
 	rm -rf bin/golgif
 	rm -rf bin/golsvg
