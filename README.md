@@ -131,6 +131,9 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 
 
 ## TODO
+* Include gliders and other patterns.
+* Implement Grid as a sparse matrix.
+* Implement some kind of application (maybe a Turing machine?) in a Game of Life instance.
 * ~~Different neighborhood types.~~
 * ~~Infinite grids by horizontal or vertical directions.~~
 * ~~Encode APNG.~~
@@ -141,9 +144,8 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
   * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
 * ~~Allow definition of multiple rules of spawning.~~ Done based on [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05) rules format.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
-* Implement Grid as a sparse matrix.
-* Continous integration.
-* Read zipped files.
+* Continous integration. . *Tests?*
+* Read zipped files. *Is it really needed, though?*
 * Allow extracting size from grid. *Is it really needed, though?*
 * ~~Parallelize.~~
 * Serve in a http server.
