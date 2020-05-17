@@ -150,11 +150,11 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 * ~~Parallelize.~~
 * Serve in a http server.
 
-## Code of Conduct
+## Code of Conduct
 Everyone interacting in the Congolway project’s codebases, issue trackers,
 chat rooms and mailing lists is expected to follow the [code of conduct](/CODE_OF_CONDUCT.md).
 
-## Contributions
+## Contributions
 I accept contribution and feature requests via PR (GitHub pull requests).
 
 Create an issue or send me an email before making a PR if you are unsure
