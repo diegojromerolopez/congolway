@@ -11,6 +11,7 @@ Hence **congolway**.
 
 ## Features
 * Parallel next generation implementation.
+* Show Game of Life in terminal.
 * Storing instances of Game of Life in text files.
 * Generation of GIF and APNG animations for your game of life instances.
 * Tested and developed following the advice of Go community.
@@ -25,6 +26,20 @@ make build
 ```
 
 ## Usage
+
+### Stdout output
+Shows the game of life in your Linux/MacOS terminal.
+```sh
+Usage of ./bin/golstdout:
+  -delay int
+        Delay between frames, in milliseconds (default 500)
+  -generations int
+        Number of generations of the cellular automaton (default 100)
+  -inputFilePath string
+        File path of the Congolway (.txt) or cells (.cells) file
+  -procs int
+        Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs), enter a positive integer to set a custom number of proceses (default -1)
+```
 
 ### APNG generator
 Creates a [APNG](https://en.wikipedia.org/wiki/APNG) animation of the Game of Life.
@@ -115,8 +130,6 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 ![grid100x100 apng](samples/grid100x100.apng)
 
 
-
-
 ## TODO
 * ~~Different neighborhood types.~~
 * ~~Infinite grids by horizontal or vertical directions.~~
@@ -131,7 +144,7 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 * Implement Grid as a sparse matrix.
 * Continous integration.
 * Read zipped files.
-* Allow extracting size from grid.
+* Allow extracting size from grid. *Is it really needed, though?*
 * ~~Parallelize.~~
 * Serve in a http server.
 

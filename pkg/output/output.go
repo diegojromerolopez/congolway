@@ -74,17 +74,25 @@ func (gout *GolOutputer) limitsString() string {
 }
 
 // Stdout : prints on stdout the current state of the grid
-func (gout *GolOutputer) Stdout() {
-	rows := gout.gol.Rows()
-	cols := gout.gol.Cols()
+// Return the numbers of lines used
+func (gout *GolOutputer) Stdout(cellStringCorresp map[int]string) int {
+	if cellStringCorresp == nil {
+		cellStringCorresp = map[int]string{
+			statuses.DEAD:  "░",
+			statuses.ALIVE: "█",
+		}
+	}
+	g := gout.gol
+	rows := g.Rows()
+	cols := g.Cols()
+	fmt.Printf("%s\n", g.Name())
+	fmt.Printf("Generation: %d\n", g.Generation())
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
-			if gout.get(i, j) == statuses.ALIVE {
-				fmt.Print("X")
-			} else {
-				fmt.Print(" ")
-			}
+			cellString := cellStringCorresp[g.Get(i, j)]
+			fmt.Print(cellString)
 		}
 		fmt.Print("\n")
 	}
+	return rows + 2
 }

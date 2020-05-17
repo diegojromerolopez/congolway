@@ -1,4 +1,7 @@
-build: golgif golsvg golapng randomgol golconv
+build: golstdout golgif golsvg golapng randomgol golconv
+
+golstdout:
+	go build -o bin/golstdout cmd/golstdout/main.go
 
 golgif:
 	go build -o bin/golgif cmd/golgif/main.go
@@ -19,6 +22,7 @@ tests:
 	go test -v ./...
 
 clean:
+	rm -rf bin/golstdout
 	rm -rf bin/golgif
 	rm -rf bin/golsvg
 	rm -rf bin/golapng
