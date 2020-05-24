@@ -188,7 +188,7 @@ func (gr *GolReader) readCongolwayFileV1(reader *bufio.Reader) (base.GolInterfac
 	}
 	gritTypeLineParts := strings.Split(gridTypeLine, " ")
 	if len(gritTypeLineParts) != 2 {
-		fmt.Errorf("\"grid_type: dense\" or \"grid_type: exparse\" expected, found %s", gridTypeLine)
+		return nil, fmt.Errorf("\"grid_type: dense\" or \"grid_type: exparse\" expected, found %s", gridTypeLine)
 	}
 	gridType := gritTypeLineParts[1]
 	if gridType != "dense" && gridType != "sparse" {
