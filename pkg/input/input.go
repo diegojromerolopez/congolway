@@ -32,8 +32,9 @@ func (gr *GolReader) ReadFile(filename string) (base.GolInterface, error) {
 		rowsLimitation := "unlimited"
 		colsLimitation := "unlimited"
 		generation := 0
+		rules := "23/3"
 		neighborhoodType := neighborhood.MOORE
-		return gr.ReadCellsFile(filename, rowsLimitation, colsLimitation, generation, neighborhoodType)
+		return gr.ReadCellsFile(filename, generation, rowsLimitation, colsLimitation, rules, neighborhoodType)
 	}
 	return nil, fmt.Errorf("File extension \"%s\" not recognized. Only .txt and .cells are allowed", fileExtension)
 }

@@ -1,6 +1,7 @@
 # congolway
 [![Build Status](https://travis-ci.org/diegojromerolopez/congolway.svg?branch=master)](https://travis-ci.org/diegojromerolopez/congolway)
 [![Go Report Card](https://goreportcard.com/badge/github.com/diegojromerolopez/congolway)](https://goreportcard.com/report/github.com/diegojromerolopez/congolway)
+[![HitCount](http://hits.dwyl.com/diegojromerolopez/congolway.svg)](http://hits.dwyl.com/diegojromerolopez/congolway)
 
 
 [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) gif and apng generator in Go.
@@ -10,6 +11,7 @@ Hence **congolway**.
 
 ## Features
 * Parallel next generation implementation.
+* Show Game of Life in terminal.
 * Storing instances of Game of Life in text files.
 * Generation of GIF and APNG animations for your game of life instances.
 * Tested and developed following the advice of Go community.
@@ -24,6 +26,20 @@ make build
 ```
 
 ## Usage
+
+### Stdout output
+Shows the game of life in your Linux/MacOS terminal.
+```sh
+Usage of ./bin/golstdout:
+  -delay int
+        Delay between frames, in milliseconds (default 500)
+  -generations int
+        Number of generations of the cellular automaton (default 100)
+  -inputFilePath string
+        File path of the Congolway (.txt) or cells (.cells) file
+  -procs int
+        Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs), enter a positive integer to set a custom number of proceses (default -1)
+```
 
 ### APNG generator
 Creates a [APNG](https://en.wikipedia.org/wiki/APNG) animation of the Game of Life.
@@ -114,9 +130,10 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 ![grid100x100 apng](samples/grid100x100.apng)
 
 
-
-
 ## TODO
+* Include gliders and other patterns.
+* Implement Grid as a sparse matrix.
+* Implement some kind of application (maybe a Turing machine?) in a Game of Life instance.
 * ~~Different neighborhood types.~~
 * ~~Infinite grids by horizontal or vertical directions.~~
 * ~~Encode APNG.~~
@@ -125,14 +142,25 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
   * ~~[Plaintext](https://www.conwaylife.com/wiki/Plaintext)~~
   * [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05), i.e. .lif or .life files.
   * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
-* Allow definition of multiple rules of spawning.
+* ~~Allow definition of multiple rules of spawning.~~ Done based on [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05) rules format.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
-* Implement Grid as a sparse matrix.
-* Continous integration.
-* Read zipped files.
-* Allow extracting size from grid.
+* Continous integration. . *Tests?*
+* Read zipped files. *Is it really needed, though?*
+* Allow extracting size from grid. *Is it really needed, though?*
 * ~~Parallelize.~~
 * Serve in a http server.
+
+## Code of Conduct
+Everyone interacting in the Congolway project’s codebases, issue trackers,
+chat rooms and mailing lists is expected to follow the [code of conduct](/CODE_OF_CONDUCT.md).
+
+## Contributions
+I accept contribution and feature requests via PR (GitHub pull requests).
+
+Create an issue or send me an email before making a PR if you are unsure
+about if your PR is going to be accepted.
+
+Any suggestion, issue or constructive criticism is also welcomed.
 
 ## License
 [MIT](LICENSE)

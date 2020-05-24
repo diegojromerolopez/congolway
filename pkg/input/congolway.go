@@ -93,6 +93,26 @@ func (gr *GolReader) readCongolwayFileV1(reader *bufio.Reader) (base.GolInterfac
 	descriptionPrefixRegex := regexp.MustCompile(`description:\s*(.+)`)
 	description := strings.Trim(descriptionPrefixRegex.ReplaceAllString(descriptionLine, "${1}"), " ")
 
+	// Rules
+	rulesLine, rulesLineError := gr.readCongolwayFileLine(reader)
+	if rulesLineError != nil {
+		return nil, rulesLineError
+	}
+	rulesLineMatch, rulesLineMatchError := regexp.MatchString(`rules:\s*\d+/\d+`, rulesLine)
+	if rulesLineMatchError != nil {
+		return nil, rulesLineMatchError
+	}
+	if !rulesLineMatch {
+		return nil, fmt.Errorf("rules: survival/birth, found %s", rulesLine)
+	}
+	rulesPrefixRegex := regexp.MustCompile(`\d+/\d+`)
+	rulesMatches := rulesPrefixRegex.FindAllString(rulesLine, -1)
+	if len(rulesMatches) != 1 {
+		return nil, fmt.Errorf("rules: survival/birth invalid match. Found %s", rulesLine)
+	}
+	rules := rulesMatches[0]
+
+	// Generation
 	generationOccurences, generationError := gr.readTextFileLine(
 		reader, regexp.MustCompile(`generation:\s*\d+`), regexp.MustCompile(`\d+`), 1,
 	)
@@ -156,8 +176,9 @@ func (gr *GolReader) readCongolwayFileV1(reader *bufio.Reader) (base.GolInterfac
 		colsLimitation = "limited"
 	}
 
-	gr.readGol.Init(name, description, rows, cols,
-		rowsLimitation, colsLimitation, generation, neighborhoodType)
+	gr.readGol.Init(name, description, generation,
+		rows, cols, rowsLimitation, colsLimitation,
+		rules, neighborhoodType)
 
 	// Read grid type
 	gridTypeLine, gridTypeLineError := gr.readCongolwayFileLine(reader)

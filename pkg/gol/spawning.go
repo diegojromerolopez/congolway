@@ -94,12 +94,12 @@ func (g *Gol) nextCell(i int, j int) int {
 	// All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 	switch g.Get(i, j) {
 	case statuses.ALIVE:
-		if aliveNeighborsCount == 2 || aliveNeighborsCount == 3 {
+		if g.survivalRule[aliveNeighborsCount] {
 			return statuses.ALIVE
 		}
 		return statuses.DEAD
 	case statuses.DEAD:
-		if aliveNeighborsCount == 3 {
+		if g.birthRule[aliveNeighborsCount] {
 			return statuses.ALIVE
 		}
 		return statuses.DEAD
@@ -110,6 +110,6 @@ func (g *Gol) nextCell(i int, j int) int {
 
 func (g *Gol) createNextGenerationGol() base.GolInterface {
 	ngGol := new(Gol)
-	ngGol.InitWithGrid(g.name, g.description, g.generation, g.neighborhoodType, g.grid.CloneEmpty())
+	ngGol.InitWithGrid(g.name, g.description, g.generation, g.rules, g.neighborhoodType, g.grid.CloneEmpty())
 	return ngGol
 }

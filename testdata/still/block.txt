@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: Block
 description: A Block game of life pattern
+rules: 23/3
 generation: 0
 neighborhood_type: Moore
 size: 4x4

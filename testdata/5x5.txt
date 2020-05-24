@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: 5x5 dense gol
 description: A 5x5 dense game of life
+rules: 23/3
 generation: 543
 neighborhood_type: Moore
 size: 5x5

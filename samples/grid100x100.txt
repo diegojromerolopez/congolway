@@ -2,6 +2,7 @@ CONGOLWAY
 version: 1
 name: A 100x100 grid
 description: A sample 100x100 game of life grid
+rules: 23/3
 generation: 0
 neighborhood_type: Moore
 size: 100x100
