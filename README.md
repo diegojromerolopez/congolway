@@ -12,6 +12,7 @@ Hence **congolway**.
 ## Features
 * Parallel next generation implementation.
 * Show Game of Life in terminal.
+* Sparse-matrix based storage.
 * Storing instances of Game of Life in text files.
 * Generation of GIF and APNG animations for your game of life instances.
 * Tested and developed following the advice of Go community.
@@ -132,7 +133,7 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 
 ## TODO
 * Include gliders and other patterns.
-* Implement Grid as a sparse matrix.
+* ~~Implement Grid as a sparse matrix.~~ Done by using the [thread-safe](https://golang.org/pkg/sync/#Map) [dictionary of keys](https://en.wikipedia.org/wiki/Sparse_matrix#Dictionary_of_keys_(DOK)) sparse matrix pattern.
 * Implement some kind of application (maybe a Turing machine?) in a Game of Life instance.
 * ~~Different neighborhood types.~~
 * ~~Infinite grids by horizontal or vertical directions.~~

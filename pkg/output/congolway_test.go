@@ -10,19 +10,19 @@ import (
 	"github.com/diegojromerolopez/congolway/pkg/input"
 )
 
-func TestSparseSparseToCongolwayFile(t *testing.T) {
-	testSaveToCongolwayFile(t, 5, 10, "23/3", int64(1), "sparse")
-	testSaveToCongolwayFile(t, 10, 5, "23/3", int64(1), "sparse")
-	testSaveToCongolwayFile(t, 10, 10, "23/3", int64(1), "sparse")
+func TestSparseSavedToCongolwayFile(t *testing.T) {
+	testRandomGolSavedToCongolwayFile(t, 20, 30, "23/3", int64(1), "sparse")
+	testRandomGolSavedToCongolwayFile(t, 10, 5, "23/3", int64(1), "sparse")
+	testRandomGolSavedToCongolwayFile(t, 10, 10, "23/3", int64(1), "sparse")
 }
 
-func TestDenseSaveToCongolwayFile(t *testing.T) {
-	testSaveToCongolwayFile(t, 5, 10, "23/3", int64(1), "dense")
-	testSaveToCongolwayFile(t, 10, 5, "23/3", int64(1), "dense")
-	testSaveToCongolwayFile(t, 10, 10, "23/3", int64(1), "dense")
+func TestDenseSavedToCongolwayFile(t *testing.T) {
+	testRandomGolSavedToCongolwayFile(t, 5, 10, "23/3", int64(1), "dense")
+	testRandomGolSavedToCongolwayFile(t, 10, 5, "23/3", int64(1), "dense")
+	testRandomGolSavedToCongolwayFile(t, 10, 10, "23/3", int64(1), "dense")
 }
 
-func testSaveToCongolwayFile(t *testing.T, rows int, cols int, rules string, randomSeed int64, fileType string) {
+func testRandomGolSavedToCongolwayFile(t *testing.T, rows int, cols int, rules string, randomSeed int64, fileType string) {
 	file, err := ioutil.TempFile("", "temp_gol.txt")
 	if err != nil {
 		t.Error(err)
@@ -31,7 +31,7 @@ func testSaveToCongolwayFile(t *testing.T, rows int, cols int, rules string, ran
 	outputFilePath := file.Name()
 	defer os.Remove(outputFilePath)
 
-	g := gol.NewRandomGol("Random", "", rows, cols, rules, randomSeed)
+	g := gol.NewRandomGol("Random", "", "23/3", "dok", "limited", "limited", rows, cols, randomSeed)
 
 	golo := NewGolOutputer(g)
 	golo.SaveToCongolwayFile(outputFilePath, fileType)
@@ -39,7 +39,7 @@ func testSaveToCongolwayFile(t *testing.T, rows int, cols int, rules string, ran
 	gr := input.NewGolReader(new(gol.Gol))
 	readG, readError := gr.ReadCongolwayFile(outputFilePath)
 	if readError != nil {
-		fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError)
+		t.Error(fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError))
 		return
 	}
 

@@ -7,11 +7,9 @@ import (
 	"github.com/diegojromerolopez/congolway/pkg/statuses"
 )
 
-// Grid : a grid where the cells develop
+// Grid : a cell grid implemented as a dense matrix
 type Grid struct {
-	cells     []int
-	rows      int
-	cols      int
+	cells     CellsStorer
 	i         func(int) int
 	iIsOut    func(int) bool
 	j         func(int) int
@@ -21,81 +19,32 @@ type Grid struct {
 }
 
 // NewGrid : creates a grid
-func NewGrid(rows int, cols int, rowLimitation string, colLimitation string) *Grid {
-	g := new(Grid)
-	g.init(rows, cols, rowLimitation == "limited", colLimitation == "limited", nil)
-	return g
+func NewGrid(rows, cols int, rowLimitation, colLimitation, cellsStorerType string) *Grid {
+	cs := CellsStorerFactory(rows, cols, cellsStorerType)
+	return newGridFromCellsStorer(rowLimitation, colLimitation, cs)
 }
 
 // NewRandomGrid : creates a grid
-func NewRandomGrid(rows int, cols int, rowLimitation string, colLimitation string, ramdomSeed int64) *Grid {
-	grid := NewGrid(rows, cols, rowLimitation, colLimitation)
-	grid.randomize(ramdomSeed)
+func NewRandomGrid(rows, cols int, rowLimitation, colLimitation, cellsStorerType string, ramdomSeed int64) *Grid {
+	cs := CellsStorerFactory(rows, cols, cellsStorerType)
+	grid := newGridFromCellsStorer(rowLimitation, colLimitation, cs)
+	grid.Randomize(ramdomSeed)
 	return grid
-}
-
-func (g *Grid) init(rows int, cols int, limitRows bool, limitCols bool, cells []int) {
-	g.cells = make([]int, rows*cols)
-	if cells == nil {
-		for i := 0; i < rows*cols; i++ {
-			g.cells[i] = statuses.DEAD
-		}
-	} else {
-		for i := 0; i < rows*cols; i++ {
-			g.cells[i] = cells[i]
-		}
-	}
-
-	g.rows = rows
-	g.cols = cols
-
-	g.limitRows = limitRows
-	g.limitCols = limitCols
-
-	if g.limitRows {
-		g.i = func(i int) int { return i }
-		g.iIsOut = func(i int) bool { return i < 0 || i >= rows }
-	} else {
-		g.i = func(i int) int { return ((i % rows) + rows) % rows }
-		g.iIsOut = func(_ int) bool { return false }
-	}
-	if g.limitCols {
-		g.j = func(j int) int { return j }
-		g.jIsOut = func(j int) bool { return j < 0 || j >= cols }
-	} else {
-		g.j = func(j int) int { return ((j % cols) + cols) % cols }
-		g.jIsOut = func(_ int) bool { return false }
-	}
-}
-
-// Randomize : set each cell of the grid to a random (uniform) function
-//	according to randomSeed
-func (g *Grid) randomize(randomSeed int64) {
-	statusesList := []int{statuses.ALIVE, statuses.DEAD}
-	statusesListLen := len(statusesList)
-	for i := 0; i < g.rows*g.cols; i++ {
-		g.cells[i] = statusesList[rand.Intn(statusesListLen)]
-	}
 }
 
 // Rows : return the number of rows of the grid
 func (g *Grid) Rows() int {
-	return g.rows
+	return g.cells.Rows()
 }
 
 // Cols : return the number of columns of the grid
 func (g *Grid) Cols() int {
-	return g.cols
+	return g.cells.Cols()
 }
 
 // LimitRows : inform if rows are limited or isn't
 func (g *Grid) LimitRows() bool {
 	return g.limitRows
-}
-
-// LimitCols : return the number of columns of the grid
-func (g *Grid) LimitCols() bool {
-	return g.limitCols
 }
 
 // LimitRowsString : inform if rows are limited or isn't
@@ -107,6 +56,27 @@ func (g *Grid) LimitRowsString() string {
 	return "unlimited"
 }
 
+// SetLimitRows : limit or not limit rows.
+// If rows are not limited, it will be a circular-by-rows grid
+// i.e. if unlimited by rows, on reaching the rows + i column,
+// the ith row will be returned
+func (g *Grid) SetLimitRows(limitRows bool) {
+	rows := g.Rows()
+	g.limitRows = limitRows
+	if g.limitRows {
+		g.i = func(i int) int { return i }
+		g.iIsOut = func(i int) bool { return i < 0 || i >= rows }
+	} else {
+		g.i = func(i int) int { return ((i % rows) + rows) % rows }
+		g.iIsOut = func(_ int) bool { return false }
+	}
+}
+
+// LimitCols : return the number of columns of the grid
+func (g *Grid) LimitCols() bool {
+	return g.limitCols
+}
+
 // LimitColsString : inform if cols are limited or isn't
 // by returning the string "limited" or "unlimited"
 func (g *Grid) LimitColsString() string {
@@ -116,61 +86,62 @@ func (g *Grid) LimitColsString() string {
 	return "unlimited"
 }
 
-// Pos : get the position in the 1-D array of the i, j coordinates
-func (g *Grid) Pos(i int, j int) int {
-	actualI := g.i(i)
-	actualJ := g.j(j)
-	return actualI*g.cols + actualJ
+// SetLimitCols : limit or not limit cols.
+// If cols are not limited, it will be a circular-by-cols grid.
+// i.e. if unlimited by columns, on reaching the cols + i column,
+// the ith column will be returned
+func (g *Grid) SetLimitCols(limitCols bool) {
+	cols := g.Cols()
+	g.limitCols = limitCols
+	if g.limitCols {
+		g.j = func(j int) int { return j }
+		g.jIsOut = func(j int) bool { return j < 0 || j >= cols }
+	} else {
+		g.j = func(j int) int { return ((j % cols) + cols) % cols }
+		g.jIsOut = func(_ int) bool { return false }
+	}
 }
 
-// Get : get the value of the cell (ALICE, DEAD)
+// Get : get the value of the cell (ALIVE, DEAD)
 //	in the i, j coordinates
-func (g *Grid) Get(i int, j int) int {
+func (g *Grid) Get(i, j int) int {
 	if g.iIsOut(i) || g.jIsOut(j) {
 		return statuses.VOID
 	}
-	pos := g.Pos(i, j)
-	return g.cells[pos]
+	actualI := g.i(i)
+	actualJ := g.j(j)
+	return g.cells.Get(actualI, actualJ)
 }
 
 // Set : set the value of the cell in the i, j coordinates
-func (g *Grid) Set(i int, j int, value int) {
-	pos := g.Pos(i, j)
-	g.cells[pos] = value
+func (g *Grid) Set(i, j, value int) {
+	actualI := g.i(i)
+	actualJ := g.j(j)
+	g.cells.Set(actualI, actualJ, value)
 }
 
 // SetAll : set a value to all ceels
 func (g *Grid) SetAll(value int) {
-	for i := 0; i < g.rows*g.cols; i++ {
-		g.cells[i] = value
-	}
+	g.cells.SetAll(value)
 }
 
 // Equals : inform if two grids have the same cell value
-// for each position.s
-func (g *Grid) Equals(other *Grid) bool {
-	if g.rows != other.rows || g.cols != other.cols {
-		return false
-	}
-	if g.limitRows != other.limitRows || g.limitCols != other.limitCols {
-		return false
-	}
-	for pos := 0; pos < g.rows*g.cols; pos++ {
-		if g.cells[pos] != other.cells[pos] {
-			return false
-		}
-	}
-	return true
+// for each position.
+func (g *Grid) Equals(other *Grid, mode string) bool {
+	return g.EqualsError(other, mode) == nil
 }
 
 // EqualsError : inform if two grids have the same dimensions and
 // the same cell values for each position.
-func (g *Grid) EqualsError(other *Grid) error {
-	if g.rows != other.rows {
-		return fmt.Errorf("Rows are different: %d vs %d", g.rows, other.rows)
+func (g *Grid) EqualsError(other *Grid, mode string) error {
+	var cellsEqualsError error
+	if mode == "values" {
+		cellsEqualsError = g.cells.EqualValuesError(other.cells)
+	} else {
+		cellsEqualsError = g.cells.EqualsError(other.cells)
 	}
-	if g.cols != other.cols {
-		return fmt.Errorf("Cols are different: %d vs %d", g.cols, other.cols)
+	if cellsEqualsError != nil {
+		return cellsEqualsError
 	}
 	if g.limitRows != other.limitRows {
 		return fmt.Errorf("Row limits are different: %s vs %s", g.LimitRowsString(), other.LimitRowsString())
@@ -178,28 +149,50 @@ func (g *Grid) EqualsError(other *Grid) error {
 	if g.limitCols != other.limitCols {
 		return fmt.Errorf("Cols are different: %s vs %s", g.LimitColsString(), other.LimitColsString())
 	}
-	for i := 0; i < g.rows; i++ {
-		for j := 0; j < g.cols; j++ {
-			pos := g.Pos(i, j)
-			if g.cells[pos] != other.cells[pos] {
-				return fmt.Errorf("Cells at (%d,%d) are different: %d vs %d",
-					i, j, g.cells[pos], other.cells[pos])
-			}
-		}
-	}
 	return nil
 }
 
 // Clone : clone the grid in a new grid
 func (g *Grid) Clone() *Grid {
-	gridClone := new(Grid)
-	gridClone.init(g.rows, g.cols, g.limitRows, g.limitRows, g.cells)
+	gridClone := newGridFromCellsStorer(g.LimitRowsString(), g.LimitColsString(), g.cells.Clone())
 	return gridClone
 }
 
 // CloneEmpty : create a new grid with the same size but empty
 func (g *Grid) CloneEmpty() *Grid {
-	gridEmptyClone := new(Grid)
-	gridEmptyClone.init(g.rows, g.cols, g.limitRows, g.limitRows, nil)
+	gridEmptyClone := newGridFromCellsStorer(g.LimitRowsString(), g.LimitColsString(), g.cells.CloneEmpty())
 	return gridEmptyClone
+}
+
+// Randomize : set each cell of the grid to a random (uniform) function
+//	according to randomSeed
+func (g *Grid) Randomize(randomSeed int64) {
+	statusesList := []int{statuses.ALIVE, statuses.DEAD}
+	statusesListLen := len(statusesList)
+	rows := g.Rows()
+	cols := g.Cols()
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			g.Set(i, j, statusesList[rand.Intn(statusesListLen)])
+		}
+	}
+}
+
+// NewGridFromCellsStorer : creates a grid
+func newGridFromCellsStorer(rowLimitation, colLimitation string, cells CellsStorer) *Grid {
+	g := new(Grid)
+	if cells == nil {
+		panic(fmt.Sprintf("cells argument cannot be nil"))
+	}
+	g.cells = cells.Clone()
+	g.SetLimitRows(rowLimitation == "limited")
+	g.SetLimitCols(colLimitation == "limited")
+	return g
+}
+
+// NewRandomGridFromCellsStorer : creates a randomized grid
+func NewRandomGridFromCellsStorer(rowLimitation, colLimitation string, cells CellsStorer, ramdomSeed int64) *Grid {
+	grid := newGridFromCellsStorer(rowLimitation, colLimitation, cells)
+	grid.Randomize(ramdomSeed)
+	return grid
 }
