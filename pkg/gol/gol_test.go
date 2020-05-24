@@ -12,7 +12,7 @@ import (
 )
 
 func TestNewGol(t *testing.T) {
-	g := NewGol("TestGol", "", 0, 5, 5, "23/3")
+	g := NewGol("TestGol", "", "23/3", "dense", "limited", "limited", 0, 5, 5)
 	for i := 0; i < g.Rows(); i++ {
 		for j := 0; j < g.Cols(); j++ {
 			if g.Get(i, j) != statuses.DEAD {
@@ -61,17 +61,23 @@ func TestClone(t *testing.T) {
 	}
 }
 
-func TestNextGeneration(t *testing.T) {
+func TestStillLifeNextGeneration(t *testing.T) {
 	// Test still-life
 	testStillNextGeneration(t, "block.txt")
 	testStillNextGeneration(t, "bee-hive.txt")
 	testStillNextGeneration(t, "loaf.txt")
 	testStillNextGeneration(t, "boat.txt")
 	testStillNextGeneration(t, "tub.txt")
+}
+
+func TestOscilatorNextGeneration(t *testing.T) {
 	// Test oscilators
 	testOscilatorNextGeneration(t, "blinker/gen_0.txt", "blinker/gen_1.txt")
 	testOscilatorNextGeneration(t, "beacon/gen_0.txt", "beacon/gen_1.txt")
 	testOscilatorNextGeneration(t, "toad/gen_0.txt", "toad/gen_1.txt")
+}
+
+func TestBigGridsNextGeneration(t *testing.T) {
 	// Test big grids
 	testStandardGridNextGeneration(t, "grid1024x1024.txt", "grid1024x1024_gen1.txt", SERIAL)
 	testStandardGridNextGeneration(t, "grid1024x1024.txt", "grid1024x1024_gen1.txt", CPUS)
@@ -104,7 +110,7 @@ func testStillNextGeneration(t *testing.T, stillFilePath string) {
 		t.Error(g0ReadError)
 	}
 	g1 := g0.NextGeneration()
-	if !g1.GridEquals(g0) {
+	if !g1.GridEquals(g0, "values") {
 		t.Errorf("Still-life does not change after a generation")
 	}
 }
@@ -120,15 +126,15 @@ func testOscilatorNextGeneration(t *testing.T, gen0FilePath string, gen1FilePath
 		t.Error(g1ReadError)
 	}
 
-	if g0.GridEquals(g1) {
+	if g0.GridEquals(g1, "values") {
 		t.Errorf("Odd oscilator game-of-life generation is wrong. They should be different")
 	}
 
-	if !g0.NextGeneration().GridEquals(g1) {
+	if !g0.NextGeneration().GridEquals(g1, "values") {
 		t.Errorf("Odd oscilator game-of-life generation is wrong. They should be equal (odd generation)")
 	}
 
-	if !g1.NextGeneration().GridEquals(g0) {
+	if !g1.NextGeneration().GridEquals(g0, "values") {
 		t.Errorf("Odd oscilator game-of-life generation is wrong. They should be equal (even generation)")
 	}
 }

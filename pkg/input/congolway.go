@@ -176,9 +176,10 @@ func (gr *GolReader) readCongolwayFileV1(reader *bufio.Reader) (base.GolInterfac
 		colsLimitation = "limited"
 	}
 
-	gr.readGol.Init(name, description, generation,
-		rows, cols, rowsLimitation, colsLimitation,
-		rules, neighborhoodType)
+	gr.readGol.Init(
+		name, description, rules, DefaultGridType, rowsLimitation, colsLimitation,
+		rows, cols, generation, neighborhoodType,
+	)
 
 	// Read grid type
 	gridTypeLine, gridTypeLineError := gr.readCongolwayFileLine(reader)

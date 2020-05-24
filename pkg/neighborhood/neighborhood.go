@@ -1,8 +1,12 @@
 package neighborhood
 
+import "fmt"
+
 const NONE = -1
 const MOORE = 1
 const VONNEUMANN = 2
+const MOORESTRING = "Moore"
+const VONNEUMANNSTRING = "Von Neumman"
 
 type gettable interface {
 	Get(i int, j int) int
@@ -38,15 +42,41 @@ func GetFunc(neighborhoodType int) Func {
 	panic("Wrong neighborhoodType")
 }
 
-// GetName : returns the neighborhood name based on its code.
-func GetName(neighborhoodType int) string {
+// AssertType : assert the neightborhood type as int
+func AssertType(neighborhoodType int) {
+	if neighborhoodType != MOORE && neighborhoodType == VONNEUMANN {
+		panic(
+			fmt.Sprintf(
+				"Wrong neighborhoodType %d, expected %d (Moore) or %d (Von Neumman)",
+				neighborhoodType, MOORE, VONNEUMANN,
+			),
+		)
+	}
+}
+
+// StringFromType : returns the neighborhood name based on its code.
+func StringFromType(neighborhoodType int) string {
 	if neighborhoodType == MOORE {
-		return "Moore"
+		return MOORESTRING
 	}
 	if neighborhoodType == VONNEUMANN {
-		return "Von Neumann"
+		return VONNEUMANNSTRING
 	}
 	panic("Wrong neighborhoodType")
+}
+
+// TypeFromString : returns the neighborhood type from a string
+func TypeFromString(neighborhoodType string) int {
+	if neighborhoodType == MOORESTRING {
+		return MOORE
+	}
+	if neighborhoodType == VONNEUMANNSTRING {
+		return VONNEUMANN
+	}
+	panic(fmt.Sprintf(
+		"Wrong neighborhoodType %s, expected \"%s\" or \"%s\"",
+		neighborhoodType, MOORESTRING, VONNEUMANNSTRING,
+	))
 }
 
 // NeighborsCount : number of neighbors alive surronding

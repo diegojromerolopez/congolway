@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestNewStorage(t *testing.T) {
-	s := NewStorage(5, 7, 0)
+func TestNewDok(t *testing.T) {
+	s := NewDok(5, 7, 0)
 	if s.Rows() != 5 {
 		t.Errorf("Invalid rows. Should be %d, found %d", 5, s.Rows())
 	}
@@ -17,8 +17,8 @@ func TestNewStorage(t *testing.T) {
 	}
 }
 
-func TestStorageGetSet(t *testing.T) {
-	s := NewStorage(5, 7, 0)
+func TestDokGetSet(t *testing.T) {
+	s := NewDok(5, 7, 0)
 
 	expectedValue := 8
 	s.Set(1, 2, expectedValue)
@@ -28,8 +28,8 @@ func TestStorageGetSet(t *testing.T) {
 	}
 }
 
-func TestStorageClone(t *testing.T) {
-	s := NewStorage(5, 7, 0)
+func TestDokClone(t *testing.T) {
+	s := NewDok(5, 7, 0)
 	o := s.Clone()
 	equalsError := s.EqualsError(o)
 	if equalsError != nil {
@@ -41,8 +41,8 @@ func TestStorageClone(t *testing.T) {
 	}
 }
 
-func TestStorageNotEqual(t *testing.T) {
-	s := NewStorage(5, 7, 0)
+func TestDokNotEqual(t *testing.T) {
+	s := NewDok(5, 7, 0)
 	s.Set(1, 2, 3)
 
 	// Test that are keys in o1 but not in s
@@ -53,7 +53,7 @@ func TestStorageNotEqual(t *testing.T) {
 		t.Error("Should be different: o1 and s")
 		return
 	}
-	expectedO1ErrorString := "(3,2) = 1 exists only in the storage grid argument but not in the receiver"
+	expectedO1ErrorString := "(3,2) = 1 exists only in the dok argument but not in the receiver"
 	if o1EqualsError.Error() != expectedO1ErrorString {
 		t.Errorf("Expected error: \"%s\". Found: \"%s\"", expectedO1ErrorString, o1EqualsError.Error())
 		return

@@ -8,7 +8,6 @@ import (
 
 	"github.com/diegojromerolopez/congolway/pkg/gol"
 	"github.com/diegojromerolopez/congolway/pkg/input"
-	"github.com/diegojromerolopez/congolway/pkg/neighborhood"
 )
 
 func TestSaveToCellsFile(t *testing.T) {
@@ -26,15 +25,15 @@ func testSaveToCellsFile(t *testing.T, rows int, cols int, randomSeed int64) {
 	outputFilePath := file.Name()
 	defer os.Remove(outputFilePath)
 
-	g := gol.NewRandomGol("Random", "", rows, cols, "23/3", randomSeed)
+	g := gol.NewRandomGol("Random", "", "23/3", "dok", "limited", "limited", rows, cols, randomSeed)
 
 	golo := NewGolOutputer(g)
 	golo.SaveToCellsFile(outputFilePath)
 
 	gr := input.NewGolReader(new(gol.Gol))
-	readG, readError := gr.ReadCellsFile(outputFilePath, 0, "limited", "limited", "23/3", neighborhood.MOORE)
+	readG, readError := gr.ReadCellsFile(outputFilePath)
 	if readError != nil {
-		fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError)
+		t.Error(fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError))
 		return
 	}
 

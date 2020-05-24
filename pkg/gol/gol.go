@@ -25,27 +25,26 @@ type Gol struct {
 }
 
 // NewGol : creates a game of life
-func NewGol(name string, description string, generation int, rows int, cols int, rules string) *Gol {
+func NewGol(name, description, rules, gridType, rowsLimitation, colsLimitation string, rows, cols, generation int) *Gol {
 	g := new(Gol)
-	gr := grid.NewGrid(rows, cols, "limited", "limited")
-	g.InitWithGrid(name, description, generation, rules, neighborhood.MOORE, gr)
+	gr := grid.NewGrid(rows, cols, rowsLimitation, colsLimitation, gridType)
+	g.InitWithGrid(name, description, rules, generation, neighborhood.MOORE, gr)
 	return g
 }
 
 // NewRandomGol : creates a new random game of life
-func NewRandomGol(name string, description string, rows int, cols int, rules string, randomSeed int64) *Gol {
+func NewRandomGol(name, description, rules, gridType, rowsLimitation, colsLimitation string, rows, cols int, randomSeed int64) *Gol {
 	g := new(Gol)
-	gr := grid.NewRandomGrid(rows, cols, "limited", "limited", randomSeed)
-	g.InitWithGrid(name, description, 0, rules, neighborhood.MOORE, gr)
+	gr := grid.NewRandomGrid(rows, cols, rowsLimitation, colsLimitation, gridType, randomSeed)
+	g.InitWithGrid(name, description, rules, 0, neighborhood.MOORE, gr)
 	return g
 }
 
 // Init : initialize a Game of Life instance
-func (g *Gol) Init(name string, description string, generation int, rows int, cols int,
-	rowsLimitation string, colsLimitation string, rules string, neighborhoodType int) {
+func (g *Gol) Init(name, description, rules, gridType, rowsLimitation, colsLimitation string, rows, cols, generation, neighborhoodType int) {
 	g.name = name
 	g.description = description
-	g.grid = grid.NewGrid(rows, cols, rowsLimitation, colsLimitation)
+	g.grid = grid.NewGrid(rows, cols, rowsLimitation, colsLimitation, gridType)
 	g.SetRules(rules)
 	g.generation = generation
 	g.neighborhoodType = neighborhoodType
@@ -54,8 +53,7 @@ func (g *Gol) Init(name string, description string, generation int, rows int, co
 }
 
 // InitWithGrid : initialize a Game of Life instance
-func (g *Gol) InitWithGrid(name string, description string,
-	generation int, rules string, neighborhoodType int, gr *grid.Grid) {
+func (g *Gol) InitWithGrid(name, description, rules string, generation, neighborhoodType int, gr *grid.Grid) {
 	g.name = name
 	g.description = description
 	g.generation = generation
@@ -115,6 +113,11 @@ func (g *Gol) Generation() int {
 	return g.generation
 }
 
+// SetGeneration : set generation passed
+func (g *Gol) SetGeneration(generation int) {
+	g.generation = generation
+}
+
 // NeighborhoodType : return the neighborhood type
 func (g *Gol) NeighborhoodType() int {
 	return g.neighborhoodType
@@ -122,7 +125,18 @@ func (g *Gol) NeighborhoodType() int {
 
 // NeighborhoodTypeString : return the neighborhood type (as string)
 func (g *Gol) NeighborhoodTypeString() string {
-	return neighborhood.GetName(g.neighborhoodType)
+	return neighborhood.StringFromType(g.neighborhoodType)
+}
+
+// SetNeighborhoodType : return the neighborhood type
+func (g *Gol) SetNeighborhoodType(neighborhoodType int) {
+	neighborhood.AssertType(neighborhoodType)
+	g.neighborhoodType = neighborhoodType
+}
+
+// SetNeighborhoodTypeString : return the neighborhood type (as string)
+func (g *Gol) SetNeighborhoodTypeString(neighborhoodType string) {
+	g.neighborhoodType = neighborhood.TypeFromString(neighborhoodType)
 }
 
 // Rows : return the number of rows of the grid
@@ -140,9 +154,19 @@ func (g *Gol) LimitRows() bool {
 	return g.grid.LimitRows()
 }
 
+// SetLimitRows : set if rows are limited or isn't
+func (g *Gol) SetLimitRows(limitRows bool) {
+	g.grid.SetLimitRows(limitRows)
+}
+
 // LimitCols : return the number of columns of the grid
 func (g *Gol) LimitCols() bool {
 	return g.grid.LimitCols()
+}
+
+// SetLimitCols : set if cols are limited or isn't
+func (g *Gol) SetLimitCols(limitRows bool) {
+	g.grid.SetLimitCols(limitRows)
 }
 
 // Get : get the value of the cell (ALICE, DEAD)
@@ -171,14 +195,14 @@ func (g *Gol) Equals(o base.GolInterface) bool {
 		g.neighborhoodType == other.neighborhoodType &&
 		g.processes == other.processes
 
-	return simpleAttributesAreEqual && g.grid.Equals(other.grid)
+	return simpleAttributesAreEqual && g.grid.Equals(other.grid, "values")
 }
 
 // GridEquals : inform if two game of life instances have the same data,
 //	ignoring the difference in generations value
-func (g *Gol) GridEquals(o base.GolInterface) bool {
+func (g *Gol) GridEquals(o base.GolInterface, mode string) bool {
 	other := o.(*Gol)
-	return g.grid.Equals(other.grid)
+	return g.grid.Equals(other.grid, mode)
 }
 
 // EqualsError : inform if two game of life instances have the same data
@@ -210,13 +234,13 @@ func (g *Gol) EqualsError(o base.GolInterface) error {
 		return fmt.Errorf("Processes are different: %d vs %d", g.processes, other.processes)
 	}
 
-	return g.grid.EqualsError(other.grid)
+	return g.grid.EqualsError(other.grid, "values")
 }
 
 // Clone : clone a game of life instance
 func (g *Gol) Clone() base.GolInterface {
 	clone := new(Gol)
-	clone.InitWithGrid(g.name, g.description, g.generation, g.rules, g.neighborhoodType, g.grid.Clone())
+	clone.InitWithGrid(g.name, g.description, g.rules, g.generation, g.neighborhoodType, g.grid.Clone())
 	clone.SetProcesses(g.processes)
 	return clone
 }

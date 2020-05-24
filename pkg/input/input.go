@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/diegojromerolopez/congolway/pkg/base"
-	"github.com/diegojromerolopez/congolway/pkg/neighborhood"
 )
 
 // GolReader : tasked with reading a Game of Life from files
@@ -29,12 +28,7 @@ func (gr *GolReader) ReadFile(filename string) (base.GolInterface, error) {
 	if fileExtension == ".txt" {
 		return gr.ReadCongolwayFile(filename)
 	} else if fileExtension == ".cells" {
-		rowsLimitation := "unlimited"
-		colsLimitation := "unlimited"
-		generation := 0
-		rules := "23/3"
-		neighborhoodType := neighborhood.MOORE
-		return gr.ReadCellsFile(filename, generation, rowsLimitation, colsLimitation, rules, neighborhoodType)
+		return gr.ReadCellsFile(filename)
 	}
 	return nil, fmt.Errorf("File extension \"%s\" not recognized. Only .txt and .cells are allowed", fileExtension)
 }
