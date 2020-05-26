@@ -132,6 +132,13 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 
 
 ## TODO
+* Read a game of life from a gif/png still image.
+* Run a "program" in a game of life:
+  * Sync
+  * Async
+* Implement a ncurses game of life animation.
+* Implement a multiplatform desktop app.
+* Implement neighborhood functions.
 * Include gliders and other patterns.
 * ~~Implement Grid as a sparse matrix.~~ Done by using the [thread-safe](https://golang.org/pkg/sync/#Map) [dictionary of keys](https://en.wikipedia.org/wiki/Sparse_matrix#Dictionary_of_keys_(DOK)) sparse matrix pattern.
 * Implement some kind of application (maybe a Turing machine?) in a Game of Life instance.
