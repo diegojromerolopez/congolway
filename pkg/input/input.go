@@ -29,6 +29,10 @@ func (gr *GolReader) ReadFile(filename string) (base.GolInterface, error) {
 		return gr.ReadCongolwayFile(filename)
 	} else if fileExtension == ".cells" {
 		return gr.ReadCellsFile(filename)
+	} else if fileExtension == ".gif" {
+		return gr.ReadGifFile(filename)
 	}
-	return nil, fmt.Errorf("File extension \"%s\" not recognized. Only .txt and .cells are allowed", fileExtension)
+	return nil, fmt.Errorf(
+		"File extension \"%s\" not recognized. "+
+			"Only .txt, .cells and .gif are allowed", fileExtension)
 }
