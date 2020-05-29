@@ -132,10 +132,10 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 
 
 ## TODO
-* Read a game of life from a gif/png still image.
-* Run a "program" in a game of life:
-  * Sync
-  * Async
+* ~~Read a game of life from a gif/png still image.~~
+* Run a "program" in a game of life (desktop app):
+  * Sync (load programs before start)
+  * Async (allow the user to interact with the gol with the mouse)
 * Implement a ncurses game of life animation.
 * Implement a multiplatform desktop app.
 * Implement neighborhood functions.
@@ -152,7 +152,7 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
   * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
 * ~~Allow definition of multiple rules of spawning.~~ Done based on [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05) rules format.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
-* Continous integration. . *Tests?*
+* ~~Continous integration.~~
 * Read zipped files. *Is it really needed, though?*
 * Allow extracting size from grid. *Is it really needed, though?*
 * ~~Parallelize.~~
