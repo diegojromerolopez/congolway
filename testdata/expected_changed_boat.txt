@@ -1,0 +1,16 @@
+CONGOLWAY
+version: 1
+name: Boat
+description: A Boat game of life pattern
+rules: 23/3
+generation: 0
+neighborhood_type: Moore
+size: 5x5
+limits: rows, cols
+grid_type: dense
+grid:
+X   X
+     
+ X X 
+  X  
+X   X
