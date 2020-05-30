@@ -78,13 +78,12 @@ func (dok *Dok) Equals(o CellsStorer) bool {
 // EqualsError : inform if two grids have the same dimensions and
 // the same cell values for each position.
 func (dok *Dok) EqualsError(o CellsStorer) error {
+	dimensionsError := dok.equalDimensionsError(o)
+	if dimensionsError != nil {
+		return dimensionsError
+	}
+
 	other := o.(*Dok)
-	if dok.rows != other.rows {
-		return fmt.Errorf("Rows are different: %d vs %d", dok.rows, other.rows)
-	}
-	if dok.cols != other.cols {
-		return fmt.Errorf("Cols are different: %d vs %d", dok.cols, other.cols)
-	}
 
 	// Check that every key in s has the same value in other
 	var myKey _Key
@@ -153,11 +152,9 @@ func (dok *Dok) EqualValues(o CellsStorer) bool {
 // cell storers have the same values. Return an error
 // if that's not the case
 func (dok *Dok) EqualValuesError(o CellsStorer) error {
-	if dok.rows != o.Rows() {
-		return fmt.Errorf("Rows are different: %d vs %d", dok.rows, o.Rows())
-	}
-	if dok.cols != o.Cols() {
-		return fmt.Errorf("Cols are different: %d vs %d", dok.cols, o.Cols())
+	dimensionsError := dok.equalDimensionsError(o)
+	if dimensionsError != nil {
+		return dimensionsError
 	}
 
 	for i := 0; i < dok.rows; i++ {
@@ -193,4 +190,16 @@ func (dok *Dok) assertIndexes(i, j int) {
 	if j < 0 || j >= dok.cols {
 		panic(fmt.Sprintf("Invalid col index: %d not in [0, %d]", j, dok.cols-1))
 	}
+}
+
+func (dok *Dok) equalDimensionsError(o CellsStorer) error {
+	oRows := o.Rows()
+	if dok.rows != oRows {
+		return fmt.Errorf("Rows are different: %d vs %d", dok.rows, oRows)
+	}
+	oCols := o.Cols()
+	if dok.cols != oCols {
+		return fmt.Errorf("Cols are different: %d vs %d", dok.cols, oCols)
+	}
+	return nil
 }
