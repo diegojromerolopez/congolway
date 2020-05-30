@@ -18,6 +18,10 @@ randomgol:
 golconv:
 	go build -o bin/golconv cmd/golconv/main.go
 
+
+test_coverage:
+	go test -coverprofile c.out ./...
+
 tests:
 	go test -v ./...
 

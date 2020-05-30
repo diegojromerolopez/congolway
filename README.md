@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/diegojromerolopez/congolway.svg?branch=master)](https://travis-ci.org/diegojromerolopez/congolway)
 [![Go Report Card](https://goreportcard.com/badge/github.com/diegojromerolopez/congolway)](https://goreportcard.com/report/github.com/diegojromerolopez/congolway)
 [![Maintainability](https://api.codeclimate.com/v1/badges/98bb57b41d67d161e6bd/maintainability)](https://codeclimate.com/github/diegojromerolopez/congolway/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/98bb57b41d67d161e6bd/test_coverage)](https://codeclimate.com/github/diegojromerolopez/congolway/test_coverage)
 [![HitCount](http://hits.dwyl.com/diegojromerolopez/congolway.svg)](http://hits.dwyl.com/diegojromerolopez/congolway)
 
 
