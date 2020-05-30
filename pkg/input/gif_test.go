@@ -35,7 +35,7 @@ func TestNewGolFromGifFile(t *testing.T) {
 	defer os.RemoveAll(tempDir)
 
 	outputGifPath := filepath.Join(tempDir, "out.gif")
-	animator.MakeGif(g, outputGifPath, 1, 0)
+	animator.MakeGif(g, outputGifPath, 1, 0, nil)
 
 	expectedGifBytes, expectedGifErr := ioutil.ReadFile(gifFilePath)
 	if expectedGifErr != nil {

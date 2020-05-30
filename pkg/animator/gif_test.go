@@ -36,7 +36,7 @@ func testMakeGif(t *testing.T, filename string, expectedGifFilename string) {
 
 	generations := 10
 	delay := 5
-	gifError := MakeGif(g.(*gol.Gol), gifOutputPath, generations, delay)
+	gifError := MakeGif(g.(*gol.Gol), gifOutputPath, generations, delay, nil)
 	if gifError != nil {
 		t.Error(gifError)
 		return

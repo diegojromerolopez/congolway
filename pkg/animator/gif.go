@@ -10,7 +10,7 @@ import (
 )
 
 // MakeGif : make a gif animation for some generations
-func MakeGif(g *gol.Gol, outputFilepath string, generations int, delay int) error {
+func MakeGif(g *gol.Gol, outputFilepath string, generations int, delay int, scaler *ImgScaler) error {
 	outputFile, outputFileError := os.Create(outputFilepath)
 	if outputFileError != nil {
 		return outputFileError
@@ -32,7 +32,11 @@ func MakeGif(g *gol.Gol, outputFilepath string, generations int, delay int) erro
 		}
 
 		gifAnimation.Delay = append(gifAnimation.Delay, delay)
-		gifAnimation.Image = append(gifAnimation.Image, frameImage)
+		if scaler != nil {
+			gifAnimation.Image = append(gifAnimation.Image, scaler.ScalePaletted(frameImage))
+		} else {
+			gifAnimation.Image = append(gifAnimation.Image, frameImage)
+		}
 
 		g = g.NextGeneration().(*gol.Gol)
 	}

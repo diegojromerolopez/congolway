@@ -1,0 +1,41 @@
+CONGOLWAY
+version: 1
+name: Gosper Glider Gun
+description: Original at http://www.conwaylife.com/patterns/gosperglidergun.cells
+rules: 23/3
+generation: 0
+neighborhood_type: Moore
+size: 30x72
+limits: no
+grid_type: dense
+grid:
+                        X                                   X           
+                      X X                                 X X           
+            XX      XX            XX            XX      XX            XX
+           X   X    XX            XX           X   X    XX            XX
+XX        X     X   XX              XX        X     X   XX              
+XX        X   X XX    X X           XX        X   X XX    X X           
+          X     X       X                     X     X       X           
+           X   X                               X   X                    
+            XX                                  XX                      
+                                                                        
+                        X                                   X           
+                      X X                                 X X           
+            XX      XX            XX            XX      XX            XX
+           X   X    XX            XX           X   X    XX            XX
+XX        X     X   XX              XX        X     X   XX              
+XX        X   X XX    X X           XX        X   X XX    X X           
+          X     X       X                     X     X       X           
+           X   X                               X   X                    
+            XX                                  XX                      
+                                                                        
+                        X                                   X           
+                      X X                                 X X           
+            XX      XX            XX            XX      XX            XX
+           X   X    XX            XX           X   X    XX            XX
+XX        X     X   XX              XX        X     X   XX              
+XX        X   X XX    X X           XX        X   X XX    X X           
+          X     X       X                     X     X       X           
+           X   X                               X   X                    
+            XX                                  XX                      
+                                                                        

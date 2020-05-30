@@ -70,6 +70,10 @@ Usage of ./bin/golgif:
         File path of the Congolway (.txt) or cells (.cells) file
   -outputFilePath string
         File path where the output gif will be saved (default "out.gif")
+  -outputHeight int
+        Height of the output gif image. If -1, this image will not be scaled (default -1)
+  -outputWitdh int
+        Width of the output gif image. If -1, this image will not be scaled (default -1)
   -procs int
         Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs), enter a positive integer to set a custom number of proceses (default -1)
 ```
@@ -125,6 +129,14 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 
 ![grid100x100 gif](samples/grid100x100.gif)
 
+### Gosper Glider Gun gif animation
+```sh
+ ./bin/golgif -inputFilePath="./samples/gosper_glider_gun.txt" -outputFilePath="./samples/ggg.gif" \
+      -outputWitdh=800 -outputHeight=400 -generations=50
+```
+
+![gosper_glider_gun gif](samples/gosper_glider_gun.gif)
+
 ### 100x100 apng animation
 ```sh
 ./bin/golgif -inputFilePath="./samples/grid100x100.txt" -outputFilePath="./samples/grid100x100.apng"
@@ -158,6 +170,8 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 * Read zipped files. *Is it really needed, though?*
 * Allow extracting size from grid. *Is it really needed, though?*
 * ~~Parallelize.~~
+* **Parallelization must use a threadpool.**
+* ~~Scaling of gif animations.~~
 * Serve in a http server.
 
 ## Code of Conduct
