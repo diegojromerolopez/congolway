@@ -83,6 +83,35 @@ func TestBigGridsNextGeneration(t *testing.T) {
 	testStandardGridNextGeneration(t, "grid1024x1024.txt", "grid1024x1024_gen1.txt", CPUS)
 }
 
+func TestPriorChanges(t *testing.T) {
+	g, gError := readCongolwayFile("still/boat.txt")
+	if gError != nil {
+		t.Error(gError)
+		return
+	}
+
+	changes := [][]int{
+		{0, 0, statuses.ALIVE},
+		{0, 4, statuses.ALIVE},
+		{4, 0, statuses.ALIVE},
+		{4, 4, statuses.ALIVE},
+		{1, 1, statuses.DEAD},
+		{1, 2, statuses.DEAD},
+	}
+	changedG := g.ChangeCells(changes)
+
+	expectedG, expectedGError := readCongolwayFile("expected_changed_boat.txt")
+	if expectedGError != nil {
+		t.Error(expectedGError)
+		return
+	}
+
+	equalsError := changedG.EqualsError(expectedG)
+	if equalsError != nil {
+		t.Error(equalsError)
+	}
+}
+
 func testStandardGridNextGeneration(t *testing.T, gen0FilePath string, gen1FilePath string, goProcesses int) {
 	g0, g0ReadError := readCongolwayFile(gen0FilePath)
 	if g0ReadError != nil {

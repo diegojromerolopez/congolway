@@ -58,7 +58,9 @@ func (dok *Dok) Get(i, j int) int {
 // Set : set the value of the cell in the i, j coordinates
 func (dok *Dok) Set(i, j, value int) {
 	dok.assertIndexes(i, j)
-	if value != dok.defaultValue {
+	if value == dok.defaultValue {
+		dok.cells.Delete(_Key{i, j})
+	} else {
 		dok.cells.Store(_Key{i, j}, value)
 	}
 }

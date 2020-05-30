@@ -19,10 +19,10 @@ const SERIAL = 1
 // the next generation.
 const CPUS = -1
 
-// GetProcesses : return the number of GO processes used in
+// Processes : return the number of GO processes used in
 // the computing of the next generation.
 // Take account the constants SERIAL and CPUS of this package.
-func (g *Gol) GetProcesses() int {
+func (g *Gol) Processes() int {
 	return g.processes
 }
 
@@ -33,7 +33,48 @@ func (g *Gol) SetProcesses(processes int) {
 	g.processes = processes
 }
 
+// ChangeCells : apply cell changes before a new generation
+// This method is used by NextGeneration to allow input data
+// on the Game of Life instance
+func (g *Gol) ChangeCells(changes [][]int) base.GolInterface {
+	if changes == nil || len(changes) == 0 {
+		return g
+	}
+	if g.processes == SERIAL {
+		return g.serialChangeCells(changes)
+	}
+	return g.parallelChangeCells(changes)
+}
+
+func (g *Gol) serialChangeCells(changes [][]int) base.GolInterface {
+	gCopy := g.Clone()
+	for _, change := range changes {
+		gCopy.Set(change[0], change[1], change[2])
+	}
+	return gCopy
+}
+
+func (g *Gol) parallelChangeCells(changes [][]int) base.GolInterface {
+	setRuntimeProcs(g)
+
+	var wg sync.WaitGroup
+	wg.Add(len(changes))
+
+	gCopy := g.Clone()
+	for _, change := range changes {
+		go func(i, j, status int) {
+			gCopy.Set(i, j, status)
+			wg.Done()
+		}(change[0], change[1], change[2])
+	}
+
+	wg.Wait()
+	return gCopy
+}
+
 // NextGeneration : compute the next generation
+// If no prior change to the generation of the next game of life
+// instance, pass a nil in the place of changes parameter.
 func (g *Gol) NextGeneration() base.GolInterface {
 	if g.processes == SERIAL {
 		return g.serialNextGeneration()
@@ -41,12 +82,12 @@ func (g *Gol) NextGeneration() base.GolInterface {
 	return g.parallelNextGeneration()
 }
 
-// SerialNextGeneration : compute the next generation
+// serialNextGeneration : compute the next generation without running threads
 func (g *Gol) serialNextGeneration() base.GolInterface {
 	rows := g.Rows()
 	cols := g.Cols()
 
-	nextG := g.createNextGenerationGol().(*Gol)
+	nextG := g.copyWithEmptyGrid().(*Gol)
 
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
@@ -58,13 +99,11 @@ func (g *Gol) serialNextGeneration() base.GolInterface {
 	return nextG
 }
 
+// parallelNextGeneration : compute the next generation using threads
 func (g *Gol) parallelNextGeneration() base.GolInterface {
-	if g.processes == CPUS {
-		g.processes = runtime.NumCPU()
-	}
-	runtime.GOMAXPROCS(g.processes)
+	setRuntimeProcs(g)
 
-	nextG := g.createNextGenerationGol().(*Gol)
+	nextG := g.copyWithEmptyGrid().(*Gol)
 
 	rows := g.Rows()
 	cols := g.Cols()
@@ -108,8 +147,18 @@ func (g *Gol) nextCell(i int, j int) int {
 	}
 }
 
-func (g *Gol) createNextGenerationGol() base.GolInterface {
+func (g *Gol) copyWithEmptyGrid() base.GolInterface {
 	ngGol := new(Gol)
 	ngGol.InitWithGrid(g.name, g.description, g.rules, g.generation, g.neighborhoodType, g.grid.CloneEmpty())
 	return ngGol
+}
+
+func setRuntimeProcs(g base.GolInterface) {
+	var processes int
+	if g.Processes() == CPUS {
+		processes = runtime.NumCPU()
+	} else {
+		processes = g.Processes()
+	}
+	runtime.GOMAXPROCS(processes)
 }
