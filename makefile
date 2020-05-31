@@ -1,4 +1,4 @@
-build: golstdout golgif golsvg golapng randomgol golconv
+build: golstdout golgif golsvg golapng randomgol golconv golspawner
 
 golstdout:
 	go build -o bin/golstdout cmd/golstdout/main.go
@@ -18,6 +18,9 @@ randomgol:
 golconv:
 	go build -o bin/golconv cmd/golconv/main.go
 
+golspawner:
+	go build -o bin/golspawner cmd/golspawner/main.go
+
 
 test_coverage:
 	go test -coverprofile c.out ./...
@@ -31,3 +34,5 @@ clean:
 	rm -rf bin/golsvg
 	rm -rf bin/golapng
 	rm -rf bin/golconv
+	rm -rf bin/golspawner
+

@@ -63,11 +63,13 @@ func TestClone(t *testing.T) {
 
 func TestStillLifeNextGeneration(t *testing.T) {
 	// Test still-life
-	testStillNextGeneration(t, "block.txt")
-	testStillNextGeneration(t, "bee-hive.txt")
-	testStillNextGeneration(t, "loaf.txt")
-	testStillNextGeneration(t, "boat.txt")
-	testStillNextGeneration(t, "tub.txt")
+	for numOfGenerations := 1; numOfGenerations <= 5; numOfGenerations++ {
+		testStillNextGeneration(t, "block.txt", numOfGenerations)
+		testStillNextGeneration(t, "bee-hive.txt", numOfGenerations)
+		testStillNextGeneration(t, "loaf.txt", numOfGenerations)
+		testStillNextGeneration(t, "boat.txt", numOfGenerations)
+		testStillNextGeneration(t, "tub.txt", numOfGenerations)
+	}
 }
 
 func TestOscilatorNextGeneration(t *testing.T) {
@@ -81,6 +83,21 @@ func TestBigGridsNextGeneration(t *testing.T) {
 	// Test big grids
 	testStandardGridNextGeneration(t, "grid1024x1024.txt", "grid1024x1024_gen1.txt", SERIAL)
 	testStandardGridNextGeneration(t, "grid1024x1024.txt", "grid1024x1024_gen1.txt", CPUS)
+}
+
+func TestFastForward(t *testing.T) {
+	rows := 100
+	cols := 100
+	randomSeed := int64(42)
+	g := NewRandomGol("Random", "", "23/3", "dok", "limited", "limited",
+		rows, cols, randomSeed)
+	g3 := g.NextGeneration().NextGeneration().NextGeneration().(*Gol)
+	ffg3 := g.FastForward(3)
+
+	equalsError := g3.EqualsError(ffg3)
+	if equalsError != nil {
+		t.Error(equalsError)
+	}
 }
 
 func TestPriorChanges(t *testing.T) {
@@ -133,13 +150,13 @@ func testStandardGridNextGeneration(t *testing.T, gen0FilePath string, gen1FileP
 	}
 }
 
-func testStillNextGeneration(t *testing.T, stillFilePath string) {
+func testStillNextGeneration(t *testing.T, stillFilePath string, generations int) {
 	g0, g0ReadError := readCongolwayFile("still/" + stillFilePath)
 	if g0ReadError != nil {
 		t.Error(g0ReadError)
 	}
-	g1 := g0.NextGeneration()
-	if !g1.GridEquals(g0, "values") {
+	ffg := g0.FastForward(generations)
+	if !ffg.GridEquals(g0, "values") {
 		t.Errorf("Still-life does not change after a generation")
 	}
 }

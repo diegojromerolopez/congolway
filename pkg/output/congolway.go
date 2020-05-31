@@ -16,7 +16,6 @@ func (gout *GolOutputer) SaveToCongolwayFile(filename string, fileType string) e
 	if err != nil {
 		return err
 	}
-
 	writer := bufio.NewWriter(file)
 
 	rows := gout.gol.Rows()

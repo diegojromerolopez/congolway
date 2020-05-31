@@ -42,6 +42,8 @@ type GolInterface interface {
 	// Changes that can be applied at any moment
 	// without calling nextGeneration
 	ChangeCells(changes [][]int) GolInterface
+	// FastForward a number of generations
+	FastForward(generations int) GolInterface
 	// Compute the next generation for a game of life instance
 	NextGeneration() GolInterface
 }

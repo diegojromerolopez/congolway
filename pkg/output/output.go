@@ -11,6 +11,7 @@ import (
 // GolOutputer : tasked with writting in several devices the passed
 // Game of Life (gol.Gol object)
 type GolOutputer struct {
+	//TODO: use base.GolInterface instead
 	gol *gol.Gol
 }
 

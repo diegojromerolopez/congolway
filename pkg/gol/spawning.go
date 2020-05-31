@@ -33,6 +33,21 @@ func (g *Gol) SetProcesses(processes int) {
 	g.processes = processes
 }
 
+// FastForward : move forward a number of generations
+func (g *Gol) FastForward(generations int) base.GolInterface {
+	ffg := g.Clone().(*Gol)
+	if g.processes == SERIAL {
+		for generation := 0; generation < generations; generation++ {
+			ffg = ffg.serialNextGeneration().(*Gol)
+		}
+		return ffg
+	}
+	for generation := 0; generation < generations; generation++ {
+		ffg = ffg.parallelNextGeneration().(*Gol)
+	}
+	return ffg
+}
+
 // ChangeCells : apply cell changes before a new generation
 // This method is used by NextGeneration to allow input data
 // on the Game of Life instance

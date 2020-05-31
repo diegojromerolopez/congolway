@@ -118,6 +118,21 @@ Usage of ./bin/randomgol:
         Number of rows of the grid (default 100)
 ```
 
+## Spawner
+This program fast forwards a number of generations and saves
+the game of life instance in a file.
+```sh
+Usage of ./bin/golspawner:
+  -generations int
+        Number of generations of the cellular automaton (default 100)
+  -inputFilePath string
+        File path of the Congolway (.txt) or cells (.cells) file
+  -outputFilePath string
+        File path where the output .txt will be saved (default "out.txt")
+  -procs int
+        Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs), enter a positive integer to set a custom number of proceses (default -1)
+```
+
 ## Samples
 
 Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
@@ -163,6 +178,7 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 * Read the following formats:
   * ~~[Plaintext](https://www.conwaylife.com/wiki/Plaintext)~~
   * [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05), i.e. .lif or .life files.
+  * [Life 1.06](https://www.conwaylife.com/wiki/Life_1.06), i.e. .lif or .life files.
   * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
 * ~~Allow definition of multiple rules of spawning.~~ Done based on [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05) rules format.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
