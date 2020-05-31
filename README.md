@@ -162,7 +162,12 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 
 ## TODO
 * ~~Read a game of life from a gif/png still image.~~
-* Run a "program" in a game of life (desktop app):
+* Make a CellsStorer implementation based on file system.
+* Make a distributed CellsStorer implementation.
+* Ability to load programs in a game of life. Programs
+Are a sequence of cell changes indexed by generation.
+There is also the posibility to have conditional cell changes.
+* Desktop app to run a program in a game of life instance:
   * Sync (load programs before start)
   * Async (allow the user to interact with the gol with the mouse)
 * Implement a ncurses game of life animation.
