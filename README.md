@@ -118,7 +118,7 @@ Usage of ./bin/randomgol:
         Number of rows of the grid (default 100)
 ```
 
-## Spawner
+## Spawner
 This program fast forwards a number of generations and saves
 the game of life instance in a file.
 ```sh
