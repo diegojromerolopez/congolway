@@ -47,9 +47,10 @@ func (gout *GolOutputer) SaveToLife106File(filename string) error {
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
 			if gout.gol.Get(i, j) == statuses.ALIVE {
-				writer.WriteString(fmt.Sprintf("\n%d, %d", i, j))
+				writer.WriteString(fmt.Sprintf("\n%d %d", i, j))
 			}
 		}
 	}
+	writer.Flush()
 	return nil
 }
