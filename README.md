@@ -191,7 +191,7 @@ There is also the posibility to have conditional cell changes.
 * Read zipped files. *Is it really needed, though?*
 * Allow extracting size from grid. *Is it really needed, though?*
 * ~~Parallelize.~~
-* **Parallelization must use a threadpool.**
+
 * ~~Scaling of gif animations.~~
 * Serve in a http server.
 

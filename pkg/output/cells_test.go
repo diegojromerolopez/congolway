@@ -31,7 +31,7 @@ func testSaveToCellsFile(t *testing.T, rows int, cols int, randomSeed int64) {
 	golo.SaveToCellsFile(outputFilePath)
 
 	gr := input.NewGolReader(new(gol.Gol))
-	readG, readError := gr.ReadCellsFile(outputFilePath)
+	readG, readError := gr.ReadCellsFile(outputFilePath, nil)
 	if readError != nil {
 		t.Error(fmt.Errorf("Couldn't load the file %s: %s", outputFilePath, readError))
 		return

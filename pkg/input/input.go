@@ -18,7 +18,7 @@ func NewGolReader(g base.GolInterface) *GolReader {
 }
 
 // ReadFile : read a file from a path
-func (gr *GolReader) ReadFile(filename string) (base.GolInterface, error) {
+func (gr *GolReader) ReadFile(filename string, gconf *base.GolConf) (base.GolInterface, error) {
 	lastDotIndex := strings.LastIndex(filename, ".")
 	if lastDotIndex < 0 {
 		return nil, fmt.Errorf("File \"%s\" has no extension. Only .txt and .cells files are allowed", filename)
@@ -28,9 +28,11 @@ func (gr *GolReader) ReadFile(filename string) (base.GolInterface, error) {
 	if fileExtension == ".txt" {
 		return gr.ReadCongolwayFile(filename)
 	} else if fileExtension == ".cells" {
-		return gr.ReadCellsFile(filename)
+		return gr.ReadCellsFile(filename, gconf)
+	} else if fileExtension == ".life" {
+		return gr.ReadLifeFile(filename, gconf)
 	} else if fileExtension == ".gif" {
-		return gr.ReadGifFile(filename)
+		return gr.ReadGifFile(filename, gconf)
 	}
 	return nil, fmt.Errorf(
 		"File extension \"%s\" not recognized. "+

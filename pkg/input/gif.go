@@ -12,7 +12,7 @@ import (
 )
 
 // ReadGifFile : create a new Game of life from a .gif file
-func (gr *GolReader) ReadGifFile(filename string) (base.GolInterface, error) {
+func (gr *GolReader) ReadGifFile(filename string, gconf *base.GolConf) (base.GolInterface, error) {
 	file, fileError := os.Open(filename)
 	defer file.Close()
 
@@ -35,11 +35,14 @@ func (gr *GolReader) ReadGifFile(filename string) (base.GolInterface, error) {
 	// Max is not included in the bounds but min is
 	rows := gifBounds.Max.Y - gifBounds.Min.Y
 	cols := gifBounds.Max.X - gifBounds.Min.X
+
+	if gconf == nil {
+		gconf = base.NewDefaultGolConf()
+	}
+
+	description := fmt.Sprintf("Read from file %s", filename)
 	g := gr.readGol
-	g.Init(filename, "",
-		DefaultRules, "dok",
-		DefaultRowLimitation, DefaultColLimitation,
-		rows, cols, DefaultGeneration, DefaultNeighborhoodType)
+	g.InitFromConf(filename, description, rows, cols, gconf)
 
 	j := 0
 	for x := gifBounds.Min.X; x < gifBounds.Max.X; x++ {

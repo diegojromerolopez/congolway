@@ -39,7 +39,12 @@ func GetFunc(neighborhoodType int) Func {
 	if neighborhoodType == VONNEUMANN {
 		return vonNeumannNeighbors
 	}
-	panic("Wrong neighborhoodType")
+	panic(
+		fmt.Sprintf(
+			"Wrong neighborhoodType %d, expected %d (Moore) or %d (Von Neumman)",
+			neighborhoodType, MOORE, VONNEUMANN,
+		),
+	)
 }
 
 // AssertType : assert the neightborhood type as int

@@ -11,7 +11,7 @@ import (
 )
 
 // ReadCellsFile : create a new Game of life from a .cells file
-func (gr *GolReader) ReadCellsFile(filename string) (base.GolInterface, error) {
+func (gr *GolReader) ReadCellsFile(filename string, gconf *base.GolConf) (base.GolInterface, error) {
 	file, fileError := os.Open(filename)
 	defer file.Close()
 
@@ -68,9 +68,13 @@ func (gr *GolReader) ReadCellsFile(filename string) (base.GolInterface, error) {
 			}
 		}
 	}
+
+	if gconf == nil {
+		gconf = base.NewDefaultGolConf()
+	}
+
 	g := gr.readGol
-	g.Init(name, description, DefaultRules, DefaultGridType, DefaultRowLimitation, DefaultColLimitation,
-		rows, cols, DefaultGeneration, DefaultNeighborhoodType)
+	g.InitFromConf(name, description, rows, cols, gconf)
 	for rowI := 0; rowI < rows; rowI++ {
 		for colI := 0; colI < cols; colI++ {
 			g.Set(rowI, colI, cells[rowI*cols+colI])

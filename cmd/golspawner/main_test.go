@@ -27,14 +27,14 @@ func TestSpawnerMainOK(t *testing.T) {
 	main()
 
 	g1r := input.NewGolReader(new(gol.Gol))
-	gi1, g1ReadError := g1r.ReadFile(inputFilePath)
+	gi1, g1ReadError := g1r.ReadFile(inputFilePath, nil)
 	if g1ReadError != nil {
 		t.Error(g1ReadError)
 		return
 	}
 
 	g2r := input.NewGolReader(new(gol.Gol))
-	gi2, g2ReadError := g2r.ReadFile(outputFilePath)
+	gi2, g2ReadError := g2r.ReadFile(outputFilePath, nil)
 	if g2ReadError != nil {
 		t.Error(g2ReadError)
 		return

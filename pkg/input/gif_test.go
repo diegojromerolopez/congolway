@@ -56,7 +56,7 @@ func TestNewGolFromGifFile(t *testing.T) {
 
 func readGifFileFromPath(filePath string) (base.GolInterface, error) {
 	gr := NewGolReader(new(gol.Gol))
-	gol, golReadError := gr.ReadGifFile(filePath)
+	gol, golReadError := gr.ReadGifFile(filePath, nil)
 	if golReadError != nil {
 		return nil, fmt.Errorf("Couldn't load the file %s: %s", filePath, golReadError)
 	}

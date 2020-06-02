@@ -40,16 +40,12 @@ func NewRandomGol(name, description, rules, gridType, rowsLimitation, colsLimita
 	return g
 }
 
-// Init : initialize a Game of Life instance
-func (g *Gol) Init(name, description, rules, gridType, rowsLimitation, colsLimitation string, rows, cols, generation, neighborhoodType int) {
-	g.name = name
-	g.description = description
-	g.grid = grid.NewGrid(rows, cols, rowsLimitation, colsLimitation, gridType)
-	g.SetRules(rules)
-	g.generation = generation
-	g.neighborhoodType = neighborhoodType
-	g.neighborhoodFunc = neighborhood.GetFunc(g.neighborhoodType)
-	g.processes = CPUS
+// InitFromConf : initialize a Game of Life instance
+func (g *Gol) InitFromConf(name, description string, rows, cols int, gconf *base.GolConf) {
+	g.init(name, description,
+		gconf.Rules(), gconf.GridType(),
+		gconf.RowLimitation(), gconf.ColLimitation(),
+		rows, cols, gconf.Generation(), gconf.NeighborhoodType())
 }
 
 // InitWithGrid : initialize a Game of Life instance
@@ -255,4 +251,15 @@ func (g *Gol) DbgStdout() {
 		}
 		fmt.Print("\n")
 	}
+}
+
+func (g *Gol) init(name, description, rules, gridType, rowsLimitation, colsLimitation string, rows, cols, generation, neighborhoodType int) {
+	g.name = name
+	g.description = description
+	g.grid = grid.NewGrid(rows, cols, rowsLimitation, colsLimitation, gridType)
+	g.SetRules(rules)
+	g.generation = generation
+	g.neighborhoodType = neighborhoodType
+	g.neighborhoodFunc = neighborhood.GetFunc(g.neighborhoodType)
+	g.processes = CPUS
 }

@@ -32,6 +32,8 @@ func (gout *GolOutputer) SaveToFile(filename string) error {
 		return gout.SaveToCongolwayFile(filename, "dense")
 	} else if fileExtension == ".cells" {
 		return gout.SaveToCellsFile(filename)
+	} else if fileExtension == ".life" {
+		return gout.SaveToLifeFile(filename, "1.06")
 	}
 	return fmt.Errorf("File extension \"%s\" not recognized. Only .txt and .cells are allowed", fileExtension)
 }

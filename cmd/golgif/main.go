@@ -42,7 +42,7 @@ func main() {
 	}
 
 	gr := input.NewGolReader(new(gol.Gol))
-	gi, gError := gr.ReadFile(*inputFilePath)
+	gi, gError := gr.ReadFile(*inputFilePath, nil)
 	if gError != nil {
 		fmt.Println(gError.Error())
 		return

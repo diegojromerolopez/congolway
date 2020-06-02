@@ -8,25 +8,31 @@ import (
 	"github.com/diegojromerolopez/congolway/pkg/gol"
 )
 
-func TestNewGolFromCellsFile5x5(t *testing.T) {
+func TestNewGolFromLifeFile5x5(t *testing.T) {
 	var expectedCells [][]int = [][]int{
 		{D, D, D, D, D},
 		{A, A, A, A, A},
 		{A, A, D, A, A},
 		{A, A, A, A, A},
-		{D, D, D, D, D},
+		{A, D, D, D, A},
 	}
-	filename := "5x5.cells"
-	name := "A 5x5 game of life"
-	description := "A 5x5 game of life in .cells format. It is not a known pattern, this is only used for tests."
-	testNewGolFromCellsFile(t, filename, name, description, base.DefaultGeneration, 5, 5,
+	filename := "5x5.life"
+	name := filename
+	filepath, filepathError := base.GetTestdataFilePath(filename)
+	if filepathError != nil {
+		t.Error(filepathError)
+		return
+	}
+
+	description := fmt.Sprintf("File path: %s", filepath)
+	testNewGolFromLifeFile(t, filename, name, description, base.DefaultGeneration, 5, 5,
 		base.DefaultRowLimitation, base.DefaultColLimitation, base.DefaultRules, expectedCells)
 }
 
-func testNewGolFromCellsFile(t *testing.T, filename string, name string, description string, generation int,
+func testNewGolFromLifeFile(t *testing.T, filename string, name string, description string, generation int,
 	rows int, cols int, rowLimitation string, colLimitation string, rules string, expectedCells [][]int) {
 
-	g, error := readCellsFile(filename, name, description, generation, rows, cols, rowLimitation, colLimitation, rules)
+	g, error := readLifeFile(filename, name, description, generation, rows, cols, rowLimitation, colLimitation, rules)
 	if error != nil {
 		t.Error(error)
 		return
@@ -35,7 +41,7 @@ func testNewGolFromCellsFile(t *testing.T, filename string, name string, descrip
 		rowLimitation == "limited", colLimitation == "limited", generation, expectedCells, g)
 }
 
-func readCellsFile(filename string, name string, description string, generation int,
+func readLifeFile(filename string, name string, description string, generation int,
 	rows int, cols int, rowsLimitation string, colsLimitation string, rules string) (base.GolInterface, error) {
 	dataFilePath, dataFilePathError := base.GetTestdataFilePath(filename)
 	if dataFilePathError != nil {
@@ -43,7 +49,7 @@ func readCellsFile(filename string, name string, description string, generation 
 	}
 
 	gr := NewGolReader(new(gol.Gol))
-	gol, golReadError := gr.ReadCellsFile(dataFilePath, nil)
+	gol, golReadError := gr.ReadLifeFile(dataFilePath, nil)
 	if golReadError != nil {
 		return nil, fmt.Errorf("Couldn't load the file %s: %s", dataFilePath, golReadError)
 	}
