@@ -183,7 +183,7 @@ There is also the posibility to have conditional cell changes.
 * Read the following formats:
   * ~~[Plaintext](https://www.conwaylife.com/wiki/Plaintext)~~
   * [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05), i.e. .lif or .life files.
-  * [Life 1.06](https://www.conwaylife.com/wiki/Life_1.06), i.e. .lif or .life files.
+  * ~~[Life 1.06](https://www.conwaylife.com/wiki/Life_1.06), i.e. .lif or .life files~~
   * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
 * ~~Allow definition of multiple rules of spawning.~~ Done based on [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05) rules format.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
