@@ -50,7 +50,7 @@ func (gr *GolReader) ReadLife105File(filepath string, gconf *base.GolConf) (base
 // See the following link for more information:
 // - 1.06: https://www.conwaylife.com/wiki/Life_1.06
 func (gr *GolReader) ReadLife106File(filepath string, gconf *base.GolConf) (base.GolInterface, error) {
-
+	// Set the file reader offset to where the cell positions start
 	seekPositionsStart := func(file *os.File) (*bufio.Reader, error) {
 		file.Seek(0, io.SeekStart)
 		reader := bufio.NewReader(file)
