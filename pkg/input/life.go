@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -43,7 +44,146 @@ func (gr *GolReader) ReadLifeFile(filename string, gconf *base.GolConf) (base.Go
 // See the following link for more information:
 // - 1.05: https://www.conwaylife.com/wiki/Life_1.05
 func (gr *GolReader) ReadLife105File(filepath string, gconf *base.GolConf) (base.GolInterface, error) {
-	return nil, fmt.Errorf("Life 1.05 file format is not supported yet")
+	maxInt := func(a, b int) int {
+		if a < b {
+			return b
+		}
+		return a
+	}
+	minInt := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+
+	file, fileError := os.Open(filepath)
+	defer file.Close()
+
+	if fileError != nil {
+		return nil, fileError
+	}
+
+	file.Seek(0, io.SeekStart)
+	reader := bufio.NewReader(file)
+
+	// Get minimum grid size
+	maxX := math.MinInt32
+	maxY := math.MinInt32
+	minX := math.MaxInt32
+	minY := math.MaxInt32
+	eof := false
+	description := ""
+	rules := ""
+	maxRows := 0
+	maxBlockRows := 0
+	maxWidth := -1
+	for !eof {
+		line, lineError := reader.ReadString('\n')
+		if lineError != nil {
+			if lineError == io.EOF {
+				eof = true
+			} else {
+				return nil, lineError
+			}
+		}
+		if line[0:1] == "#" {
+			if line[1:2] == "D" {
+				description += strings.TrimSuffix(line[3:], "\n")
+			}
+			if line[1:2] == "N" {
+				rules += base.DefaultRules
+			}
+			if line[1:2] == "R" {
+				rules += line[2:]
+			}
+			if line[1:2] == "P" {
+				maxRows = maxInt(maxRows, maxBlockRows)
+				maxBlockRows = 0
+				lineParts := strings.Split(strings.TrimSuffix(line, "\n"), " ")
+				x, xError := strconv.Atoi(lineParts[1])
+				if xError != nil {
+					return nil, xError
+				}
+				y, yError := strconv.Atoi(lineParts[2])
+				if yError != nil {
+					return nil, yError
+				}
+				maxX = maxInt(x, maxX)
+				minX = minInt(x, minX)
+				maxY = maxInt(y, maxY)
+				minY = minInt(y, minY)
+			}
+		} else {
+			maxWidth = maxInt(len(strings.TrimSuffix(line, "\n")), maxWidth)
+			maxBlockRows++
+		}
+	}
+	maxRows = maxInt(maxRows, maxBlockRows)
+
+	rows := maxY - minY + maxRows
+	cols := maxX - minX + maxWidth
+
+	xOffset := -minX
+	yOffset := -minY
+
+	if gconf == nil {
+		gconf = base.NewDefaultGolConf()
+	}
+	filepathParts := strings.Split(filepath, "/")
+	name := filepathParts[len(filepathParts)-1]
+	g := gr.readGol
+	g.InitFromConf(name, description, rows, cols, gconf)
+
+	file.Seek(0, io.SeekStart)
+	reader = bufio.NewReader(file)
+
+	eof = false
+	line, lineError := reader.ReadString('\n')
+	for !eof {
+		if lineError != nil {
+			if lineError == io.EOF {
+				eof = true
+			} else {
+				return nil, lineError
+			}
+		}
+		if line[0:1] == "#" && line[1:2] == "P" {
+			trimmedLine := strings.TrimSuffix(line, "\n")
+			lineParts := strings.Split(trimmedLine, " ")
+			xBlockOffset, xError := strconv.Atoi(lineParts[1])
+			if xError != nil {
+				return nil, xError
+			}
+			yBlockOffset, yError := strconv.Atoi(lineParts[2])
+			if yError != nil {
+				return nil, yError
+			}
+			rowIndex := yOffset + yBlockOffset
+			for !eof {
+				blockLine, blockLineError := reader.ReadString('\n')
+				if blockLineError != nil {
+					if blockLineError == io.EOF {
+						eof = true
+					} else {
+						return nil, blockLineError
+					}
+				}
+				if blockLine[0:1] == "#" {
+					line = blockLine
+					lineError = blockLineError
+					break
+				} else {
+					colOffset := xOffset + xBlockOffset
+					gr.addLife105Row(rowIndex, colOffset, blockLine)
+					rowIndex++
+				}
+			}
+		} else {
+			line, lineError = reader.ReadString('\n')
+		}
+	}
+	return g, nil
 }
 
 // ReadLife106File : read a Game of life from a Life 1.06 file.
@@ -139,4 +279,14 @@ func (gr *GolReader) ReadLife106File(filepath string, gconf *base.GolConf) (base
 		g.Set(row, col, statuses.ALIVE)
 	}
 	return g, nil
+}
+
+func (gr *GolReader) addLife105Row(rowIndex, colOffset int, rawRow string) {
+	row := strings.TrimSuffix(rawRow, "\n")
+	g := gr.readGol
+	for j := 0; j < len(row); j++ {
+		if row[j:j+1] == "*" {
+			g.Set(rowIndex, colOffset+j, statuses.ALIVE)
+		}
+	}
 }
