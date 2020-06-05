@@ -11,6 +11,12 @@ import (
 	"github.com/diegojromerolopez/congolway/pkg/input"
 )
 
+func TestSaveToLife105File(t *testing.T) {
+	testSaveToLifeFile(t, 5, 10, "1.05", int64(1))
+	testSaveToLifeFile(t, 10, 5, "1.05", int64(1))
+	testSaveToLifeFile(t, 10, 10, "1.05", int64(1))
+}
+
 func TestSaveToLife106File(t *testing.T) {
 	testSaveToLifeFile(t, 5, 10, "1.06", int64(1))
 	testSaveToLifeFile(t, 10, 5, "1.06", int64(1))
@@ -25,6 +31,7 @@ func testSaveToLifeFile(t *testing.T, rows, cols int, version string, randomSeed
 	}
 	outputFilePath := file.Name()
 	defer os.Remove(outputFilePath)
+	//outputFilePath := "./out.life"
 	outputFilePathParts := strings.Split(outputFilePath, "/")
 	name := outputFilePathParts[len(outputFilePathParts)-1]
 	description := fmt.Sprintf("File path: %s", outputFilePath)
