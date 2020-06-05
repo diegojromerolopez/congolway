@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt) or cells (.cells) file")
+	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt), cells (.cells) or life (.life) file")
 	outputFilePath := flag.String("outputFilePath", "out.gif", "File path where the output gif will be saved")
 	outputWidth := flag.Int("outputWitdh", -1, "Width of the output gif image. If -1, this image will not be scaled")
 	outputHeight := flag.Int("outputHeight", -1, "Height of the output gif image. If -1, this image will not be scaled")

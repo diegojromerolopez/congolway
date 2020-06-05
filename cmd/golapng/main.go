@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt) or cells (.cells) file")
+	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt), cells (.cells) or life (.life) file")
 	outputFilePath := flag.String("outputFilePath", "out.apng", "File path where the output apng will be saved")
 	generations := flag.Int("generations", 100, "Number of generations of the cellular automaton")
 	procsHelp := fmt.Sprintf(

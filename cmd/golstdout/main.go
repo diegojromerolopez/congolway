@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt) or cells (.cells) file")
+	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt), cells (.cells) or life (.life) file")
 	generations := flag.Int("generations", 100, "Number of generations of the cellular automaton")
 	delay := flag.Int("delay", 500, "Delay between frames, in milliseconds")
 

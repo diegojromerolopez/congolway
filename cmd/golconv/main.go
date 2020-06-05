@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt/.congol) or cells (.cells) file")
-	outputFilePath := flag.String("outputFilePath", "", "File path of the output Congolway (.txt/.congol) or cells (.cells) file")
+	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt/.congol), cells (.cells) or life (.life) file")
+	outputFilePath := flag.String("outputFilePath", "", "File path of the output Congolway (.txt/.congol), cells (.cells) or life (.life) file")
 
 	flag.Parse()
 

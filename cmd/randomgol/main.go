@@ -14,7 +14,7 @@ func main() {
 	name := flag.String("name", "Random Gol", "Name of the game of life instance that will be created")
 	description := flag.String("description", "", "Description of the game of life instance that will be created")
 	outputFilePath := flag.String("outputFilePath", "out.txt",
-		"File path where the random grid will be saved (only .txt and .cells extensions are allowed)")
+		"File path where the random grid will be saved (.txt, .cells and life extensions are allowed)")
 	rows := flag.Int("rows", 100, "Number of rows of the grid")
 	cols := flag.Int("columns", 100, "Number of columns of the grid")
 	circularRows := flag.String("circularRows", "yes", "Should the rows be circular (yes) or be limited (no)")
