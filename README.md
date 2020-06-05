@@ -18,7 +18,7 @@ Hence **congolway**.
 * Storing instances of Game of Life in text files.
 * Generation of GIF and APNG animations for your game of life instances.
 * Tested and developed following the advice of Go community.
-* Support for Plaintext files, i.e. [.cells files](https://www.conwaylife.com/wiki/Plaintext).
+* Support for Plaintext files, i.e. [.cells files](https://www.conwaylife.com/wiki/Plaintext) or Life files ([1.05](https://www.conwaylife.com/wiki/Life_1.05) or [1.06](https://www.conwaylife.com/wiki/Life_1.06) version).
 
 
 ## Construction
