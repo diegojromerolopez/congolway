@@ -2,8 +2,8 @@ package base
 
 // GolInterface : minimal Gol interface.
 type GolInterface interface {
-	// Sort of an initializer
-	Init(name, description, rules, gridType, rowsLimitation, colsLimitation string, rows, cols, generation, neighborhoodType int)
+	// Initializer of a Gol
+	InitFromConf(name, description string, rows, cols int, gconf *GolConf)
 	// Dummy-property methods
 	Name() string
 	Description() string

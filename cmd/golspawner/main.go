@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt) or cells (.cells) file")
+	inputFilePath := flag.String("inputFilePath", "", "File path of the Congolway (.txt), cells (.cells) or life (.life) file")
 	outputFilePath := flag.String("outputFilePath", "out.txt", "File path where the output .txt will be saved")
 	generations := flag.Int("generations", 100, "Number of generations of the cellular automaton")
 	procsHelp := fmt.Sprintf(
@@ -32,7 +32,7 @@ func main() {
 	}
 
 	gr := input.NewGolReader(new(gol.Gol))
-	gi, gError := gr.ReadFile(*inputFilePath)
+	gi, gError := gr.ReadFile(*inputFilePath, nil)
 	if gError != nil {
 		fmt.Println(gError.Error())
 		return

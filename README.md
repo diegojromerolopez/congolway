@@ -39,7 +39,7 @@ Usage of ./bin/golstdout:
   -generations int
         Number of generations of the cellular automaton (default 100)
   -inputFilePath string
-        File path of the Congolway (.txt) or cells (.cells) file
+        File path of the Congolway (.txt), cells (.cells) or life (.life) file
   -procs int
         Number of GO processes used to compute generations. By default is -1 (use as many as hardware CPUs), enter a positive integer to set a custom number of proceses (default -1)
 ```
@@ -51,7 +51,7 @@ Usage of ./bin/golapng:
   -generations int
         Number of generations of the cellular automaton (default 100)
   -inputFilePath string
-        File path of the Congolway (.txt) or cells (.cells) file
+        File path of the Congolway (.txt), cells (.cells) or life (.life) file
   -outputFilePath string
         File path where the output apng will be saved (default "out.apng")
   -procs int
@@ -67,7 +67,7 @@ Usage of ./bin/golgif:
   -generations int
         Number of generations of the cellular automaton (default 100)
   -inputFilePath string
-        File path of the Congolway (.txt) or cells (.cells) file
+        File path of the Congolway (.txt), cells (.cells) or life (.life) file
   -outputFilePath string
         File path where the output gif will be saved (default "out.gif")
   -outputHeight int
@@ -91,7 +91,7 @@ Usage of ./bin/golsvg:
   -generations int
         Number of generations of the cellular automaton (default 100)
   -inputFilePath string
-        File path of the Congolway (.txt) or cells (.cells) file
+        File path of the Congolway (.txt), cells (.cells) or life (.life) file
   -outputFilePath string
         File path where the output gif will be saved (default "out.svg")
   -procs int
@@ -109,7 +109,7 @@ Usage of ./bin/randomgol:
   -name string
         Name of the game of life instance that will be created (default "Random Gol")
   -outputFilePath string
-        File path where the random grid will be saved (only .txt and .cells extensions are allowed) (default "out.txt")
+        File path where the random grid will be saved (.txt, .cells and .life extensions are allowed) (default "out.txt")
   -outputFormat string
         Only used for congolway files (.txt files). File format "dense" or "sparse"
   -randomSeed int
@@ -126,7 +126,7 @@ Usage of ./bin/golspawner:
   -generations int
         Number of generations of the cellular automaton (default 100)
   -inputFilePath string
-        File path of the Congolway (.txt) or cells (.cells) file
+        File path of the Congolway (.txt), cells (.cells) or life (.life) file
   -outputFilePath string
         File path where the output .txt will be saved (default "out.txt")
   -procs int
@@ -182,8 +182,8 @@ There is also the posibility to have conditional cell changes.
 * ~~Define a new format that is more compact (based on sparse matrix). Allow outputting in this format.~~
 * Read the following formats:
   * ~~[Plaintext](https://www.conwaylife.com/wiki/Plaintext)~~
-  * [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05), i.e. .lif or .life files.
-  * [Life 1.06](https://www.conwaylife.com/wiki/Life_1.06), i.e. .lif or .life files.
+  * ~~[Life 1.05](https://www.conwaylife.com/wiki/Life_1.05), i.e. .lif or .life files.~~
+  * ~~[Life 1.06](https://www.conwaylife.com/wiki/Life_1.06), i.e. .lif or .life files~~
   * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
 * ~~Allow definition of multiple rules of spawning.~~ Done based on [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05) rules format.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
@@ -191,7 +191,7 @@ There is also the posibility to have conditional cell changes.
 * Read zipped files. *Is it really needed, though?*
 * Allow extracting size from grid. *Is it really needed, though?*
 * ~~Parallelize.~~
-* **Parallelization must use a threadpool.**
+
 * ~~Scaling of gif animations.~~
 * Serve in a http server.
 

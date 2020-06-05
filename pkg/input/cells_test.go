@@ -19,8 +19,8 @@ func TestNewGolFromCellsFile5x5(t *testing.T) {
 	filename := "5x5.cells"
 	name := "A 5x5 game of life"
 	description := "A 5x5 game of life in .cells format. It is not a known pattern, this is only used for tests."
-	testNewGolFromCellsFile(t, filename, name, description, DefaultGeneration, 5, 5,
-		DefaultRowLimitation, DefaultColLimitation, DefaultRules, expectedCells)
+	testNewGolFromCellsFile(t, filename, name, description, base.DefaultGeneration, 5, 5,
+		base.DefaultRowLimitation, base.DefaultColLimitation, base.DefaultRules, expectedCells)
 }
 
 func testNewGolFromCellsFile(t *testing.T, filename string, name string, description string, generation int,
@@ -43,7 +43,7 @@ func readCellsFile(filename string, name string, description string, generation 
 	}
 
 	gr := NewGolReader(new(gol.Gol))
-	gol, golReadError := gr.ReadCellsFile(dataFilePath)
+	gol, golReadError := gr.ReadCellsFile(dataFilePath, nil)
 	if golReadError != nil {
 		return nil, fmt.Errorf("Couldn't load the file %s: %s", dataFilePath, golReadError)
 	}

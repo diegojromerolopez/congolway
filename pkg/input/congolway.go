@@ -165,21 +165,26 @@ func (gr *GolReader) readCongolwayFileV1(reader *bufio.Reader) (base.GolInterfac
 	}
 	rowsLimitationRegex := regexp.MustCompile(`rows`)
 	rowLimitationMatches := rowsLimitationRegex.FindAllString(limits[0], -1)
-	rowsLimitation := "no"
+	rowLimitation := "no"
 	if len(rowLimitationMatches) > 0 {
-		rowsLimitation = "limited"
+		rowLimitation = "limited"
 	}
 	colsLimitationRegex := regexp.MustCompile(`cols`)
 	colsLimitationMatches := colsLimitationRegex.FindAllString(limits[0], -1)
-	colsLimitation := "no"
+	colLimitation := "no"
 	if len(colsLimitationMatches) > 0 {
-		colsLimitation = "limited"
+		colLimitation = "limited"
 	}
 
-	gr.readGol.Init(
-		name, description, rules, DefaultGridType, rowsLimitation, colsLimitation,
-		rows, cols, generation, neighborhoodType,
-	)
+	gconf := base.NewGolConf(
+		map[string]interface{}{
+			"rules":            rules,
+			"rowLimitation":    rowLimitation,
+			"colLimitation":    colLimitation,
+			"generation":       generation,
+			"neighborhoodType": neighborhoodType,
+		})
+	gr.readGol.InitFromConf(name, description, rows, cols, gconf)
 
 	// Read grid type
 	gridTypeLine, gridTypeLineError := gr.readCongolwayFileLine(reader)
