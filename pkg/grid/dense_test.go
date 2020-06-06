@@ -144,3 +144,39 @@ func TestDenseNotEqual(t *testing.T) {
 		return
 	}
 }
+
+func TestDenseNotEqualRows(t *testing.T) {
+	s1 := NewDense(5, 7)
+	s2 := NewDense(8, 3)
+	expectedErrorString := "Rows are different: 5 vs 8"
+
+	equalsError := s1.EqualsError(s2)
+
+	if equalsError == nil {
+		t.Error("Should be different: s1 and s2 have different number of rows")
+		return
+	}
+
+	if equalsError.Error() != expectedErrorString {
+		t.Errorf("Should have returned: \"%s\" but returned \"%s\"", expectedErrorString, equalsError.Error())
+		return
+	}
+}
+
+func TestDenseNotEqualCols(t *testing.T) {
+	s1 := NewDense(5, 7)
+	s2 := NewDense(5, 3)
+	expectedErrorString := "Cols are different: 7 vs 3"
+
+	equalsError := s1.EqualsError(s2)
+
+	if equalsError == nil {
+		t.Error("Should be different: s1 and s2 have different number of cols")
+		return
+	}
+
+	if equalsError.Error() != expectedErrorString {
+		t.Errorf("Should have returned: \"%s\" but returned \"%s\"", expectedErrorString, equalsError.Error())
+		return
+	}
+}

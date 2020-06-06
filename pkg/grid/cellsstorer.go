@@ -30,7 +30,7 @@ func CellsStorerFactory(rows, cols int, gridType string) CellsStorer {
 	if strings.ToLower(gridType) == "dok" {
 		return NewDok(rows, cols, statuses.DEAD)
 	}
-	panic(fmt.Sprintf("Invalid grid type: %s. Only \"dense\" or \"dok\" ", gridType))
+	panic(fmt.Sprintf("Invalid grid type: %s. Only \"dense\" or \"dok\" are accepted as gridType values", gridType))
 }
 
 // EqualsError : inform if two grids have the same dimensions and
