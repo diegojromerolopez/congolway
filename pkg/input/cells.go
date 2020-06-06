@@ -2,6 +2,7 @@ package input
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -19,76 +20,148 @@ func (gr *GolReader) ReadCellsFile(filename string, gconf *base.GolConf) (base.G
 		return nil, fileError
 	}
 
-	reader := bufio.NewReader(file)
+	reader := newCellsReader(file)
 
 	// Name of the GOL pattern
-	nameLine, nameError := readCellFileLine(reader)
+	name, nameError := reader.readName()
 	if nameError != nil {
 		return nil, nameError
 	}
-	name := strings.TrimPrefix(nameLine, "!Name: ")
 
-	description := ""
-	gridLine := ""
 	// Description of the pattern
-	for true {
-		line, err := readCellFileLine(reader)
-		if err != nil {
-			return nil, err
-		}
-		if line[0:1] != "!" {
-			gridLine = line
-			break
-		} else {
-			description += strings.TrimSuffix(line[1:], " ") + " "
-		}
+	description, descriptionError := reader.readDescription()
+	if descriptionError != nil {
+		return nil, descriptionError
 	}
-	description = strings.TrimSuffix(description, " ")
 
-	cellValueCorrespondence := map[string]int{".": statuses.DEAD, "O": statuses.ALIVE}
-	rows := 0
-	cols := len(gridLine)
-	cells := make([]int, 0, cols)
-	lastLoop := false
-	for true {
-		rows++
-		for j := 0; j < cols; j++ {
-			cells = append(cells, cellValueCorrespondence[gridLine[j:j+1]])
-		}
-		if lastLoop {
-			break
-		}
-		line, err := readCellFileLine(reader)
-		gridLine = line
-		if err == io.EOF {
-			lastLoop = true
-		} else {
-			if err != nil {
-				return nil, err
-			}
-		}
+	// Dimensions of the pattern
+	rows, cols, dimsError := reader.readDimensions()
+	if dimsError != nil {
+		return nil, dimsError
 	}
+
+	g := gr.readGol
 
 	if gconf == nil {
 		gconf = base.NewDefaultGolConf()
 	}
 
-	g := gr.readGol
 	g.InitFromConf(name, description, rows, cols, gconf)
-	for rowI := 0; rowI < rows; rowI++ {
-		for colI := 0; colI < cols; colI++ {
-			g.Set(rowI, colI, cells[rowI*cols+colI])
-		}
+
+	gridError := reader.readGrid(rows, cols, g)
+	if gridError != nil {
+		return nil, gridError
 	}
+
 	return g, nil
 }
 
-func readCellFileLine(reader *bufio.Reader) (string, error) {
-	line, err := reader.ReadString('\n')
-	if err == io.EOF {
-		return line, err
-	} else if err != nil {
-		return "", err
+type cellsReader struct {
+	currentLine *string
+	file        *os.File
+	reader      *bufio.Reader
+}
+
+func (r *cellsReader) readName() (string, error) {
+	nameError := r.readLine()
+	if nameError != nil {
+		return "", nameError
 	}
-	return line[:len(line)-1], nil
+	name := strings.TrimPrefix(*r.currentLine, "!Name: ")
+	return name, nil
+}
+
+func (r *cellsReader) readDescription() (string, error) {
+	description := ""
+	// Description of the pattern
+	for true {
+		err := r.readLine()
+		if err != nil {
+			return "", err
+		}
+		if (*r.currentLine)[0:1] != "!" {
+			break
+		} else {
+			description += strings.TrimSuffix((*r.currentLine)[1:], " ") + " "
+		}
+	}
+	description = strings.TrimSuffix(description, " ")
+	return description, nil
+}
+
+func (r *cellsReader) readDimensions() (int, int, error) {
+	rows := 0
+	cols := len(*r.currentLine)
+	lastLoop := false
+	for true {
+		rows++
+		if lastLoop {
+			break
+		}
+		err := r.readLine()
+		if err != nil {
+			if err == io.EOF {
+				lastLoop = true
+			} else {
+				return -1, -1, err
+			}
+		}
+	}
+	return rows, cols, nil
+}
+
+func (r *cellsReader) readGrid(rows, cols int, g base.GolInterface) error {
+	r.seekStart()
+
+	// Name of the GOL pattern
+	_, nameError := r.readName()
+	if nameError != nil {
+		return nameError
+	}
+
+	// Description of the pattern
+	_, descriptionError := r.readDescription()
+	if descriptionError != nil {
+		return descriptionError
+	}
+
+	// Read grid
+	cellValueCorrespondence := map[string]int{".": statuses.DEAD, "O": statuses.ALIVE}
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			cellIJ := (*r.currentLine)[j : j+1]
+			cellValue, cellValueOK := cellValueCorrespondence[cellIJ]
+			if !cellValueOK {
+				return fmt.Errorf("Value %s in the cell %d,%d is not a valid one. Only \".\" or \"O\" values are allowed", cellIJ, i, j)
+			}
+			g.Set(i, j, cellValue)
+		}
+		r.readLine()
+	}
+	return nil
+}
+
+func (r *cellsReader) readLine() error {
+	line, err := r.reader.ReadString('\n')
+	if err != nil {
+		if err == io.EOF {
+			r.currentLine = &line
+		} else {
+			r.currentLine = nil
+		}
+		return err
+	}
+	lineWithoutEndline := line[:len(line)-1]
+	r.currentLine = &lineWithoutEndline
+	return nil
+}
+
+func (r *cellsReader) seekStart() {
+	r.file.Seek(0, io.SeekStart)
+	r.reader = bufio.NewReader(r.file)
+	r.currentLine = nil
+}
+
+func newCellsReader(file *os.File) *cellsReader {
+	return &cellsReader{nil, file, bufio.NewReader(file)}
 }
