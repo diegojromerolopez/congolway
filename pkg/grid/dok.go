@@ -158,16 +158,7 @@ func (dok *Dok) EqualValuesError(o CellsStorer) error {
 	if dimensionsError != nil {
 		return dimensionsError
 	}
-
-	for i := 0; i < dok.rows; i++ {
-		for j := 0; j < dok.cols; j++ {
-			if dok.Get(i, j) != o.Get(i, j) {
-				return fmt.Errorf("Cells at (%d,%d) are different: %d vs %d",
-					i, j, dok.Get(i, j), o.Get(i, j))
-			}
-		}
-	}
-	return nil
+	return EqualsError(dok, o)
 }
 
 // Clone : clone the grid dictOfKeys in a new grid dictOfKeys

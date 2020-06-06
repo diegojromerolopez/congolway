@@ -61,21 +61,7 @@ func (d *Dense) Equals(other CellsStorer) bool {
 // EqualsError : inform if two grids have the same dimensions and
 // the same cell values for each position.
 func (d *Dense) EqualsError(o CellsStorer) error {
-	if d.rows != o.Rows() {
-		return fmt.Errorf("Rows are different: %d vs %d", d.rows, o.Rows())
-	}
-	if d.cols != o.Cols() {
-		return fmt.Errorf("Cols are different: %d vs %d", d.cols, o.Cols())
-	}
-	for i := 0; i < d.rows; i++ {
-		for j := 0; j < d.cols; j++ {
-			if d.Get(i, j) != o.Get(i, j) {
-				return fmt.Errorf("Cells at (%d,%d) are different: %d vs %d",
-					i, j, d.Get(i, j), o.Get(i, j))
-			}
-		}
-	}
-	return nil
+	return EqualsError(d, o)
 }
 
 // EqualValues : check value by value if both
