@@ -1,7 +1,6 @@
 package input
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"os"
@@ -57,9 +56,19 @@ func (gr *GolReader) ReadCellsFile(filename string, gconf *base.GolConf) (base.G
 }
 
 type cellsReader struct {
-	currentLine *string
-	file        *os.File
-	reader      *bufio.Reader
+	fr *fileReader
+}
+
+func (r *cellsReader) currentLine() *string {
+	return r.fr.CurrentLine()
+}
+
+func (r *cellsReader) readLine() error {
+	return r.fr.ReadLine()
+}
+
+func (r *cellsReader) seekStart() {
+	r.fr.SeekStart()
 }
 
 func (r *cellsReader) readName() (string, error) {
@@ -67,7 +76,7 @@ func (r *cellsReader) readName() (string, error) {
 	if nameError != nil {
 		return "", nameError
 	}
-	name := strings.TrimPrefix(*r.currentLine, "!Name: ")
+	name := strings.TrimPrefix(*r.currentLine(), "!Name: ")
 	return name, nil
 }
 
@@ -79,10 +88,11 @@ func (r *cellsReader) readDescription() (string, error) {
 		if err != nil {
 			return "", err
 		}
-		if (*r.currentLine)[0:1] != "!" {
+		if (*r.currentLine())[0:1] != "!" {
 			break
 		} else {
-			description += strings.TrimSuffix((*r.currentLine)[1:], " ") + " "
+			currentLine := *r.currentLine()
+			description += strings.TrimSuffix(currentLine[1:], " ") + " "
 		}
 	}
 	description = strings.TrimSuffix(description, " ")
@@ -91,7 +101,7 @@ func (r *cellsReader) readDescription() (string, error) {
 
 func (r *cellsReader) readDimensions() (int, int, error) {
 	rows := 0
-	cols := len(*r.currentLine)
+	cols := len(*r.currentLine())
 	lastLoop := false
 	for true {
 		rows++
@@ -129,7 +139,7 @@ func (r *cellsReader) readGrid(rows, cols int, g base.GolInterface) error {
 	cellValueCorrespondence := map[string]int{".": statuses.DEAD, "O": statuses.ALIVE}
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
-			cellIJ := (*r.currentLine)[j : j+1]
+			cellIJ := (*r.currentLine())[j : j+1]
 			cellValue, cellValueOK := cellValueCorrespondence[cellIJ]
 			if !cellValueOK {
 				return fmt.Errorf("Value %s in the cell %d,%d is not a valid one. Only \".\" or \"O\" values are allowed", cellIJ, i, j)
@@ -141,27 +151,6 @@ func (r *cellsReader) readGrid(rows, cols int, g base.GolInterface) error {
 	return nil
 }
 
-func (r *cellsReader) readLine() error {
-	line, err := r.reader.ReadString('\n')
-	if err != nil {
-		if err == io.EOF {
-			r.currentLine = &line
-		} else {
-			r.currentLine = nil
-		}
-		return err
-	}
-	lineWithoutEndline := line[:len(line)-1]
-	r.currentLine = &lineWithoutEndline
-	return nil
-}
-
-func (r *cellsReader) seekStart() {
-	r.file.Seek(0, io.SeekStart)
-	r.reader = bufio.NewReader(r.file)
-	r.currentLine = nil
-}
-
 func newCellsReader(file *os.File) *cellsReader {
-	return &cellsReader{nil, file, bufio.NewReader(file)}
+	return &cellsReader{newFileReader(file)}
 }

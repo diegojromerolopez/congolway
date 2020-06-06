@@ -1,7 +1,6 @@
 package input
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"os"
@@ -16,17 +15,6 @@ import (
 // See the following link for more information:
 // - 1.06: https://www.conwaylife.com/wiki/Life_1.06
 func (gr *GolReader) ReadLife106File(filepath string, gconf *base.GolConf) (base.GolInterface, error) {
-	// Set the file reader offset to where the cell positions start
-	seekPositionsStart := func(file *os.File) (*bufio.Reader, error) {
-		file.Seek(0, io.SeekStart)
-		reader := bufio.NewReader(file)
-		_, headerLineError := reader.ReadString('\n')
-		if headerLineError != nil {
-			return nil, headerLineError
-		}
-		return reader, nil
-	}
-
 	file, fileError := os.Open(filepath)
 	defer file.Close()
 
@@ -34,75 +22,127 @@ func (gr *GolReader) ReadLife106File(filepath string, gconf *base.GolConf) (base
 		return nil, fileError
 	}
 
-	reader, readerError := seekPositionsStart(file)
-	if readerError != nil {
-		return nil, readerError
-	}
-	maxRow := -1
-	maxCol := -1
-	for true {
-		line, lineError := reader.ReadString('\n')
-		if lineError != nil {
-			if lineError == io.EOF {
-				break
-			}
-			return nil, lineError
-		}
-		lineText := strings.TrimSuffix(line, "\n")
-		positions := strings.Split(lineText, " ")
-		row, rowError := strconv.Atoi(positions[0])
-		if rowError != nil {
-			return nil, rowError
-		}
-		if maxRow < row {
-			maxRow = row
-		}
-		col, colError := strconv.Atoi(positions[1])
-		if colError != nil {
-			return nil, colError
-		}
-		if maxCol < col {
-			maxCol = col
-		}
+	reader := newLife106Reader(file)
+
+	// Read the #Life 1.06 header
+	reader.readLine()
+
+	// Read the dimensions
+	rows, cols, dimsError := reader.readDimensions()
+	if dimsError != nil {
+		return nil, dimsError
 	}
 
+	// Prepare the Gol
 	if gconf == nil {
 		gconf = base.NewDefaultGolConf()
 	}
 	filepathParts := strings.Split(filepath, "/")
 	name := filepathParts[len(filepathParts)-1]
 	description := fmt.Sprintf("File path: %s", filepath)
-	rows := maxRow + 1
-	cols := maxCol + 1
+
 	g := gr.readGol
 	g.InitFromConf(name, description, rows, cols, gconf)
 
 	// Read alive cells
-	reader, readerError = seekPositionsStart(file)
-	if readerError != nil {
-		return nil, readerError
-	}
+	reader.readGrid(rows, cols, g)
+	return g, nil
+}
+
+type life106Reader struct {
+	fr *fileReader
+}
+
+func (r *life106Reader) currentLine() *string {
+	return r.fr.CurrentLine()
+}
+
+func (r *life106Reader) readLine() error {
+	return r.fr.ReadLine()
+}
+
+func (r *life106Reader) seekStart() {
+	r.fr.SeekStart()
+}
+
+func (r *life106Reader) readDimensions() (int, int, error) {
+	maxRow := -1
+	maxCol := -1
 	eof := false
+	rowNum := 1
 	for !eof {
-		line, lineError := reader.ReadString('\n')
+		lineError := r.readLine()
 		if lineError != nil {
 			if lineError == io.EOF {
 				eof = true
 			} else {
-				return nil, lineError
+				return -1, -1, lineError
 			}
+		}
+		line := *r.currentLine()
+		if eof && line == "" {
+			return -1, -1, lineError
 		}
 		lineText := strings.TrimSuffix(line, "\n")
 		positions := strings.Split(lineText, " ")
+		if len(positions) != 2 {
+			return -1, -1, fmt.Errorf("Expected two dimensions on row %d, found line \"%s\"", rowNum, lineText)
+		}
 		row, rowError := strconv.Atoi(positions[0])
 		if rowError != nil {
-			return nil, rowError
+			return -1, -1, rowError
+		}
+		if maxRow < row {
+			maxRow = row
 		}
 		col, colError := strconv.Atoi(positions[1])
 		if colError != nil {
-			return nil, colError
+			return -1, -1, colError
+		}
+		if maxCol < col {
+			maxCol = col
+		}
+		rowNum++
+	}
+	return maxRow + 1, maxCol + 1, nil
+}
+
+func (r *life106Reader) readGrid(rows, cols int, g base.GolInterface) error {
+	// To the top of the file again and read the life 1.06 header
+	r.seekStart()
+	r.readLine()
+
+	eof := false
+	rowNum := 1
+	for !eof {
+		lineError := r.readLine()
+		if lineError != nil {
+			if lineError == io.EOF {
+				eof = true
+			} else {
+				return lineError
+			}
+		}
+		line := *r.currentLine()
+		lineText := strings.TrimSuffix(line, "\n")
+		positions := strings.Split(lineText, " ")
+		if len(positions) != 2 {
+			return fmt.Errorf("Expected two dimensions on row %d, found line \"%s\"", rowNum, lineText)
+		}
+		row, rowError := strconv.Atoi(positions[0])
+		if rowError != nil {
+			return rowError
+		}
+		col, colError := strconv.Atoi(positions[1])
+		if colError != nil {
+			return colError
 		}
 		g.Set(row, col, statuses.ALIVE)
+		rowNum++
 	}
-	return g, nil
+	return nil
+}
+
+func newLife106Reader(file *os.File) *life106Reader {
+	return &life106Reader{newFileReader(file)}
 }
