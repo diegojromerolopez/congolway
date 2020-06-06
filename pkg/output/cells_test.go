@@ -16,8 +16,20 @@ func TestSaveToCellsFile(t *testing.T) {
 	testSaveToCellsFile(t, 10, 10, int64(1))
 }
 
+func TestSaveToCellsFileError(t *testing.T) {
+	g := gol.NewRandomGol("Random", "", "23/3", "dok", "limited", "limited", 10, 10, 42)
+
+	golo := NewGolOutputer(g)
+	savingError := golo.SaveToCellsFile("/non-existant-path.cells")
+	if savingError == nil {
+		t.Errorf("A saving error should have been returned when saving to a bad path")
+		return
+	}
+
+}
+
 func testSaveToCellsFile(t *testing.T, rows int, cols int, randomSeed int64) {
-	file, err := ioutil.TempFile("", "temp_gol.txt")
+	file, err := ioutil.TempFile("", "temp_gol.cells")
 	if err != nil {
 		t.Error(err)
 		return
