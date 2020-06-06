@@ -57,7 +57,6 @@ func (gout *GolOutputer) SaveToLife105File(filename string) error {
 	cellBlocks := int(math.Ceil(float64(cols) / float64(cellBlockMaxWidth)))
 	for cellBlockI := 0; cellBlockI < cellBlocks; cellBlockI++ {
 		startCol := cellBlockI * cellBlockMaxWidth
-		//TODO: improve the width of the cell blocks
 		endColPlusOne := startCol + cellBlockMaxWidth + 1
 		writer.WriteString(fmt.Sprintf("#P %d 0", startCol))
 		for i := 0; i < rows; i++ {
