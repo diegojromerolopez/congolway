@@ -39,6 +39,8 @@ type GolInterface interface {
 	// Concurrency-related methods
 	Processes() int
 	SetProcesses(processes int)
+	ThreadPoolSize() int
+	SetThreadPoolSize(threadPoolSize int)
 	// Changes that can be applied at any moment
 	// without calling nextGeneration
 	ChangeCells(changes [][]int) GolInterface

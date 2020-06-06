@@ -19,6 +19,14 @@ const SERIAL = 1
 // the next generation.
 const CPUS = -1
 
+// DefaultThreadPoolSize : default number of threads used in the thread pool
+// to compute next generation of a game of life instance.
+const DefaultThreadPoolSize = 10
+
+// ExplosiveThreadPoolSize : the thread pool will use a thread for each cell
+// do not use it unless you want to experiment with your memory limits.
+const ExplosiveThreadPoolSize = -1
+
 // Processes : return the number of GO processes used in
 // the computing of the next generation.
 // Take account the constants SERIAL and CPUS of this package.
@@ -33,72 +41,39 @@ func (g *Gol) SetProcesses(processes int) {
 	g.processes = processes
 }
 
+// ThreadPoolSize : get the number of threads that will be
+// used when the parallel next generation algorithm is used.
+func (g *Gol) ThreadPoolSize() int {
+	return g.threadPoolSize
+}
+
+// SetThreadPoolSize : set the number of threads
+// that will be used when the parallel next generation algorithm
+// is used.
+func (g *Gol) SetThreadPoolSize(threadPoolSize int) {
+	g.threadPoolSize = threadPoolSize
+}
+
 // FastForward : move forward a number of generations
 func (g *Gol) FastForward(generations int) base.GolInterface {
 	ffg := g.Clone().(*Gol)
-	if g.processes == SERIAL {
-		for generation := 0; generation < generations; generation++ {
-			ffg = ffg.serialNextGeneration().(*Gol)
-		}
-		return ffg
-	}
+	nextGenFunc := g.nextGenerationFunc()
 	for generation := 0; generation < generations; generation++ {
-		ffg = ffg.parallelNextGeneration().(*Gol)
+		ffg = nextGenFunc(ffg).(*Gol)
 	}
 	return ffg
-}
-
-// ChangeCells : apply cell changes before a new generation
-// This method is used by NextGeneration to allow input data
-// on the Game of Life instance
-func (g *Gol) ChangeCells(changes [][]int) base.GolInterface {
-	if changes == nil || len(changes) == 0 {
-		return g
-	}
-	if g.processes == SERIAL {
-		return g.serialChangeCells(changes)
-	}
-	return g.parallelChangeCells(changes)
-}
-
-func (g *Gol) serialChangeCells(changes [][]int) base.GolInterface {
-	gCopy := g.Clone()
-	for _, change := range changes {
-		gCopy.Set(change[0], change[1], change[2])
-	}
-	return gCopy
-}
-
-func (g *Gol) parallelChangeCells(changes [][]int) base.GolInterface {
-	setRuntimeProcs(g)
-
-	var wg sync.WaitGroup
-	wg.Add(len(changes))
-
-	gCopy := g.Clone()
-	for _, change := range changes {
-		go func(i, j, status int) {
-			gCopy.Set(i, j, status)
-			wg.Done()
-		}(change[0], change[1], change[2])
-	}
-
-	wg.Wait()
-	return gCopy
 }
 
 // NextGeneration : compute the next generation
 // If no prior change to the generation of the next game of life
 // instance, pass a nil in the place of changes parameter.
 func (g *Gol) NextGeneration() base.GolInterface {
-	if g.processes == SERIAL {
-		return g.serialNextGeneration()
-	}
-	return g.parallelNextGeneration()
+	nextGenFunc := g.nextGenerationFunc()
+	return nextGenFunc(g)
 }
 
 // serialNextGeneration : compute the next generation without running threads
-func (g *Gol) serialNextGeneration() base.GolInterface {
+func serialNextGeneration(g *Gol) base.GolInterface {
 	rows := g.Rows()
 	cols := g.Cols()
 
@@ -114,8 +89,10 @@ func (g *Gol) serialNextGeneration() base.GolInterface {
 	return nextG
 }
 
-// parallelNextGeneration : compute the next generation using threads
-func (g *Gol) parallelNextGeneration() base.GolInterface {
+// explosiveParallelNextGeneration : compute the next generation using threads
+// creating a thread for each cell. Do not use unless you want to test
+// your system's memory limits
+func explosiveParallelNextGeneration(g *Gol) base.GolInterface {
 	setRuntimeProcs(g)
 
 	nextG := g.copyWithEmptyGrid().(*Gol)
@@ -138,6 +115,61 @@ func (g *Gol) parallelNextGeneration() base.GolInterface {
 	wg.Wait()
 	nextG.generation++
 	return nextG
+}
+
+// parallelNextGeneration : compute the next generation using a thread pool,
+func parallelNextGeneration(g *Gol, poolSize int) base.GolInterface {
+	setRuntimeProcs(g)
+
+	nextG := g.copyWithEmptyGrid().(*Gol)
+
+	rows := g.Rows()
+	cols := g.Cols()
+
+	type pos struct {
+		I int
+		J int
+	}
+
+	jobs := make(chan pos, poolSize)
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			wg.Add(1)
+			go func(jobs <-chan pos) {
+				for pos := range jobs {
+					nextValue := g.nextCell(pos.I, pos.J)
+					nextG.Set(pos.I, pos.J, nextValue)
+				}
+				wg.Done()
+			}(jobs)
+		}
+	}
+
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			jobs <- pos{i, j}
+		}
+	}
+	close(jobs)
+
+	wg.Wait()
+	nextG.generation++
+	return nextG
+}
+
+func (g *Gol) nextGenerationFunc() func(gx *Gol) base.GolInterface {
+	if g.processes == SERIAL {
+		return serialNextGeneration
+	}
+	if g.threadPoolSize == ExplosiveThreadPoolSize {
+		return explosiveParallelNextGeneration
+	}
+	return func(gx *Gol) base.GolInterface {
+		return parallelNextGeneration(gx, gx.threadPoolSize)
+	}
 }
 
 func (g *Gol) nextCell(i int, j int) int {

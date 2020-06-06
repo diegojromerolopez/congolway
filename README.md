@@ -161,8 +161,9 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 
 
 ## TODO
-* Parallelization must be done by using a threadpool (maybe using [this library](https://github.com/shettyh/threadpool)?).
+* ~~Parallelization must be done by using a threadpool (maybe using [this library](https://github.com/shettyh/threadpool)?).~~
 * Implement version with hashlife. See [1](https://github.com/ekzhang/game-of-life) & [2](https://www.drdobbs.com/jvm/an-algorithm-for-compressing-space-and-t/184406478).
+* Multi-valued game of life.
 * Make a CellsStorer implementation based on file system.
 * Make a distributed CellsStorer implementation.
 * Ability to load programs in a game of life. Programs

@@ -22,6 +22,7 @@ type Gol struct {
 	survivalRule     map[int]bool // Poor's man set
 	birthRule        map[int]bool // Poor's man set
 	processes        int
+	threadPoolSize   int
 }
 
 // NewGol : creates a game of life
@@ -58,6 +59,7 @@ func (g *Gol) InitWithGrid(name, description, rules string, generation, neighbor
 	g.neighborhoodFunc = neighborhood.GetFunc(g.neighborhoodType)
 	g.grid = gr
 	g.processes = CPUS
+	g.threadPoolSize = DefaultThreadPoolSize
 }
 
 // Name : return the name of this Game of life instance
@@ -189,7 +191,8 @@ func (g *Gol) Equals(o base.GolInterface) bool {
 		g.generation == other.generation &&
 		g.rules == other.rules &&
 		g.neighborhoodType == other.neighborhoodType &&
-		g.processes == other.processes
+		g.processes == other.processes &&
+		g.threadPoolSize == other.threadPoolSize
 
 	return simpleAttributesAreEqual && g.grid.Equals(other.grid, "values")
 }
@@ -230,6 +233,10 @@ func (g *Gol) EqualsError(o base.GolInterface) error {
 		return fmt.Errorf("Processes are different: %d vs %d", g.processes, other.processes)
 	}
 
+	if g.threadPoolSize != other.threadPoolSize {
+		return fmt.Errorf("Sizes of thread pool are different: %d vs %d", g.threadPoolSize, other.threadPoolSize)
+	}
+
 	return g.grid.EqualsError(other.grid, "values")
 }
 
@@ -238,6 +245,7 @@ func (g *Gol) Clone() base.GolInterface {
 	clone := new(Gol)
 	clone.InitWithGrid(g.name, g.description, g.rules, g.generation, g.neighborhoodType, g.grid.Clone())
 	clone.SetProcesses(g.processes)
+	clone.SetThreadPoolSize(g.threadPoolSize)
 	return clone
 }
 
@@ -262,4 +270,5 @@ func (g *Gol) init(name, description, rules, gridType, rowsLimitation, colsLimit
 	g.neighborhoodType = neighborhoodType
 	g.neighborhoodFunc = neighborhood.GetFunc(g.neighborhoodType)
 	g.processes = CPUS
+	g.threadPoolSize = DefaultThreadPoolSize
 }
