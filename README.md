@@ -161,7 +161,8 @@ Using the file [samples/grid100x100.txt](samples/grid100x100.txt):
 
 
 ## TODO
-* ~~Read a game of life from a gif/png still image.~~
+* Parallelization must be done by using a threadpool (maybe using [this library](https://github.com/shettyh/threadpool)?).
+* Implement version with hashlife. See [1](https://github.com/ekzhang/game-of-life) & [2](https://www.drdobbs.com/jvm/an-algorithm-for-compressing-space-and-t/184406478).
 * Make a CellsStorer implementation based on file system.
 * Make a distributed CellsStorer implementation.
 * Ability to load programs in a game of life. Programs
@@ -173,6 +174,7 @@ There is also the posibility to have conditional cell changes.
 * Implement a ncurses game of life animation.
 * Implement a multiplatform desktop app.
 * Implement neighborhood functions.
+* ~~Read a game of life from a gif/png still image.~~
 * ~~Include gliders and other patterns.~~
 * ~~Implement Grid as a sparse matrix.~~ Done by using the [thread-safe](https://golang.org/pkg/sync/#Map) [dictionary of keys](https://en.wikipedia.org/wiki/Sparse_matrix#Dictionary_of_keys_(DOK)) sparse matrix pattern.
 * Implement some kind of application (maybe a Turing machine?) in a Game of Life instance.
@@ -184,6 +186,7 @@ There is also the posibility to have conditional cell changes.
   * ~~[Plaintext](https://www.conwaylife.com/wiki/Plaintext)~~
   * ~~[Life 1.05](https://www.conwaylife.com/wiki/Life_1.05), i.e. .lif or .life files.~~
   * ~~[Life 1.06](https://www.conwaylife.com/wiki/Life_1.06), i.e. .lif or .life files~~
+  * [RLE format](http://www.mirekw.com/ca/ca_files_formats.html#RLE)
   * [Other formats](http://psoup.math.wisc.edu/mcell/ca_files_formats.html)
 * ~~Allow definition of multiple rules of spawning.~~ Done based on [Life 1.05](https://www.conwaylife.com/wiki/Life_1.05) rules format.
 * ~~Allow cells with more states.~~ In case there is more states, allow definition of custom rules.
@@ -191,7 +194,6 @@ There is also the posibility to have conditional cell changes.
 * Read zipped files. *Is it really needed, though?*
 * Allow extracting size from grid. *Is it really needed, though?*
 * ~~Parallelize.~~
-
 * ~~Scaling of gif animations.~~
 * Serve in a http server.
 
